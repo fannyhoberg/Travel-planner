@@ -64,6 +64,7 @@ const SignUp = () => {
             label="Name"
             name="name"
             variant="standard"
+            required
             fullWidth
             value={formData.name}
             onChange={handleChange}
@@ -73,6 +74,7 @@ const SignUp = () => {
             name="email"
             type="email"
             variant="standard"
+            required
             fullWidth
             value={formData.email}
             onChange={handleChange}
@@ -82,6 +84,7 @@ const SignUp = () => {
             name="password"
             type="password"
             variant="standard"
+            required
             fullWidth
             value={formData.password}
             onChange={handleChange}
@@ -91,6 +94,7 @@ const SignUp = () => {
             name="confirmPassword"
             type="password"
             variant="standard"
+            required
             fullWidth
             value={formData.confirmPassword}
             onChange={handleChange}

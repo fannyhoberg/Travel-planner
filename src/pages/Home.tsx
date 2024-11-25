@@ -13,10 +13,17 @@ const Home = () => {
       <Typography variant="h1" gutterBottom>
         VISTA
       </Typography>
-      <Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Stack spacing={4}>
           <Button
             onClick={handleSignUp}
+            type="submit"
             className="btn-primary"
             variant="contained"
           >
