@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { FirebaseError } from "firebase/app";
+import BackButton from "../components/BackButton";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -27,10 +28,6 @@ const SignUp = () => {
     setCheckPassword(false);
   };
 
-  const onBack = () => {
-    navigate("/");
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -43,7 +40,7 @@ const SignUp = () => {
     try {
       await signup(formData.email, formData.password);
 
-      // Navigate to homepage as logged in
+      // Navigate to start page as logged in
       navigate("/");
     } catch (err) {
       if (err instanceof FirebaseError) {
@@ -58,59 +55,60 @@ const SignUp = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Button onClick={onBack}>back</Button>
+    <>
+      <BackButton to="/" />
+      <Container maxWidth="sm">
+        <Typography variant="h4">Create account</Typography>
+        <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
+          <TextField
+            label="Name"
+            name="name"
+            variant="standard"
+            fullWidth
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            variant="standard"
+            fullWidth
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Password"
+            name="password"
+            type="password"
+            variant="standard"
+            fullWidth
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Confirm password"
+            name="confirmPassword"
+            type="password"
+            variant="standard"
+            fullWidth
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          {checkPassword && <Typography>Password does not match</Typography>}
 
-      <Typography variant="h4">Create account</Typography>
-      <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-        <TextField
-          label="Name"
-          name="name"
-          variant="standard"
-          fullWidth
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Email"
-          name="email"
-          type="email"
-          variant="standard"
-          fullWidth
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          variant="standard"
-          fullWidth
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Confirm password"
-          name="confirmPassword"
-          type="password"
-          variant="standard"
-          fullWidth
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
-        {checkPassword && <Typography>Password does not match</Typography>}
-
-        <Button
-          disabled={isSubmitting}
-          sx={{ mt: 4 }}
-          type="submit"
-          className="btn-primary"
-          variant="contained"
-        >
-          Create
-        </Button>
-      </Box>
-    </Container>
+          <Button
+            disabled={isSubmitting}
+            sx={{ mt: 4 }}
+            type="submit"
+            className="btn-primary"
+            variant="contained"
+          >
+            Create
+          </Button>
+        </Box>
+      </Container>
+    </>
   );
 };
 
