@@ -1,6 +1,8 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { FirebaseError } from "firebase/app";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +12,10 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkPassword, setCheckPassword] = useState(false);
+
+  const { signup } = useAuth();
 
   const navigate = useNavigate();
 
@@ -26,13 +31,30 @@ const SignUp = () => {
     navigate("/");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       setCheckPassword(true);
       return;
     }
     console.log("Submitted Data:", formData);
+
+    setIsSubmitting(true);
+    try {
+      await signup(formData.email, formData.password);
+
+      // Navigate to homepage as logged in
+      navigate("/");
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        console.error(err.message);
+      } else if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("Could not create account, something went wrong..");
+      }
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -79,6 +101,7 @@ const SignUp = () => {
         {checkPassword && <Typography>Password does not match</Typography>}
 
         <Button
+          disabled={isSubmitting}
           sx={{ mt: 4 }}
           type="submit"
           className="btn-primary"
