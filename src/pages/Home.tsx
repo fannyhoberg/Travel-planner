@@ -8,6 +8,10 @@ const Home = () => {
     navigate("/signup");
   };
 
+  const handleLogIn = () => {
+    navigate("/login");
+  };
+
   return (
     <Container maxWidth="sm">
       <Typography variant="h1" gutterBottom>
@@ -29,7 +33,11 @@ const Home = () => {
           >
             Create account
           </Button>
-          <Button className="btn-secondary" variant="outlined">
+          <Button
+            onClick={handleLogIn}
+            className="btn-secondary"
+            variant="outlined"
+          >
             Log in
           </Button>
         </Stack>

@@ -5,18 +5,16 @@ import useAuth from "../hooks/useAuth";
 import { FirebaseError } from "firebase/app";
 import BackButton from "../components/BackButton";
 
-const SignUp = () => {
+const Login = () => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [checkPassword, setCheckPassword] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const { signup } = useAuth();
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -25,30 +23,27 @@ const SignUp = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setCheckPassword(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setCheckPassword(true);
-      return;
-    }
+
     console.log("Submitted Data:", formData);
 
     setIsSubmitting(true);
     try {
-      await signup(formData.email, formData.password);
+      await login(formData.email, formData.password);
 
       // Navigate to start page as logged in
       navigate("/home");
     } catch (err) {
+      setIsError(true);
       if (err instanceof FirebaseError) {
         console.error(err.message);
       } else if (err instanceof Error) {
         console.error(err.message);
       } else {
-        console.error("Could not create account, something went wrong..");
+        console.error("Could not log you in, something went wrong..");
       }
     }
     setIsSubmitting(false);
@@ -58,17 +53,8 @@ const SignUp = () => {
     <>
       <BackButton to="/" />
       <Container maxWidth="sm">
-        <Typography variant="h4">Create account</Typography>
+        <Typography variant="h4">Log in</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-          <TextField
-            label="Name"
-            name="name"
-            variant="standard"
-            required
-            fullWidth
-            value={formData.name}
-            onChange={handleChange}
-          />
           <TextField
             label="Email"
             name="email"
@@ -89,17 +75,11 @@ const SignUp = () => {
             value={formData.password}
             onChange={handleChange}
           />
-          <TextField
-            label="Confirm password"
-            name="confirmPassword"
-            type="password"
-            variant="standard"
-            required
-            fullWidth
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-          {checkPassword && <Typography>Password does not match</Typography>}
+          {isError && (
+            <Typography style={{ color: "red" }}>
+              Email or password incorrect, try again.
+            </Typography>
+          )}
 
           <Button
             disabled={isSubmitting}
@@ -108,7 +88,7 @@ const SignUp = () => {
             className="btn-primary"
             variant="contained"
           >
-            Create
+            Log in
           </Button>
         </Box>
       </Container>
@@ -116,4 +96,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Login;
