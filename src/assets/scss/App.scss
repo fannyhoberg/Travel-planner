@@ -41,3 +41,13 @@ body {
   background-color: #fdd296 !important;
   opacity: 0.8 !important;
 }
+
+.card-primary {
+  background-color: #ede3d6 !important;
+  transition: background-color 0.3s, opacity 0.3s !important;
+}
+
+.card-primary:hover {
+  background-color: #ff9800 !important;
+  opacity: 0.8 !important;
+}
