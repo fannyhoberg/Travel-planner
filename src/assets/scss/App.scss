@@ -11,39 +11,33 @@ body {
 }
 
 .btn-primary {
-  background-color: #ffa726 !important;
+  background-color: #ffbc59 !important;
+  color: white !important;
   border-radius: 0.6rem !important;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1.5rem;
+  height: 2.5rem !important;
+  padding: 0 1.5rem !important;
   font-size: 1rem !important;
   text-transform: none !important;
-  transition: background-color 0.3s, opacity 0.3s;
+  transition: background-color 0.3s, opacity 0.3s !important;
 }
 
 .btn-primary:hover {
-  background-color: #dc8d19 !important;
-  opacity: 0.8;
+  background-color: #ff9800 !important;
+  opacity: 0.8 !important;
 }
 
 .btn-secondary {
   height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 0.6rem !important;
   text-transform: none !important;
   border: 1px solid #ffa726 !important;
-  padding: 0 1.5rem;
+  padding: 0 1.5rem !important;
   color: #2a3132 !important;
   font-size: 1rem !important;
-  width: 100%;
-  transition: background-color 0.3s, opacity 0.3s;
+  transition: background-color 0.3s, opacity 0.3s !important;
 }
 
 .btn-secondary:hover {
-  background-color: #f6efe5 !important;
-  opacity: 0.8;
+  background-color: #fdd296 !important;
+  opacity: 0.8 !important;
 }

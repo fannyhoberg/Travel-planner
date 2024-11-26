@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { FirebaseError } from "firebase/app";
 import BackButton from "../components/BackButton";
+import Snackbar from "@mui/material/Snackbar";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,18 @@ const SignUp = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkPassword, setCheckPassword] = useState(false);
+
+  const [isSuccessSnackbar, setIsSuccessSnackbar] = useState({
+    open: false,
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const { open, vertical, horizontal } = isSuccessSnackbar;
+
+  const handleCloseSnackbar = () => {
+    setIsSuccessSnackbar((prev) => ({ ...prev, open: false }));
+  };
 
   const { signup } = useAuth();
 
@@ -40,8 +53,16 @@ const SignUp = () => {
     try {
       await signup(formData.email, formData.password);
 
+      setIsSuccessSnackbar({
+        open: true,
+        vertical: "top",
+        horizontal: "right",
+      });
+
       // Navigate to start page as logged in
-      navigate("/home");
+      setTimeout(() => {
+        navigate("/home");
+      }, 3000);
     } catch (err) {
       if (err instanceof FirebaseError) {
         console.error(err.message);
@@ -97,10 +118,15 @@ const SignUp = () => {
             required
             fullWidth
             value={formData.confirmPassword}
+            helperText={
+              checkPassword ? (
+                <Typography variant="caption" sx={{ color: "red" }}>
+                  Password does not match
+                </Typography>
+              ) : null
+            }
             onChange={handleChange}
           />
-          {checkPassword && <Typography>Password does not match</Typography>}
-
           <Button
             disabled={isSubmitting}
             sx={{ mt: 4 }}
@@ -111,6 +137,14 @@ const SignUp = () => {
             Create
           </Button>
         </Box>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={open}
+          onClose={handleCloseSnackbar}
+          message="Account successfully created!"
+          key={vertical + horizontal}
+          sx={{ backgroundColor: "F5F5F5", borderBlockColor: "black" }}
+        />
       </Container>
     </>
   );
