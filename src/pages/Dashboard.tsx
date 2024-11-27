@@ -18,6 +18,7 @@ const Dashboard = () => {
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
 
   const addNewTrip = () => {
+    console.log("click on add new trip");
     setAddNewTripDialog(true);
   };
 

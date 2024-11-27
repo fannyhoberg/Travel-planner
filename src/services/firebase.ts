@@ -7,6 +7,7 @@ import {
   getFirestore,
 } from "firebase/firestore";
 import { NewUser } from "../types/user";
+import { NewTrip, Trip } from "../types/trip";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -31,6 +32,9 @@ export const auth = getAuth(app);
 const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(db, collectionName) as CollectionReference<T>;
 };
+
+export const tripCol = createCollection<Trip>("trips");
+export const newTripCol = createCollection<NewTrip>("trips");
 
 export const newUsersCol = createCollection<NewUser>("users");
 

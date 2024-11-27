@@ -1,4 +1,10 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
+import useAddTrip from "../hooks/useAddTrip";
+import { NewTrip } from "../types/trip";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
+import useAuth from "../hooks/useAuth";
 
 type Props = {
   isMobile: boolean;
@@ -6,6 +12,44 @@ type Props = {
 };
 
 const AddNewTrip = ({ isMobile, onClose }: Props) => {
+  const [formData, setFormData] = useState({
+    title: "",
+  });
+
+  const { addTrip, error, loading } = useAddTrip();
+
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    console.log("AddNewTrip: formData", formData);
+
+    if (!currentUser) {
+      return;
+    }
+    try {
+      await addTrip({ title: formData.title, userId: currentUser.uid });
+      navigate("/home");
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        console.error(err.message);
+      } else if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("Could not add new trip, something went wrong..");
+      }
+    }
+  };
+
   return (
     <>
       <Box
@@ -50,14 +94,20 @@ const AddNewTrip = ({ isMobile, onClose }: Props) => {
           Where we going?
         </Typography>
 
-        <Box sx={{ mt: 4, p: isMobile ? 2 : 5 }} component="form">
+        <Box
+          sx={{ mt: 4, p: isMobile ? 2 : 5 }}
+          component="form"
+          onSubmit={handleSubmit}
+        >
           <TextField
             label="Name your trip"
-            name="name"
-            type="name"
+            name="title"
+            type="text"
             variant="standard"
             required
             fullWidth
+            value={formData.title}
+            onChange={handleChange}
           />
 
           <Button
@@ -70,7 +120,8 @@ const AddNewTrip = ({ isMobile, onClose }: Props) => {
           </Button>
         </Box>
       </Box>
-
+      {error && <div>{error}</div>}
+      {loading && <div>{loading}</div>}
       {/* Blurred background */}
       {!isMobile && (
         <Box

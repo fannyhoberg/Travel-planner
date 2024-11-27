@@ -1,7 +1,7 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Start = () => {
   const navigate = useNavigate();
 
   const handleSignUp = () => {
@@ -46,4 +46,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Start;
