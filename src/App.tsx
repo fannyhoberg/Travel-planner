@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Navigation from "./components/Navigation";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   const theme = useTheme();
@@ -36,7 +37,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<Dashboard />} />
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/home" element={<Dashboard />} />
+          </Route>
         </Routes>
       </div>
       {isMobile && <Navigation />}

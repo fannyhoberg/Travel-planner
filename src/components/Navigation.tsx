@@ -14,12 +14,17 @@ import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import FaceIcon from "@mui/icons-material/Face";
 import AddNewTrip from "./AddNewTrip";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const [value, setValue] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
+
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   const addNewTrip = () => {
     setOpenDialog(true);
@@ -29,9 +34,16 @@ const Navigation = () => {
     setOpenDialog(false);
   };
 
+  const handleLogOut = async () => {
+    await logout();
+    console.log("You are signing out.");
+    await new Promise((r) => setTimeout(r, 1500));
+    navigate("/login");
+  };
+
   return (
     <>
-      {isMobile && (
+      {isMobile && currentUser && (
         <>
           <Box
             sx={{
@@ -45,9 +57,9 @@ const Navigation = () => {
             <BottomNavigation
               showLabels
               value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
+              //   onChange={(newValue) => {
+              //     setValue(newValue);
+              //   }}
             >
               <BottomNavigationAction aria-label="Home" icon={<HomeIcon />} />
               <BottomNavigationAction
@@ -79,12 +91,17 @@ const Navigation = () => {
             <Typography variant="h6" sx={{ flexGrow: 1, color: "black" }}>
               Vista
             </Typography>
-            <Button sx={{ color: "black" }} href="#home">
-              My trips
-            </Button>
-            <Button sx={{ color: "black" }} href="#profile">
-              <FaceIcon />
-            </Button>
+            {currentUser && (
+              <>
+                <Button sx={{ color: "black" }}>My trips</Button>
+                <Button sx={{ color: "black" }}>
+                  <FaceIcon />
+                </Button>
+                <Button sx={{ color: "black" }} onClick={handleLogOut}>
+                  Log out
+                </Button>
+              </>
+            )}
           </Toolbar>
         </AppBar>
       )}
