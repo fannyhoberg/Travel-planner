@@ -15,7 +15,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import FaceIcon from "@mui/icons-material/Face";
 import AddNewTrip from "./AddNewTrip";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const theme = useTheme();
@@ -60,17 +60,50 @@ const Navigation = () => {
               //   onChange={(newValue) => {
               //     setValue(newValue);
               //   }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <BottomNavigationAction aria-label="Home" icon={<HomeIcon />} />
+              <BottomNavigation>
+                <Link
+                  to="/home"
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <BottomNavigationAction
+                    aria-label="Home"
+                    icon={<HomeIcon />}
+                  />
+                </Link>
+              </BottomNavigation>{" "}
               <BottomNavigationAction
                 aria-label="Add new Trip"
                 icon={<AddIcon />}
                 onClick={addNewTrip}
+                sx={{
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
               />
-              <BottomNavigationAction
-                aria-label="Profile"
-                icon={<FaceIcon />}
-              />
+              <Link
+                to="/profile"
+                style={{
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <BottomNavigationAction
+                  aria-label="Profile"
+                  icon={<FaceIcon />}
+                />
+              </Link>
             </BottomNavigation>
           </Box>
           {openDialog && (
