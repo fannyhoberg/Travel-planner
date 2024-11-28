@@ -15,10 +15,12 @@ import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
+import AddItemToList from "../components/AddItemToList";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
   const [listName, setListName] = useState<string>("");
+  const [addingList, setAddingList] = useState<string | null>(null);
 
   const { id } = useParams();
 
@@ -27,6 +29,10 @@ const TripPage = () => {
 
   const addNewList = () => {
     setAddNewTripDialog(true);
+  };
+
+  const closeDialog = () => {
+    setAddingList(null);
   };
 
   const handleSubmitNewList = async (e: React.FormEvent) => {
@@ -97,34 +103,35 @@ const TripPage = () => {
             trip.lists?.map((list) => {
               return (
                 <Box key={list._id}>
-                  <Link
-                    className="card-primary"
-                    to={`/trip/${trip._id}`}
-                    style={{ textDecoration: "none" }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "left",
+                      justifyContent: "space-between",
+                      padding: "8px",
+                    }}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "left",
-                        justifyContent: "space-between",
-                        padding: "8px",
-                      }}
+                    <Typography
+                      color="#2a3132"
+                      sx={{ textAlign: "left", flex: 1 }}
                     >
-                      <Typography
-                        color="#2a3132"
-                        sx={{ textAlign: "left", flex: 1 }}
-                      >
-                        {list.name}
-                      </Typography>
-                      <IconButton size="small" sx={{ color: "#2a3132" }}>
-                        <AddIcon />
-                      </IconButton>
-                    </Box>
-                    <Divider sx={{ marginTop: 1 }} />
-                  </Link>
+                      {list.name}
+                    </Typography>
+                    <IconButton
+                      onClick={() => setAddingList(list.name)}
+                      size="small"
+                      sx={{ color: "#2a3132" }}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Box>
+                  <Divider sx={{ marginTop: 1 }} />
                 </Box>
               );
             })}
+          {addingList && (
+            <AddItemToList onClose={closeDialog} listName={addingList} />
+          )}
         </Container>
       )}
     </>
