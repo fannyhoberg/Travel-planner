@@ -20,6 +20,7 @@ export type Item = {
   postcode: number;
   city: string;
   geopoint: GeoPoint;
+  notes: string;
 };
 
 export type NewTrip = Omit<Trip, "_id">;
