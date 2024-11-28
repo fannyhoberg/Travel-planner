@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 const Navigation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
-  const [value, setValue] = useState(0);
+  //   const [value, setValue] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
 
   const { currentUser, logout } = useAuth();
@@ -56,7 +56,7 @@ const Navigation = () => {
           >
             <BottomNavigation
               showLabels
-              value={value}
+              //   value={value}
               //   onChange={(newValue) => {
               //     setValue(newValue);
               //   }}

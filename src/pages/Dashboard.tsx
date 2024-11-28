@@ -18,7 +18,7 @@ const Dashboard = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
 
-  const { data: trips } = useGetTrips();
+  const { data: trips, isLoading } = useGetTrips();
 
   console.log("data trips", trips);
 
@@ -44,6 +44,7 @@ const Dashboard = () => {
       <Container maxWidth="md">
         {trips && (
           <>
+            {isLoading && <div>Loading...</div>}
             {isMobile ? (
               <Box sx={{ flexGrow: 1 }}>
                 <Grid2 container spacing={2} columns={8}>
@@ -51,7 +52,7 @@ const Dashboard = () => {
                     <Grid2 size={8} key={trip._id}>
                       <Link
                         className="card-primary"
-                        to={"/"}
+                        to={`/trip/${trip._id}`}
                         style={{ textDecoration: "none" }}
                       >
                         <Box
@@ -81,7 +82,7 @@ const Dashboard = () => {
                     <Grid2 size={8} key={trip._id}>
                       <Link
                         className="card-primary"
-                        to={"/"}
+                        to={`/trip/${trip._id}`}
                         style={{ textDecoration: "none" }}
                       >
                         <Box

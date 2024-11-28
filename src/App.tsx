@@ -7,6 +7,7 @@ import Navigation from "./components/Navigation";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Start from "./pages/Start";
+import TripPage from "./pages/TripPage";
 
 function App() {
   const theme = useTheme();
@@ -39,6 +40,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoutes />}>
             <Route path="/home" element={<Dashboard />} />
+            <Route path="/trip/:id" element={<TripPage />} />
           </Route>
         </Routes>
       </div>
