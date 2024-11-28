@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   Grid2,
-  Stack,
   Typography,
   useMediaQuery,
   useTheme,
