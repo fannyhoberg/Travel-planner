@@ -75,6 +75,7 @@ const TripPage = () => {
                   display: "flex",
                   alignItems: "center",
                   mt: 3,
+                  mb: 5,
                 }}
                 component="form"
                 onSubmit={handleSubmitNewList}

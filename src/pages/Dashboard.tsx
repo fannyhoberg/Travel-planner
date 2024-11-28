@@ -32,14 +32,22 @@ const Dashboard = () => {
 
   return (
     <>
-      <Stack flex={"flex"} flexDirection={"row"}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "left",
+          justifyContent: "space-between",
+          padding: "8px",
+        }}
+      >
+        {" "}
         <Typography variant="h3">My trips</Typography>
         {!isMobile && (
           <Button onClick={addNewTrip} className="btn-primary">
             New trip +
           </Button>
         )}
-      </Stack>
+      </Box>
 
       <Container maxWidth="md">
         {trips && (

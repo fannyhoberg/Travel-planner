@@ -1,4 +1,10 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  ClickAwayListener,
+  TextField,
+  Typography,
+} from "@mui/material";
 import useAddTrip from "../hooks/useAddTrip";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
@@ -49,74 +55,74 @@ const AddNewTrip = ({ isMobile, onClose }: Props) => {
 
   return (
     <>
-      <Box
-        sx={{
-          position: "fixed",
-          top: isMobile ? 0 : "50%",
-          left: isMobile ? 0 : "50%",
-          width: isMobile ? "100%" : "30%",
-          height: isMobile ? "100%" : "40%",
-          backgroundColor: "#F5F5F5",
-          zIndex: 1300,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: isMobile ? "center" : "flex-start",
-          padding: isMobile ? "20px" : "40px",
-          ...(isMobile
-            ? {}
-            : {
-                transform: "translate(-50%, -50%)",
-                borderRadius: "10px",
-                boxShadow: 2,
-              }),
-        }}
-      >
-        {/* Close button */}
-        <Button
-          variant="text"
-          sx={{
-            position: "absolute",
-            top: isMobile ? 20 : 10,
-            right: isMobile ? 20 : 10,
-            padding: 0,
-            color: "black",
-          }}
-          onClick={onClose}
-        >
-          X
-        </Button>
-
-        <Typography variant="h5" sx={{ marginBottom: 2 }}>
-          Where we going?
-        </Typography>
-
+      <ClickAwayListener onClickAway={onClose}>
         <Box
-          sx={{ mt: 4, p: isMobile ? 2 : 5 }}
-          component="form"
-          onSubmit={handleSubmit}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            top: isMobile ? 0 : "50%",
+            left: isMobile ? 0 : "50%",
+            width: isMobile ? "100%" : "30%",
+            height: isMobile ? "100%" : "40%",
+            backgroundColor: "#F5F5F5",
+            zIndex: 1300,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: isMobile ? "center" : "flex-start",
+            padding: isMobile ? "0px" : "40px",
+            ...(isMobile
+              ? {}
+              : {
+                  transform: "translate(-50%, -50%)",
+                  borderRadius: "10px",
+                  boxShadow: 2,
+                }),
+          }}
         >
-          <TextField
-            label="Name your trip"
-            name="title"
-            type="text"
-            variant="standard"
-            required
-            fullWidth
-            value={formData.title}
-            onChange={handleChange}
-          />
-
+          {/* Close button */}
           <Button
             variant="text"
-            type="submit"
-            className="btn-primary"
-            sx={{ mt: 4 }}
+            sx={{
+              position: "absolute",
+              top: isMobile ? 20 : 10,
+              right: isMobile ? 20 : 10,
+              padding: 0,
+              color: "black",
+            }}
+            onClick={onClose}
           >
-            Create
+            X
           </Button>
+
+          <Typography variant="h5" sx={{ marginBottom: 2 }}>
+            Where we going?
+          </Typography>
+
+          <Box
+            sx={{ mt: 4, p: isMobile ? 2 : 1 }}
+            component="form"
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              label="Name your trip"
+              name="title"
+              type="text"
+              variant="standard"
+              required
+              fullWidth
+              value={formData.title}
+              onChange={handleChange}
+            />
+
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <Button variant="text" type="submit" className="btn-primary">
+                Create
+              </Button>
+            </Box>
+          </Box>
         </Box>
-      </Box>
+      </ClickAwayListener>
       {error && <div>{error}</div>}
       {loading && <div>{loading}</div>}
       {/* Blurred background */}
