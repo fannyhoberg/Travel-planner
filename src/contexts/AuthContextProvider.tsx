@@ -25,6 +25,7 @@ export const AuthContext = createContext<Authtypes | null>(null);
 
 const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const signup = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -48,13 +49,20 @@ const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
 
   return (
     <AuthContext.Provider value={authContextValue}>
-      <>{children}</>
+      {loading ? (
+        <div>
+          <span className="visibility-hidden">Loading...</span>
+        </div>
+      ) : (
+        <>{children}</>
+      )}
     </AuthContext.Provider>
   );
 };
