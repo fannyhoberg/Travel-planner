@@ -1,8 +1,6 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import useAddTrip from "../hooks/useAddTrip";
-import { NewTrip } from "../types/trip";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import useAuth from "../hooks/useAuth";
 
@@ -18,7 +16,6 @@ const AddNewTrip = ({ isMobile, onClose }: Props) => {
 
   const { addTrip, error, loading } = useAddTrip();
 
-  const navigate = useNavigate();
   const { currentUser } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +35,7 @@ const AddNewTrip = ({ isMobile, onClose }: Props) => {
     }
     try {
       await addTrip({ title: formData.title, userId: currentUser.uid });
-      navigate("/home");
+      onClose();
     } catch (err) {
       if (err instanceof FirebaseError) {
         console.error(err.message);
