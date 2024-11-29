@@ -16,6 +16,7 @@ import { useState } from "react";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import AddItemToList from "../components/AddItemToList";
+import Map from "../components/Map";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -86,7 +87,6 @@ const TripPage = () => {
     <>
       {isLoading && <div>Loading...</div>}
       {isError && <div>Something went wrong</div>}
-
       {!isLoading && !isError && (
         <Container maxWidth="sm">
           <Typography variant="h3">{trip?.title}</Typography>
@@ -156,9 +156,9 @@ const TripPage = () => {
                   <Divider sx={{ marginTop: 1 }} />
                   {list.items && list.items.length > 0 ? (
                     <Box sx={{ padding: 3 }}>
-                      {list.items.map((item, index) => (
+                      {list.items.map((item) => (
                         <Box
-                          key={index}
+                          key={item._id}
                           sx={{
                             display: "flex",
                             flexDirection: "row",
@@ -192,6 +192,7 @@ const TripPage = () => {
           )}
         </Container>
       )}
+      <Map />
     </>
   );
 };

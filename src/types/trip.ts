@@ -24,3 +24,8 @@ export type Item = {
 };
 
 export type NewTrip = Omit<Trip, "_id">;
+
+export type PositionCoords = {
+  lat: number;
+  lng: number;
+};
