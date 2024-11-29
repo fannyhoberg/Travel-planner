@@ -73,7 +73,7 @@ const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
           </Button>
 
           <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Add item to {listName}
+            Add place to {listName}
           </Typography>
 
           <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
