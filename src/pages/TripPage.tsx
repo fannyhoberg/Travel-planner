@@ -55,6 +55,33 @@ const TripPage = () => {
     }
   };
 
+  const handleSubmitItem = async (item: {
+    title: string;
+    address: string;
+    postcode: string;
+  }) => {
+    if (!trip) {
+      console.log("No trip data");
+      return;
+    }
+
+    try {
+      const tripDocRef = doc(db, "trips", id as string);
+      const updatedLists = trip?.lists?.map((list) =>
+        list.name === addingList
+          ? {
+              ...list,
+              items: [...(list.items || []), item],
+            }
+          : list
+      );
+
+      await updateDoc(tripDocRef, { lists: updatedLists });
+      setAddingList(null);
+    } catch (error) {
+      console.error("Error adding item to list:", error);
+    }
+  };
   return (
     <>
       {isLoading && <div>Loading...</div>}
@@ -127,11 +154,41 @@ const TripPage = () => {
                     </IconButton>
                   </Box>
                   <Divider sx={{ marginTop: 1 }} />
+                  {list.items && list.items.length > 0 ? (
+                    <Box sx={{ padding: 3 }}>
+                      {list.items.map((item, index) => (
+                        <Box
+                          key={index}
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            marginBottom: 1,
+                            alignItems: "left",
+                            padding: 2,
+                            backgroundColor: "#FFB2AA",
+                            borderRadius: 3,
+                          }}
+                        >
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>{item.title}</strong>
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            {item.address}, {item.postcode}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  ) : null}
                 </Box>
               );
             })}
           {addingList && (
-            <AddItemToList onClose={closeDialog} listName={addingList} />
+            <AddItemToList
+              onSubmit={handleSubmitItem}
+              onClose={closeDialog}
+              listName={addingList}
+            />
           )}
         </Container>
       )}

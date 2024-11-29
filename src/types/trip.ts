@@ -4,6 +4,7 @@ export type Trip = {
   _id: string;
   userId: string;
   title: string;
+  notes?: string;
   lists?: List[];
 };
 
@@ -15,12 +16,11 @@ export type List = {
 
 export type Item = {
   _id: string;
-  name: string;
+  title: string;
   address: string;
   postcode: number;
   city: string;
   geopoint: GeoPoint;
-  notes: string;
 };
 
 export type NewTrip = Omit<Trip, "_id">;
