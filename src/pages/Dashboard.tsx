@@ -11,13 +11,16 @@ import { useState } from "react";
 import AddNewTrip from "../components/AddNewTrip";
 import { Link } from "react-router-dom";
 import useGetTrips from "../hooks/useGetTrips";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
 
-  const { data: trips, isLoading } = useGetTrips();
+  const { currentUser } = useAuth();
+
+  const { data: trips, isLoading } = useGetTrips(currentUser?.uid);
 
   console.log("data trips", trips);
 
