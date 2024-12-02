@@ -13,10 +13,11 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 
 import { useState } from "react";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, GeoPoint, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import AddItemToList from "../components/AddItemToList";
 import Map from "../components/Map";
+import { getGeopoint } from "../services/geocodingAPI";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -59,12 +60,24 @@ const TripPage = () => {
   const handleSubmitItem = async (item: {
     title: string;
     address: string;
-    postcode: string;
+    city: string;
   }) => {
     if (!trip) {
       console.log("No trip data");
       return;
     }
+
+    const payload = await getGeopoint(item.address, item.city);
+
+    if (!payload) {
+      throw new Error("No payload");
+    }
+
+    const newItemObj = {
+      ...item,
+      geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
+      place_id: payload.place_id,
+    };
 
     try {
       const tripDocRef = doc(db, "trips", id as string);
@@ -72,7 +85,7 @@ const TripPage = () => {
         list.name === addingList
           ? {
               ...list,
-              items: [...(list.items || []), item],
+              items: [...(list.items || []), newItemObj],
             }
           : list
       );
@@ -192,7 +205,7 @@ const TripPage = () => {
           )}
         </Container>
       )}
-      <Map />
+      {trip && trip.lists && trip.lists.length > 0 && <Map />}
     </>
   );
 };

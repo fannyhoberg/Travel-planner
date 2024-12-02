@@ -14,7 +14,7 @@ const useAddTrip = () => {
 
     const newTripObj = {
       title: data.title,
-      userId: data.userId,
+      userId: currentUser.uid,
     };
 
     // add trip to db

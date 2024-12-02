@@ -18,9 +18,9 @@ export type Item = {
   _id: string;
   title: string;
   address: string;
-  postcode: number;
+  postcode?: number;
   city: string;
-  geopoint: GeoPoint;
+  geopoint?: GeoPoint;
 };
 
 export type NewTrip = Omit<Trip, "_id">;
@@ -29,3 +29,5 @@ export type PositionCoords = {
   lat: number;
   lng: number;
 };
+
+export type ItemTextData = Omit<Item, "_id" | "geopoint">;

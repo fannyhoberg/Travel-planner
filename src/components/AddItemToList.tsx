@@ -8,15 +8,12 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { ItemTextData } from "../types/trip";
 
 type Props = {
   onClose: () => void;
   listName: string | null;
-  onSubmit: (item: {
-    title: string;
-    address: string;
-    postcode: string;
-  }) => void;
+  onSubmit: (item: { title: string; address: string; city: string }) => void;
 };
 
 const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
@@ -25,11 +22,11 @@ const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
 
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
-  const [postcode, setPostcode] = useState("");
+  const [city, setCity] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, address, postcode });
+    onSubmit({ title, address, city });
   };
 
   return (
@@ -100,9 +97,9 @@ const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
               }}
             />
             <TextField
-              label="Post code"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value)}
+              label="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
               variant="standard"
               required
               sx={{
