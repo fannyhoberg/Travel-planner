@@ -17,40 +17,43 @@ function App() {
   const google_api_key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   return (
-    <div id="App">
-      <LoadScriptNext googleMapsApiKey={google_api_key}>
-        <>
-          {isMobile && (
-            <Box
-              sx={{
-                position: "relative",
-                top: 10,
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 1300,
-                textAlign: "center",
-              }}
-            >
-              <Typography variant="h6" sx={{ color: "black" }}>
-                Vista
-              </Typography>
-            </Box>
-          )}
+    <>
+      {!isMobile && <Navigation />}
 
-          {!isMobile && <Navigation />}
-          <Routes>
-            <Route path="/" element={<Start />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/home" element={<Dashboard />} />
-              <Route path="/trip/:id" element={<TripPage />} />
-            </Route>
-          </Routes>
-          {isMobile && <Navigation />}
-        </>
-      </LoadScriptNext>
-    </div>
+      <div id="App">
+        <LoadScriptNext googleMapsApiKey={google_api_key}>
+          <>
+            {isMobile && (
+              <Box
+                sx={{
+                  position: "relative",
+                  top: 10,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 1300,
+                  textAlign: "center",
+                }}
+              >
+                <Typography variant="h6" sx={{ color: "black" }}>
+                  Vista
+                </Typography>
+              </Box>
+            )}
+
+            <Routes>
+              <Route path="/" element={<Start />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/home" element={<Dashboard />} />
+                <Route path="/trip/:id" element={<TripPage />} />
+              </Route>
+            </Routes>
+            {isMobile && <Navigation />}
+          </>
+        </LoadScriptNext>
+      </div>
+    </>
   );
 }
 
