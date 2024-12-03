@@ -1,5 +1,5 @@
 import { GoogleMap, Marker } from "@react-google-maps/api";
-import { PositionCoords, Item } from "../types/trip";
+import { PositionCoords } from "../types/trip";
 import { useCallback, useMemo } from "react";
 import useGetTrip from "../hooks/useGetTrip";
 import { useParams } from "react-router-dom";

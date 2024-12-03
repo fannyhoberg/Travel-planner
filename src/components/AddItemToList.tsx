@@ -8,7 +8,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ItemTextData } from "../types/trip";
 
 type Props = {
   onClose: () => void;
