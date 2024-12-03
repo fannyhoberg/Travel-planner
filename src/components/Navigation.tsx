@@ -126,7 +126,9 @@ const Navigation = () => {
             </Typography>
             {currentUser && (
               <>
-                <Button sx={{ color: "black" }}>My trips</Button>
+                <Button component={Link} to="/home" sx={{ color: "black" }}>
+                  My trips
+                </Button>
                 <Button sx={{ color: "black" }}>
                   <FaceIcon />
                 </Button>

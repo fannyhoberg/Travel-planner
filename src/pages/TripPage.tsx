@@ -9,6 +9,8 @@ import {
   IconButton,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -23,6 +25,8 @@ const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
   const [listName, setListName] = useState<string>("");
   const [addingList, setAddingList] = useState<string | null>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   const { id } = useParams();
 
@@ -36,6 +40,10 @@ const TripPage = () => {
   const closeDialog = () => {
     setAddingList(null);
   };
+
+  const hasItemsInLists = trip?.lists?.some(
+    (list) => list.items && list.items.length > 0
+  );
 
   const handleSubmitNewList = async (e: React.FormEvent) => {
     console.log("Clicked on add new list");
@@ -101,111 +109,324 @@ const TripPage = () => {
       {isLoading && <div>Loading...</div>}
       {isError && <div>Something went wrong</div>}
       {!isLoading && !isError && (
-        <Container maxWidth="sm">
-          <Typography variant="h3">{trip?.title}</Typography>
-          <Box sx={{ mt: 4 }}>
-            <Button onClick={addNewList} className="btn-primary">
-              Add list
-            </Button>
-          </Box>
-          {addNewListDialog && trip && (
-            <ClickAwayListener onClickAway={() => setAddNewTripDialog(false)}>
+        <Container sx={{ mb: "10vh" }} maxWidth={isMobile ? "sm" : "lg"}>
+          <Typography sx={{ pt: 4 }} variant="h3">
+            {trip?.title}
+          </Typography>
+
+          {isMobile && (
+            <>
+              <Box sx={{ mt: 4 }}>
+                <Button onClick={addNewList} className="btn-primary">
+                  Add list
+                </Button>
+              </Box>
+
+              {addNewListDialog && trip && (
+                <ClickAwayListener
+                  onClickAway={() => setAddNewTripDialog(false)}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mt: 3,
+                      mb: 5,
+                    }}
+                    component="form"
+                    onSubmit={handleSubmitNewList}
+                  >
+                    <TextField
+                      label="Name your list"
+                      name="new-list"
+                      type="text"
+                      variant="standard"
+                      value={listName}
+                      onChange={(e) => setListName(e.target.value)}
+                      required
+                      sx={{ flex: 1 }}
+                    />
+                    <Button
+                      sx={{ marginLeft: 0, color: "black" }}
+                      variant="text"
+                      type="submit"
+                    >
+                      OK
+                    </Button>
+                  </Box>
+                </ClickAwayListener>
+              )}
+              {trip &&
+                trip.lists?.map((list) => {
+                  return (
+                    <Box key={list._id}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "left",
+                          justifyContent: "space-between",
+                          padding: "8px",
+                        }}
+                      >
+                        <Typography
+                          color="#2a3132"
+                          sx={{ textAlign: "left", flex: 1 }}
+                        >
+                          {list.name}
+                        </Typography>
+                        <IconButton
+                          onClick={() => setAddingList(list.name)}
+                          size="small"
+                          sx={{ color: "#2a3132" }}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </Box>
+                      <Divider sx={{ marginTop: 1 }} />
+                      {list.items && list.items.length > 0 ? (
+                        <Box sx={{ padding: 3 }}>
+                          {list.items.map((item) => (
+                            <Box
+                              key={item._id}
+                              sx={{
+                                marginBottom: 1,
+                                padding: 2,
+                                backgroundColor: "#FFB2AA",
+                                borderRadius: 3,
+                                display: "flex",
+                                justifyContent: "flex-end",
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: "100%",
+                                  textAlign: "left",
+                                }}
+                              >
+                                <Typography variant="body1" color="textPrimary">
+                                  <strong>{item.title}</strong>
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="textSecondary"
+                                >
+                                  {item.address}, {item.postcode}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          ))}
+                        </Box>
+                      ) : null}
+                    </Box>
+                  );
+                })}
+              {addingList && (
+                <AddItemToList
+                  onSubmit={handleSubmitItem}
+                  onClose={closeDialog}
+                  listName={addingList}
+                />
+              )}
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   mt: 3,
-                  mb: 5,
                 }}
-                component="form"
-                onSubmit={handleSubmitNewList}
               >
-                <TextField
-                  label="Name your list"
-                  name="new-list"
-                  type="text"
-                  variant="standard"
-                  value={listName}
-                  onChange={(e) => setListName(e.target.value)}
-                  required
-                  sx={{ flex: 1 }}
-                />
-                <Button
-                  sx={{ marginLeft: 0, color: "black" }}
-                  variant="text"
-                  type="submit"
-                >
-                  OK
-                </Button>
+                <Typography>Notes</Typography>
               </Box>
-            </ClickAwayListener>
+              <TextField
+                fullWidth
+                id="outlined-multiline-static"
+                label=""
+                multiline
+                rows={4}
+              />
+
+              {hasItemsInLists && <Map />}
+            </>
           )}
-          {trip &&
-            trip.lists?.map((list) => {
-              return (
-                <Box key={list._id}>
+          {!isMobile && (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 4,
+                  mt: 4,
+                }}
+              >
+                <Box
+                  sx={{
+                    flex: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  {hasItemsInLists && <Map />}
+
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "left",
-                      justifyContent: "space-between",
-                      padding: "8px",
+                      alignItems: "center",
+                      mt: 3,
                     }}
                   >
-                    <Typography
-                      color="#2a3132"
-                      sx={{ textAlign: "left", flex: 1 }}
-                    >
-                      {list.name}
-                    </Typography>
-                    <IconButton
-                      onClick={() => setAddingList(list.name)}
-                      size="small"
-                      sx={{ color: "#2a3132" }}
-                    >
-                      <AddIcon />
-                    </IconButton>
+                    <Typography>Notes</Typography>
                   </Box>
-                  <Divider sx={{ marginTop: 1 }} />
-                  {list.items && list.items.length > 0 ? (
-                    <Box sx={{ padding: 3 }}>
-                      {list.items.map((item) => (
-                        <Box
-                          key={item._id}
-                          sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            marginBottom: 1,
-                            alignItems: "left",
-                            padding: 2,
-                            backgroundColor: "#FFB2AA",
-                            borderRadius: 3,
-                          }}
-                        >
-                          <Typography variant="body1" color="textPrimary">
-                            <strong>{item.title}</strong>
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {item.address}, {item.postcode}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  ) : null}
+                  <TextField
+                    fullWidth
+                    id="outlined-multiline-static"
+                    label=""
+                    multiline
+                    rows={4}
+                  />
                 </Box>
-              );
-            })}
-          {addingList && (
-            <AddItemToList
-              onSubmit={handleSubmitItem}
-              onClose={closeDialog}
-              listName={addingList}
-            />
+                <Box
+                  sx={{
+                    flex: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    // flexWrap: "wrap",
+                    gap: 2,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Button onClick={addNewList} className="btn-primary">
+                      Add list
+                    </Button>
+                  </Box>
+
+                  {addNewListDialog && trip && (
+                    <ClickAwayListener
+                      onClickAway={() => setAddNewTripDialog(false)}
+                    >
+                      <Box
+                        sx={{
+                          width: "100%",
+                          display: "flex",
+                          //   alignItems: "center",
+                          //   mt: 3,
+                          mb: 5,
+                        }}
+                        component="form"
+                        onSubmit={handleSubmitNewList}
+                      >
+                        <TextField
+                          label="Name your list"
+                          name="new-list"
+                          type="text"
+                          variant="standard"
+                          value={listName}
+                          onChange={(e) => setListName(e.target.value)}
+                          required
+                          sx={{ flex: 1 }}
+                        />
+                        <Button
+                          sx={{ marginLeft: 0, color: "black" }}
+                          variant="text"
+                          type="submit"
+                        >
+                          OK
+                        </Button>
+                      </Box>
+                    </ClickAwayListener>
+                  )}
+                  {trip &&
+                    trip.lists?.map((list) => {
+                      return (
+                        <Box
+                          sx={{
+                            width: "100%",
+                          }}
+                          key={list._id}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "left",
+                              justifyContent: "space-between",
+                              padding: "8px",
+                            }}
+                          >
+                            <Typography
+                              color="#2a3132"
+                              sx={{ textAlign: "left", flex: 1 }}
+                            >
+                              {list.name}
+                            </Typography>
+                            <IconButton
+                              onClick={() => setAddingList(list.name)}
+                              size="small"
+                              sx={{ color: "#2a3132" }}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </Box>
+                          <Divider sx={{ marginTop: 1 }} />
+                          {list.items && list.items.length > 0 ? (
+                            <Box sx={{ padding: 3 }}>
+                              {list.items.map((item) => (
+                                <Box
+                                  key={item._id}
+                                  sx={{
+                                    marginBottom: 1,
+                                    padding: 2,
+                                    backgroundColor: "#FFB2AA",
+                                    borderRadius: 3,
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      width: "100%",
+                                      textAlign: "left",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      color="textPrimary"
+                                    >
+                                      <strong>{item.title}</strong>
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      color="textSecondary"
+                                    >
+                                      {item.address}, {item.postcode}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              ))}
+                            </Box>
+                          ) : null}
+                        </Box>
+                      );
+                    })}
+                  {addingList && (
+                    <AddItemToList
+                      onSubmit={handleSubmitItem}
+                      onClose={closeDialog}
+                      listName={addingList}
+                    />
+                  )}
+                </Box>
+              </Box>
+            </>
           )}
         </Container>
       )}
-      {trip && trip.lists && trip.lists.length > 0 && <Map />}
     </>
   );
 };
