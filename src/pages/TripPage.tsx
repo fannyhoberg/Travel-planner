@@ -2,7 +2,15 @@ import { useParams } from "react-router-dom";
 import useGetTrip from "../hooks/useGetTrip";
 import { Container, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
-import { arrayUnion, doc, GeoPoint, updateDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  deleteDoc,
+  arrayRemove,
+  doc,
+  GeoPoint,
+  updateDoc,
+} from "firebase/firestore";
+
 import { db } from "../services/firebase";
 import { getGeopoint } from "../services/geocodingAPI";
 import MobileTripPage from "../components/MobileTripPage";
@@ -100,7 +108,6 @@ const TripPage = () => {
           ? {
               ...list,
               items: list?.items?.map((item) => {
-                console.log("Checking item:", item._id, "against", itemId);
                 return item._id === itemId
                   ? { ...item, completed: !item.completed }
                   : item;
@@ -113,6 +120,25 @@ const TripPage = () => {
       setAddingList(null);
     } catch (error) {
       console.error("Error marking item as done:", error);
+    }
+  };
+
+  const removeItemFromList = async (listName: string, itemId: string) => {
+    try {
+      const tripDocRef = doc(db, "trips", id as string);
+
+      const updatedLists = trip?.lists?.map((list) =>
+        list.name === listName
+          ? {
+              ...list,
+              items: list.items?.filter((item) => item._id !== itemId),
+            }
+          : list
+      );
+
+      await updateDoc(tripDocRef, { lists: updatedLists });
+    } catch (error) {
+      console.error("Error removing item from list:", error);
     }
   };
 
@@ -158,6 +184,7 @@ const TripPage = () => {
               setListName={setListName}
               setAddingList={setAddingList}
               onMarkPlaceAsDone={markPlaceAsDone}
+              onRemoveItemFromList={removeItemFromList}
             />
           )}
         </Container>

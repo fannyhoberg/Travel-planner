@@ -30,6 +30,7 @@ type DesktopTripPageProps = {
   setListName: (value: string) => void;
   setAddingList: (value: string | null) => void;
   onMarkPlaceAsDone: (listName: string, itemId: string) => void;
+  onRemoveItemFromList: (listName: string, itemId: string) => void;
 };
 
 const DesktopTripPage = ({
@@ -46,6 +47,7 @@ const DesktopTripPage = ({
   setListName,
   setAddingList,
   onMarkPlaceAsDone,
+  onRemoveItemFromList,
 }: DesktopTripPageProps) => {
   return (
     <>
@@ -222,6 +224,9 @@ const DesktopTripPage = ({
                           >
                             <Button
                               variant="text"
+                              onClick={() =>
+                                onRemoveItemFromList(list.name, item._id)
+                              }
                               sx={{
                                 color: "black",
                                 padding: 0,

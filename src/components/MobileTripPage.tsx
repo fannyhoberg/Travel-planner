@@ -163,7 +163,7 @@ const MobileTripPage = ({
                           />
                         </Button>
                       </Box>
-                      {/* <Box
+                      <Box
                         sx={{
                           marginRight: 1,
                         }}
@@ -179,7 +179,7 @@ const MobileTripPage = ({
                         >
                           <ClearIcon sx={{ fontSize: "20px" }} />
                         </Button>
-                      </Box> */}
+                      </Box>
                     </Box>
                   ))}
                 </Box>
