@@ -18,6 +18,7 @@ export type Item = {
   _id: string;
   title: string;
   address: string;
+  completed: boolean;
   postcode?: number;
   city: string;
   geopoint?: GeoPoint;

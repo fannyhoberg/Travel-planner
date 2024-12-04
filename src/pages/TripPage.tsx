@@ -7,6 +7,7 @@ import { db } from "../services/firebase";
 import { getGeopoint } from "../services/geocodingAPI";
 import MobileTripPage from "../components/MobileTripPage";
 import DesktopTripPage from "../components/DesktopTripPage";
+import { v4 as uuidv4 } from "uuid";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -66,8 +67,10 @@ const TripPage = () => {
     }
 
     const newItemObj = {
+      _id: uuidv4(),
       ...item,
       geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
+      completed: false,
       place_id: payload.place_id,
     };
 
@@ -88,6 +91,31 @@ const TripPage = () => {
       console.error("Error adding item to list:", error);
     }
   };
+
+  const markPlaceAsDone = async (listName: string, itemId: string) => {
+    try {
+      const tripDocRef = doc(db, "trips", id as string);
+      const updatedLists = trip?.lists?.map((list) =>
+        list.name === listName
+          ? {
+              ...list,
+              items: list?.items?.map((item) => {
+                console.log("Checking item:", item._id, "against", itemId);
+                return item._id === itemId
+                  ? { ...item, completed: !item.completed }
+                  : item;
+              }),
+            }
+          : list
+      );
+
+      await updateDoc(tripDocRef, { lists: updatedLists });
+      setAddingList(null);
+    } catch (error) {
+      console.error("Error marking item as done:", error);
+    }
+  };
+
   return (
     <>
       {isLoading && <div>Loading...</div>}
@@ -112,6 +140,7 @@ const TripPage = () => {
               setAddNewTripDialog={setAddNewTripDialog}
               setListName={setListName}
               setAddingList={setAddingList}
+              onMarkPlaceAsDone={markPlaceAsDone}
             />
           )}
           {!isMobile && (
@@ -128,6 +157,7 @@ const TripPage = () => {
               setAddNewTripDialog={setAddNewTripDialog}
               setListName={setListName}
               setAddingList={setAddingList}
+              onMarkPlaceAsDone={markPlaceAsDone}
             />
           )}
         </Container>

@@ -26,9 +26,10 @@ type DesktopTripPageProps = {
   onHandleSubmitItem: (item: any) => void;
   onCloseDialog: () => void;
   hasItemsInLists: boolean | undefined;
-  setAddNewTripDialog: (value: boolean) => void; // Nya props
+  setAddNewTripDialog: (value: boolean) => void;
   setListName: (value: string) => void;
   setAddingList: (value: string | null) => void;
+  onMarkPlaceAsDone: (listName: string, itemId: string) => void;
 };
 
 const DesktopTripPage = ({
@@ -44,6 +45,7 @@ const DesktopTripPage = ({
   setAddNewTripDialog,
   setListName,
   setAddingList,
+  onMarkPlaceAsDone,
 }: DesktopTripPageProps) => {
   return (
     <>
@@ -204,7 +206,9 @@ const DesktopTripPage = ({
                           sx={{
                             marginBottom: 1,
                             padding: 2,
-                            backgroundColor: "#FFB2AA",
+                            backgroundColor: item.completed
+                              ? "#CB6258"
+                              : "#FFB2AA",
                             borderRadius: 3,
                             display: "flex",
                             alignItems: "center",
@@ -235,7 +239,7 @@ const DesktopTripPage = ({
                               textAlign: "left",
                             }}
                           >
-                            <Typography variant="body1" color="textPrimary">
+                            <Typography variant="body1" color={"textPrimary"}>
                               <strong>{item.title}</strong>
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
@@ -249,11 +253,18 @@ const DesktopTripPage = ({
                           >
                             <Button
                               variant="text"
+                              onClick={() =>
+                                onMarkPlaceAsDone(list.name, item._id)
+                              }
                               sx={{
                                 color: "black",
                                 padding: 0,
                               }}
-                              title="Mark as done"
+                              title={
+                                item.completed
+                                  ? "Mark as undone"
+                                  : "Mark as done"
+                              }
                               aria-label="Mark as done"
                             >
                               <CheckCircleOutlineOutlinedIcon

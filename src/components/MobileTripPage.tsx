@@ -8,10 +8,12 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import AddIcon from "@mui/icons-material/Add";
 import AddItemToList from "./AddItemToList";
 import Map from "./Map";
 import { Trip } from "../types/trip";
+import AddIcon from "@mui/icons-material/Add";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import ClearIcon from "@mui/icons-material/Clear";
 
 type MobileTripPageProps = {
   onAddNewList: () => void;
@@ -23,9 +25,10 @@ type MobileTripPageProps = {
   onHandleSubmitItem: (item: any) => void;
   onCloseDialog: () => void;
   hasItemsInLists: boolean | undefined;
-  setAddNewTripDialog: (value: boolean) => void; // Nya props
+  setAddNewTripDialog: (value: boolean) => void;
   setListName: (value: string) => void;
   setAddingList: (value: string | null) => void;
+  onMarkPlaceAsDone: (listName: string, itemId: string) => void;
 };
 const MobileTripPage = ({
   onAddNewList,
@@ -40,6 +43,7 @@ const MobileTripPage = ({
   setAddNewTripDialog,
   setListName,
   setAddingList,
+  onMarkPlaceAsDone,
 }: MobileTripPageProps) => {
   return (
     <>
@@ -122,7 +126,7 @@ const MobileTripPage = ({
                       sx={{
                         marginBottom: 1,
                         padding: 2,
-                        backgroundColor: "#FFB2AA",
+                        backgroundColor: item.completed ? "#CB6258" : "#FFB2AA",
                         borderRadius: 3,
                         display: "flex",
                         justifyContent: "flex-end",
@@ -141,6 +145,41 @@ const MobileTripPage = ({
                           {item.address}, {item.postcode}
                         </Typography>
                       </Box>
+                      <Box>
+                        <Button
+                          variant="text"
+                          onClick={() => onMarkPlaceAsDone(list.name, item._id)}
+                          sx={{
+                            color: "black",
+                            padding: 0,
+                          }}
+                          title={
+                            item.completed ? "Mark as undone" : "Mark as done"
+                          }
+                          aria-label="Mark as done"
+                        >
+                          <CheckCircleOutlineOutlinedIcon
+                            sx={{ fontSize: "20px" }}
+                          />
+                        </Button>
+                      </Box>
+                      {/* <Box
+                        sx={{
+                          marginRight: 1,
+                        }}
+                      >
+                        <Button
+                          variant="text"
+                          sx={{
+                            color: "black",
+                            padding: 0,
+                          }}
+                          title="Remove from list"
+                          aria-label="Remove from list"
+                        >
+                          <ClearIcon sx={{ fontSize: "20px" }} />
+                        </Button>
+                      </Box> */}
                     </Box>
                   ))}
                 </Box>
