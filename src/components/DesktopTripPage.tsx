@@ -269,11 +269,25 @@ const DesktopTripPage = ({
               );
             })}
           {addingList && (
-            <AddItemToList
-              onSubmit={onHandleSubmitItem}
-              onClose={onCloseDialog}
-              listName={addingList}
-            />
+            <>
+              <AddItemToList
+                onSubmit={onHandleSubmitItem}
+                onClose={onCloseDialog}
+                listName={addingList}
+              />
+              <Box
+                sx={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  backdropFilter: "blur(0.5px)",
+                  zIndex: 1200,
+                }}
+              />
+            </>
           )}
         </Box>
       </Box>
