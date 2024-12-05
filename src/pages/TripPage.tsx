@@ -2,14 +2,7 @@ import { useParams } from "react-router-dom";
 import useGetTrip from "../hooks/useGetTrip";
 import { Container, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
-import {
-  arrayUnion,
-  deleteDoc,
-  arrayRemove,
-  doc,
-  GeoPoint,
-  updateDoc,
-} from "firebase/firestore";
+import { arrayUnion, doc, GeoPoint, updateDoc } from "firebase/firestore";
 
 import { db } from "../services/firebase";
 import { getGeopoint } from "../services/geocodingAPI";
