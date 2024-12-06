@@ -13,13 +13,17 @@ export const useHandleTrip = (
   const [error, setError] = useState<string | null>(null);
 
   // Add new list
-  const addNewList = async (listName: string) => {
+  const addNewList = async (listName: string, selectedColor: string) => {
     setIsLoading(true);
     setError(null);
     try {
       const tripDocRef = doc(db, "trips", tripId as string);
 
-      const updatedLists = arrayUnion({ name: listName, items: [] });
+      const updatedLists = arrayUnion({
+        name: listName,
+        color: selectedColor,
+        items: [],
+      });
 
       await updateDoc(tripDocRef, {
         lists: updatedLists,

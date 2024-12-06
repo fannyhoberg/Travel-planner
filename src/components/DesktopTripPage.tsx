@@ -33,6 +33,8 @@ type DesktopTripPageProps = {
   setUpdateItemDialog: (value: boolean) => void;
   updateItemDialog: boolean;
   setItemToUpdate: (value: string | null) => void;
+  selectedColor: string;
+  setSelectedColor: (value: string) => void;
 };
 
 const DesktopTripPage = ({
@@ -53,12 +55,27 @@ const DesktopTripPage = ({
   setUpdateItemDialog,
   updateItemDialog,
   setItemToUpdate,
+  selectedColor,
+  setSelectedColor,
 }: DesktopTripPageProps) => {
   const [initialValues, setInitialValues] = useState<Partial<Item>>({
     title: "",
     address: "",
     city: "",
   });
+
+  const colors = [
+    "#FFB2AA",
+    "#FFA07A",
+    "#FF6347",
+    "#FFD700",
+    "#ADFF2F",
+    "#32CD32",
+    "#1E90FF",
+    "#9370DB",
+    "#FF69B4",
+    "#FF4500",
+  ];
 
   return (
     <>
@@ -126,37 +143,60 @@ const DesktopTripPage = ({
 
           {addNewListDialog && data && (
             <ClickAwayListener onClickAway={() => setAddNewTripDialog(false)}>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  //   alignItems: "center",
-                  //   mt: 3,
-                  mb: 5,
-                }}
-                component="form"
-                onSubmit={handleSubmitNewList}
-              >
-                <TextField
-                  label="Name your list"
-                  name="new-list"
-                  type="text"
-                  variant="standard"
-                  value={listName}
-                  onChange={(e) => setListName(e.target.value)}
-                  required
-                  sx={{ flex: 1 }}
-                />
-                <Button
-                  sx={{ marginLeft: 0, color: "black" }}
-                  variant="text"
-                  type="submit"
-                  aria-label="Enter OK"
-                  title="OK add to list"
+              <>
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                  }}
+                  component="form"
+                  onSubmit={handleSubmitNewList}
                 >
-                  OK
-                </Button>
-              </Box>
+                  <TextField
+                    label="Name your list"
+                    name="new-list"
+                    type="text"
+                    variant="standard"
+                    value={listName}
+                    onChange={(e) => setListName(e.target.value)}
+                    required
+                    sx={{ flex: 1 }}
+                  />
+                  <Button
+                    sx={{ marginLeft: 0, color: "black" }}
+                    variant="text"
+                    type="submit"
+                    aria-label="Enter OK"
+                    title="OK add to list"
+                  >
+                    OK
+                  </Button>
+                </Box>
+                <Box sx={{ mb: 4 }}>
+                  <Typography sx={{ alignItems: "left" }}>
+                    Select a Color
+                  </Typography>
+                  <Box style={{ display: "flex", gap: "10px" }}>
+                    {colors.map((color) => (
+                      <Box
+                        key={color}
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          backgroundColor: color,
+                          borderRadius: "50%",
+                          border:
+                            selectedColor === color
+                              ? "2px solid black"
+                              : "none",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setSelectedColor(color)}
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              </>
             </ClickAwayListener>
           )}
           {data &&
@@ -176,6 +216,17 @@ const DesktopTripPage = ({
                       padding: "8px",
                     }}
                   >
+                    <div
+                      key={list.color}
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        backgroundColor: list.color,
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                      }}
+                    />
+
                     <Box
                       sx={{
                         marginRight: 1,

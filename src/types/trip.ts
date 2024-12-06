@@ -11,6 +11,7 @@ export type Trip = {
 export type List = {
   _id: string;
   name: string;
+  color: string;
   items?: Item[];
 };
 

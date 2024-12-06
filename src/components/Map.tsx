@@ -20,11 +20,13 @@ const Map = () => {
     console.log("Map loaded", mapInstance);
   }, []);
 
-  const markerIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
-      <circle cx="12" cy="12" r="11" fill="#FF7D70" />
-    </svg>
-  `)}`;
+  const getMarkerIcon = (color: string) => {
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+        <circle cx="12" cy="12" r="11" fill="${color}" />
+      </svg>
+    `)}`;
+  };
 
   const handleMarkerClick = (item: Item, position: GeoPoint) => {
     setSelectedItem({
@@ -108,7 +110,7 @@ const Map = () => {
                     lng: geopoint.longitude,
                   }}
                   title={item.title}
-                  icon={markerIcon}
+                  icon={getMarkerIcon(list.color)}
                 />
               );
             }

@@ -15,6 +15,8 @@ const TripPage = () => {
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
   const [listName, setListName] = useState<string>("");
   const [addingList, setAddingList] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string>("");
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -48,7 +50,7 @@ const TripPage = () => {
     e.preventDefault();
     if (!listName.trim()) return;
 
-    await addNewList(listName);
+    await addNewList(listName, selectedColor);
     setListName("");
     setAddNewTripDialog(false);
   };
@@ -160,6 +162,8 @@ const TripPage = () => {
               updateItemDialog={updateItemDialog}
               setUpdateItemDialog={setUpdateItemDialog}
               setItemToUpdate={setItemToUpdate}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
             />
           )}
         </Container>
