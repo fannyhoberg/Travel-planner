@@ -7,10 +7,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
-import AddItemToList from "./AddItemToList";
+import React, { useState } from "react";
+import ItemFormDialog from "./ItemFormDialog";
 import Map from "./Map";
-import { Trip } from "../types/trip";
+import { Item, Trip } from "../types/trip";
 import AddIcon from "@mui/icons-material/Add";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -29,6 +29,10 @@ type MobileTripPageProps = {
   setListName: (value: string) => void;
   setAddingList: (value: string | null) => void;
   onMarkPlaceAsDone: (listName: string, itemId: string) => void;
+  onRemoveItemFromList: (listName: string, itemId: string) => void;
+  setUpdateItemDialog: (value: boolean) => void;
+  updateItemDialog: boolean;
+  setItemToUpdate: (value: string | null) => void;
 };
 const MobileTripPage = ({
   onAddNewList,
@@ -44,7 +48,17 @@ const MobileTripPage = ({
   setListName,
   setAddingList,
   onMarkPlaceAsDone,
+  onRemoveItemFromList,
+  setUpdateItemDialog,
+  updateItemDialog,
+  setItemToUpdate,
 }: MobileTripPageProps) => {
+  const [initialValues, setInitialValues] = useState<Partial<Item>>({
+    title: "",
+    address: "",
+    city: "",
+  });
+
   return (
     <>
       <Box sx={{ mt: 4 }}>
@@ -163,6 +177,29 @@ const MobileTripPage = ({
                           />
                         </Button>
                       </Box>
+                      <Box>
+                        <Button
+                          variant="text"
+                          onClick={() => {
+                            setInitialValues({
+                              title: item.title,
+                              address: item.address,
+                              city: item.city,
+                            });
+                            setListName(list.name);
+                            setUpdateItemDialog(true);
+                            setItemToUpdate(item._id);
+                          }}
+                          sx={{
+                            color: "black",
+                            padding: 0,
+                          }}
+                          aria-label="Update info"
+                        >
+                          Edit
+                        </Button>
+                      </Box>
+
                       <Box
                         sx={{
                           marginRight: 1,
@@ -170,6 +207,9 @@ const MobileTripPage = ({
                       >
                         <Button
                           variant="text"
+                          onClick={() =>
+                            onRemoveItemFromList(list.name, item._id)
+                          }
                           sx={{
                             color: "black",
                             padding: 0,
@@ -188,12 +228,21 @@ const MobileTripPage = ({
           );
         })}
       {addingList && (
-        <AddItemToList
+        <ItemFormDialog
           onSubmit={onHandleSubmitItem}
           onClose={onCloseDialog}
           listName={addingList}
         />
       )}
+      {updateItemDialog && (
+        <ItemFormDialog
+          onSubmit={onHandleSubmitItem}
+          onClose={onCloseDialog}
+          listName={addingList}
+          initialValues={initialValues}
+        />
+      )}
+
       <Box
         sx={{
           display: "flex",

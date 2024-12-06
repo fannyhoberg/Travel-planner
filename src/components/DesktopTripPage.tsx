@@ -7,14 +7,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
-
-import AddItemToList from "./AddItemToList";
+import ItemFormDialog from "./ItemFormDialog";
 import Map from "./Map";
-import { Trip } from "../types/trip";
+import { Item, Trip } from "../types/trip";
 
 type DesktopTripPageProps = {
   onAddNewList: () => void;
@@ -31,6 +30,9 @@ type DesktopTripPageProps = {
   setAddingList: (value: string | null) => void;
   onMarkPlaceAsDone: (listName: string, itemId: string) => void;
   onRemoveItemFromList: (listName: string, itemId: string) => void;
+  setUpdateItemDialog: (value: boolean) => void;
+  updateItemDialog: boolean;
+  setItemToUpdate: (value: string | null) => void;
 };
 
 const DesktopTripPage = ({
@@ -48,7 +50,16 @@ const DesktopTripPage = ({
   setAddingList,
   onMarkPlaceAsDone,
   onRemoveItemFromList,
+  setUpdateItemDialog,
+  updateItemDialog,
+  setItemToUpdate,
 }: DesktopTripPageProps) => {
+  const [initialValues, setInitialValues] = useState<Partial<Item>>({
+    title: "",
+    address: "",
+    city: "",
+  });
+
   return (
     <>
       <Box
@@ -276,6 +287,28 @@ const DesktopTripPage = ({
                                 sx={{ fontSize: "20px" }}
                               />
                             </Button>
+                            <Box>
+                              <Button
+                                variant="text"
+                                onClick={() => {
+                                  setInitialValues({
+                                    title: item.title,
+                                    address: item.address,
+                                    city: item.city,
+                                  });
+                                  setListName(list.name);
+                                  setUpdateItemDialog(true);
+                                  setItemToUpdate(item._id);
+                                }}
+                                sx={{
+                                  color: "black",
+                                  padding: 0,
+                                }}
+                                aria-label="Update info"
+                              >
+                                Edit
+                              </Button>
+                            </Box>
                           </Box>
                         </Box>
                       ))}
@@ -285,25 +318,20 @@ const DesktopTripPage = ({
               );
             })}
           {addingList && (
-            <>
-              <AddItemToList
-                onSubmit={onHandleSubmitItem}
-                onClose={onCloseDialog}
-                listName={addingList}
-              />
-              <Box
-                sx={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.1)",
-                  backdropFilter: "blur(0.5px)",
-                  zIndex: 1200,
-                }}
-              />
-            </>
+            <ItemFormDialog
+              onSubmit={onHandleSubmitItem}
+              onClose={onCloseDialog}
+              listName={addingList}
+            />
+          )}
+
+          {updateItemDialog && (
+            <ItemFormDialog
+              onSubmit={onHandleSubmitItem}
+              onClose={onCloseDialog}
+              listName={addingList}
+              initialValues={initialValues}
+            />
           )}
         </Box>
       </Box>

@@ -1,24 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  ClickAwayListener,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TextField,
-  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { Item } from "../types/trip";
 
 type Props = {
   onClose: () => void;
   listName: string | null;
   onSubmit: (item: { title: string; address: string; city: string }) => void;
+  initialValues?: Partial<Item>;
 };
 
-const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
+const ItemFormDialog = ({
+  onSubmit,
+  onClose,
+  listName,
+  initialValues,
+}: Props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  //   const [item, setItem] = useState({
+  //     id: "",
+  //     title: "",
+  //     address: "",
+  //     city: "",
+  //   })
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -28,50 +43,21 @@ const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
     onSubmit({ title, address, city });
   };
 
+  useEffect(() => {
+    if (initialValues) {
+      setTitle(initialValues.title || "");
+      setAddress(initialValues.address || "");
+      setCity(initialValues.city || "");
+    }
+  }, [initialValues]);
+
   return (
     <>
-      <ClickAwayListener onClickAway={onClose}>
-        <Box
-          sx={{
-            position: "fixed",
-            inset: 0,
-            top: isMobile ? 0 : "50%",
-            left: isMobile ? 0 : "50%",
-            width: isMobile ? "100%" : "30%",
-            height: isMobile ? "100%" : "40%",
-            backgroundColor: "#F5F5F5",
-            zIndex: 1300,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: isMobile ? "center" : "flex-start",
-            padding: isMobile ? "0px" : "40px",
-            ...(isMobile
-              ? {}
-              : {
-                  transform: "translate(-50%, -50%)",
-                  borderRadius: "10px",
-                  boxShadow: 2,
-                }),
-          }}
-        >
-          <Button
-            variant="text"
-            sx={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              color: "black",
-            }}
-            onClick={onClose}
-          >
-            X
-          </Button>
-
-          <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Add place to {listName}
-          </Typography>
-
+      <Dialog open={true} onClose={onClose}>
+        <DialogTitle>
+          {initialValues ? `Update place` : `Add place to ${listName}`}
+        </DialogTitle>
+        <DialogContent>
           <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
             <TextField
               label="Name of place"
@@ -112,14 +98,16 @@ const AddItemToList = ({ onSubmit, onClose, listName }: Props) => {
               className="btn-primary"
               sx={{ mt: 4 }}
             >
-              {" "}
-              Add to list
+              {initialValues ? "Update" : "Add to list"}
             </Button>
           </Box>
-        </Box>
-      </ClickAwayListener>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
 
-export default AddItemToList;
+export default ItemFormDialog;

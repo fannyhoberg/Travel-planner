@@ -2,16 +2,17 @@ import { useParams } from "react-router-dom";
 import useGetTrip from "../hooks/useGetTrip";
 import { Container, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
-import { arrayUnion, doc, GeoPoint, updateDoc } from "firebase/firestore";
-
-import { db } from "../services/firebase";
+import { GeoPoint } from "firebase/firestore";
 import { getGeopoint } from "../services/geocodingAPI";
 import MobileTripPage from "../components/MobileTripPage";
 import DesktopTripPage from "../components/DesktopTripPage";
 import { v4 as uuidv4 } from "uuid";
+import { useHandleTrip } from "../hooks/useHandleTrip";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
+  const [updateItemDialog, setUpdateItemDialog] = useState(false);
+  const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
   const [listName, setListName] = useState<string>("");
   const [addingList, setAddingList] = useState<string | null>(null);
   const theme = useTheme();
@@ -21,13 +22,22 @@ const TripPage = () => {
 
   const { data: trip, isError, isLoading } = useGetTrip(id);
 
-  const addNewList = () => {
+  const {
+    addNewList,
+    addNewItem,
+    updateItem,
+    markItemAsCompleted,
+    removeItemFromList,
+  } = useHandleTrip(id, trip);
+
+  const handleAddNewList = () => {
     setAddNewTripDialog(true);
   };
 
   const closeDialog = () => {
     setAddNewTripDialog(false);
     setAddingList(null);
+    setUpdateItemDialog(false);
   };
 
   const hasItemsInLists = trip?.lists?.some(
@@ -38,17 +48,9 @@ const TripPage = () => {
     e.preventDefault();
     if (!listName.trim()) return;
 
-    try {
-      const tripDocRef = doc(db, "trips", id as string);
-
-      await updateDoc(tripDocRef, {
-        lists: arrayUnion({ name: listName, items: [] }),
-      });
-      setListName("");
-      setAddNewTripDialog(false);
-    } catch (error) {
-      console.error("Failed to add list:", error);
-    }
+    await addNewList(listName);
+    setListName("");
+    setAddNewTripDialog(false);
   };
 
   const handleSubmitItem = async (item: {
@@ -56,85 +58,58 @@ const TripPage = () => {
     address: string;
     city: string;
   }) => {
-    if (!trip) {
-      console.log("No trip data");
-      return;
-    }
+    if (!trip) return;
 
     const payload = await getGeopoint(item.address, item.city);
 
     if (!payload) {
-      throw new Error("No payload");
+      console.error("Geopoint retrieval failed");
+      return;
     }
 
     const newItemObj = {
-      _id: uuidv4(),
-      ...item,
       geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
-      completed: false,
       place_id: payload.place_id,
+      title: item.title,
+      address: item.address,
+      city: item.city,
     };
 
-    try {
-      const tripDocRef = doc(db, "trips", id as string);
-      const updatedLists = trip?.lists?.map((list) =>
-        list.name === addingList
-          ? {
-              ...list,
-              items: [...(list.items || []), newItemObj],
-            }
-          : list
-      );
+    if (updateItemDialog) {
+      const updatedItemObj = {
+        ...newItemObj,
+      };
 
-      await updateDoc(tripDocRef, { lists: updatedLists });
+      try {
+        await updateItem(listName, itemToUpdate!, updatedItemObj);
+      } catch (error) {
+        console.error("Error updating item:", error);
+      }
+      setUpdateItemDialog(false);
+      setItemToUpdate(null);
       setAddingList(null);
-    } catch (error) {
-      console.error("Error adding item to list:", error);
+    } else {
+      const newItemWithId = {
+        _id: uuidv4(),
+        ...newItemObj,
+        completed: false,
+      };
+
+      await addNewItem(addingList, newItemWithId);
+      setAddingList(null);
     }
   };
 
   const markPlaceAsDone = async (listName: string, itemId: string) => {
-    try {
-      const tripDocRef = doc(db, "trips", id as string);
-      const updatedLists = trip?.lists?.map((list) =>
-        list.name === listName
-          ? {
-              ...list,
-              items: list?.items?.map((item) => {
-                return item._id === itemId
-                  ? { ...item, completed: !item.completed }
-                  : item;
-              }),
-            }
-          : list
-      );
-
-      await updateDoc(tripDocRef, { lists: updatedLists });
-      setAddingList(null);
-    } catch (error) {
-      console.error("Error marking item as done:", error);
-    }
+    await markItemAsCompleted(listName, itemId);
   };
 
-  const removeItemFromList = async (listName: string, itemId: string) => {
-    try {
-      const tripDocRef = doc(db, "trips", id as string);
-
-      const updatedLists = trip?.lists?.map((list) =>
-        list.name === listName
-          ? {
-              ...list,
-              items: list.items?.filter((item) => item._id !== itemId),
-            }
-          : list
-      );
-
-      await updateDoc(tripDocRef, { lists: updatedLists });
-    } catch (error) {
-      console.error("Error removing item from list:", error);
-    }
+  const removeItemFromListHandler = async (
+    listName: string,
+    itemId: string
+  ) => {
+    await removeItemFromList(listName, itemId);
   };
-
   return (
     <>
       {isLoading && <div>Loading...</div>}
@@ -147,7 +122,7 @@ const TripPage = () => {
 
           {isMobile && (
             <MobileTripPage
-              onAddNewList={addNewList}
+              onAddNewList={handleAddNewList}
               addNewListDialog={addNewListDialog}
               data={trip}
               handleSubmitNewList={handleSubmitNewList}
@@ -160,11 +135,15 @@ const TripPage = () => {
               setListName={setListName}
               setAddingList={setAddingList}
               onMarkPlaceAsDone={markPlaceAsDone}
+              onRemoveItemFromList={removeItemFromListHandler}
+              updateItemDialog={updateItemDialog}
+              setUpdateItemDialog={setUpdateItemDialog}
+              setItemToUpdate={setItemToUpdate}
             />
           )}
           {!isMobile && (
             <DesktopTripPage
-              onAddNewList={addNewList}
+              onAddNewList={handleAddNewList}
               addNewListDialog={addNewListDialog}
               data={trip}
               handleSubmitNewList={handleSubmitNewList}
@@ -177,7 +156,10 @@ const TripPage = () => {
               setListName={setListName}
               setAddingList={setAddingList}
               onMarkPlaceAsDone={markPlaceAsDone}
-              onRemoveItemFromList={removeItemFromList}
+              onRemoveItemFromList={removeItemFromListHandler}
+              updateItemDialog={updateItemDialog}
+              setUpdateItemDialog={setUpdateItemDialog}
+              setItemToUpdate={setItemToUpdate}
             />
           )}
         </Container>
