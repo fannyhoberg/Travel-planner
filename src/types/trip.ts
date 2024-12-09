@@ -22,7 +22,7 @@ export type Item = {
   completed: boolean;
   postcode?: number;
   city: string;
-  geopoint?: GeoPoint;
+  geopoint: GeoPoint;
 };
 
 export type NewTrip = Omit<Trip, "_id">;

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { PositionCoords } from "../types/trip";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -49,4 +50,12 @@ export const getCityFromCoords = async (lat: number, lng: number) => {
   if (postal_townObj) {
     return postal_townObj.long_name;
   }
+};
+
+export const getDirectionsURL = (
+  destinationCoords: PositionCoords | undefined
+): string => {
+  if (!destinationCoords) return "#";
+  const { lat, lng } = destinationCoords;
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 };

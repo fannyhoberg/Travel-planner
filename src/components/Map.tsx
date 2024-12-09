@@ -5,6 +5,7 @@ import useGetTrip from "../hooks/useGetTrip";
 import { useParams } from "react-router-dom";
 import { GeoPoint } from "firebase/firestore";
 import { Box, Typography } from "@mui/material";
+import { getDirectionsURL } from "../services/geocodingAPI";
 
 const Map = () => {
   const { id } = useParams();
@@ -15,6 +16,7 @@ const Map = () => {
     city: string;
     position: PositionCoords;
   }>(null);
+  const [itemGeopoint, setItemGeopoint] = useState<PositionCoords | null>(null);
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     console.log("Map loaded", mapInstance);
@@ -41,6 +43,13 @@ const Map = () => {
   };
 
   const defaultCenter: PositionCoords = { lat: 37.7749, lng: -122.4194 };
+
+  const directionsUrl = itemGeopoint
+    ? getDirectionsURL({
+        lat: itemGeopoint.lat,
+        lng: itemGeopoint.lng,
+      })
+    : "#";
 
   const center = useMemo(() => {
     if (!trip) return defaultCenter;
@@ -104,7 +113,13 @@ const Map = () => {
               return (
                 <Marker
                   key={item._id}
-                  onClick={() => handleMarkerClick(item, geopoint)}
+                  onClick={() => {
+                    handleMarkerClick(item, geopoint),
+                      setItemGeopoint({
+                        lat: item.geopoint.latitude,
+                        lng: item.geopoint.longitude,
+                      });
+                  }}
                   position={{
                     lat: geopoint.latitude,
                     lng: geopoint.longitude,
@@ -127,6 +142,9 @@ const Map = () => {
               <Typography variant="h5">{selectedItem.title}</Typography>
               <Typography>{selectedItem.adress}</Typography>
               <Typography>{selectedItem.city}</Typography>
+              <a href={directionsUrl} target="_blank">
+                Get directions
+              </a>
             </Box>
           </InfoWindow>
         )}
