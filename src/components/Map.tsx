@@ -30,15 +30,14 @@ const Map = () => {
     `)}`;
   };
 
-  const handleMarkerClick = (item: Item, position: GeoPoint) => {
+  const handleMarkerClick = (item: Item, position: PositionCoords) => {
+    const markerPosition = { lat: position.lat, lng: position.lng };
+
     setSelectedItem({
       title: item.title,
       adress: item.address,
       city: item.city,
-      position: {
-        lat: position.latitude,
-        lng: position.longitude,
-      },
+      position: markerPosition,
     });
   };
 
@@ -108,22 +107,22 @@ const Map = () => {
         {trip?.lists?.map((list) => {
           return list?.items?.map((item) => {
             const { geopoint } = item;
-
+            const position: PositionCoords = {
+              lat: geopoint.latitude,
+              lng: geopoint.longitude,
+            };
             if (geopoint) {
               return (
                 <Marker
                   key={item._id}
                   onClick={() => {
-                    handleMarkerClick(item, geopoint),
+                    handleMarkerClick(item, position),
                       setItemGeopoint({
-                        lat: item.geopoint.latitude,
-                        lng: item.geopoint.longitude,
+                        lat: position.lat,
+                        lng: position.lng,
                       });
                   }}
-                  position={{
-                    lat: geopoint.latitude,
-                    lng: geopoint.longitude,
-                  }}
+                  position={position}
                   title={item.title}
                   icon={getMarkerIcon(list.color)}
                 />
@@ -137,6 +136,9 @@ const Map = () => {
           <InfoWindow
             position={selectedItem.position}
             onCloseClick={() => setSelectedItem(null)}
+            options={{
+              pixelOffset: new google.maps.Size(-5, -40),
+            }}
           >
             <Box>
               <Typography variant="h5">{selectedItem.title}</Typography>
