@@ -22,7 +22,7 @@ const Map = () => {
 
   const getMarkerIcon = (color: string) => {
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" stroke="#004F32" stroke-width="1">
         <circle cx="12" cy="12" r="11" fill="${color}" />
       </svg>
     `)}`;

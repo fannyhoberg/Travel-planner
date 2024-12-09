@@ -6,11 +6,14 @@ import {
   IconButton,
   TextField,
   Typography,
+  Popover,
+  MenuItem,
 } from "@mui/material";
 import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ItemFormDialog from "./ItemFormDialog";
 import Map from "./Map";
 import { Item, Trip } from "../types/trip";
@@ -20,7 +23,6 @@ type DesktopTripPageProps = {
   addNewListDialog: boolean;
   data: Trip | null;
   handleSubmitNewList: (e: React.FormEvent) => void;
-  listName: string;
   addingList: string | null;
   onHandleSubmitItem: (item: any) => void;
   onCloseDialog: () => void;
@@ -40,7 +42,6 @@ type DesktopTripPageProps = {
 const DesktopTripPage = ({
   hasItemsInLists,
   onAddNewList,
-  listName,
   addNewListDialog,
   data,
   addingList,
@@ -63,6 +64,23 @@ const DesktopTripPage = ({
     address: "",
     city: "",
   });
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItem, setSelectedItem] = useState<null | string>(null);
+
+  const handleOpenPopup = (
+    event: React.MouseEvent<HTMLElement>,
+    itemId: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedItem(itemId);
+  };
+
+  const handleClosePopup = () => {
+    setAnchorEl(null);
+    setSelectedItem(null);
+  };
+
+  const isPopupOpen = Boolean(anchorEl);
 
   const colors = [
     "#FFB2AA",
@@ -143,11 +161,12 @@ const DesktopTripPage = ({
 
           {addNewListDialog && data && (
             <ClickAwayListener onClickAway={() => setAddNewTripDialog(false)}>
-              <>
+              <Box>
                 <Box
                   sx={{
                     width: "100%",
                     display: "flex",
+                    mb: 2,
                   }}
                   component="form"
                   onSubmit={handleSubmitNewList}
@@ -157,7 +176,7 @@ const DesktopTripPage = ({
                     name="new-list"
                     type="text"
                     variant="standard"
-                    value={listName}
+                    // value={listName}
                     onChange={(e) => setListName(e.target.value)}
                     required
                     sx={{ flex: 1 }}
@@ -173,9 +192,9 @@ const DesktopTripPage = ({
                   </Button>
                 </Box>
                 <Box sx={{ mb: 4 }}>
-                  <Typography sx={{ alignItems: "left" }}>
+                  {/* <Typography sx={{ alignItems: "left" }}>
                     Select a Color
-                  </Typography>
+                  </Typography> */}
                   <Box style={{ display: "flex", gap: "10px" }}>
                     {colors.map((color) => (
                       <Box
@@ -196,7 +215,7 @@ const DesktopTripPage = ({
                     ))}
                   </Box>
                 </Box>
-              </>
+              </Box>
             </ClickAwayListener>
           )}
           {data &&
@@ -223,27 +242,9 @@ const DesktopTripPage = ({
                         height: "30px",
                         backgroundColor: list.color,
                         borderRadius: "50%",
-                        cursor: "pointer",
+                        marginRight: "10px",
                       }}
                     />
-
-                    <Box
-                      sx={{
-                        marginRight: 1,
-                      }}
-                    >
-                      <Button
-                        variant="text"
-                        sx={{
-                          color: "black",
-                          padding: 0,
-                        }}
-                        title="Remove list"
-                        aria-label="Remove list"
-                      >
-                        <ClearIcon />
-                      </Button>
-                    </Box>
 
                     <Typography
                       color="#2a3132"
@@ -260,6 +261,49 @@ const DesktopTripPage = ({
                     >
                       <AddIcon />
                     </IconButton>
+                    <IconButton
+                      // onClick={(e) => handleOpenPopup(e, item._id)}
+                      size="small"
+                      aria-label="More actions"
+                      title="More actions"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Popover
+                      open={isPopupOpen}
+                      anchorEl={anchorEl}
+                      onClose={handleClosePopup}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                      }}
+                    >
+                      <Box>
+                        <MenuItem
+                        // onClick={() => {
+                        //   setInitialValues({
+                        //     title: item.title,
+                        //     address: item.address,
+                        //     city: item.city,
+                        //   });
+                        //   setListName(list.name);
+                        //   setUpdateItemDialog(true);
+                        //   setItemToUpdate(item._id);
+                        //   handleClosePopup();
+                        // }}
+                        >
+                          Edit
+                        </MenuItem>
+                        <MenuItem
+                        // onClick={() => {
+                        //   onRemoveItemFromList(list.name, item._id);
+                        //   handleClosePopup();
+                        // }}
+                        >
+                          Delete
+                        </MenuItem>
+                      </Box>
+                    </Popover>
                   </Box>
                   <Divider sx={{ marginTop: 1 }} />
                   {list.items && list.items.length > 0 ? (
@@ -271,35 +315,37 @@ const DesktopTripPage = ({
                             marginBottom: 1,
                             padding: 2,
                             backgroundColor: item.completed
-                              ? "#CB6258"
-                              : "#FFB2AA",
+                              ? "#DAD2C7"
+                              : "#F0EBE6",
                             borderRadius: 3,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "flex-start",
                           }}
                         >
-                          <Box
-                            sx={{
-                              marginRight: 1,
-                            }}
-                          >
-                            <Button
-                              variant="text"
+                          <Box sx={{ marginRight: 1 }}>
+                            <IconButton
+                              size="medium"
                               onClick={() =>
-                                onRemoveItemFromList(list.name, item._id)
+                                onMarkPlaceAsDone(list.name, item._id)
                               }
                               sx={{
                                 color: "black",
-                                padding: 0,
                               }}
-                              title="Remove from list"
-                              aria-label="Remove from list"
+                              title={
+                                item.completed
+                                  ? "Mark as undone"
+                                  : "Mark as done"
+                              }
+                              aria-label="Mark as done"
                             >
-                              <ClearIcon sx={{ fontSize: "20px" }} />
-                            </Button>
+                              {item.completed ? (
+                                <TaskAltIcon />
+                              ) : (
+                                <RadioButtonUncheckedIcon />
+                              )}
+                            </IconButton>
                           </Box>
-
                           <Box
                             sx={{
                               width: "100%",
@@ -313,34 +359,25 @@ const DesktopTripPage = ({
                               {item.address}, {item.postcode}
                             </Typography>
                           </Box>
-                          <Box
-                            sx={{
-                              marginRight: 1,
+                          <IconButton
+                            onClick={(e) => handleOpenPopup(e, item._id)}
+                            size="small"
+                            title="More actions"
+                            aria-label="More actions"
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Popover
+                            open={isPopupOpen && selectedItem === item._id}
+                            anchorEl={anchorEl}
+                            onClose={handleClosePopup}
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "left",
                             }}
                           >
-                            <Button
-                              variant="text"
-                              onClick={() =>
-                                onMarkPlaceAsDone(list.name, item._id)
-                              }
-                              sx={{
-                                color: "black",
-                                padding: 0,
-                              }}
-                              title={
-                                item.completed
-                                  ? "Mark as undone"
-                                  : "Mark as done"
-                              }
-                              aria-label="Mark as done"
-                            >
-                              <CheckCircleOutlineOutlinedIcon
-                                sx={{ fontSize: "20px" }}
-                              />
-                            </Button>
                             <Box>
-                              <Button
-                                variant="text"
+                              <MenuItem
                                 onClick={() => {
                                   setInitialValues({
                                     title: item.title,
@@ -350,17 +387,21 @@ const DesktopTripPage = ({
                                   setListName(list.name);
                                   setUpdateItemDialog(true);
                                   setItemToUpdate(item._id);
+                                  handleClosePopup();
                                 }}
-                                sx={{
-                                  color: "black",
-                                  padding: 0,
-                                }}
-                                aria-label="Update info"
                               >
                                 Edit
-                              </Button>
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  onRemoveItemFromList(list.name, item._id);
+                                  handleClosePopup();
+                                }}
+                              >
+                                Delete
+                              </MenuItem>
                             </Box>
-                          </Box>
+                          </Popover>
                         </Box>
                       ))}
                     </Box>

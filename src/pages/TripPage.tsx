@@ -128,7 +128,6 @@ const TripPage = () => {
               addNewListDialog={addNewListDialog}
               data={trip}
               handleSubmitNewList={handleSubmitNewList}
-              listName={listName}
               addingList={addingList}
               onHandleSubmitItem={handleSubmitItem}
               onCloseDialog={closeDialog}
@@ -141,6 +140,8 @@ const TripPage = () => {
               updateItemDialog={updateItemDialog}
               setUpdateItemDialog={setUpdateItemDialog}
               setItemToUpdate={setItemToUpdate}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
             />
           )}
           {!isMobile && (
@@ -149,7 +150,6 @@ const TripPage = () => {
               addNewListDialog={addNewListDialog}
               data={trip}
               handleSubmitNewList={handleSubmitNewList}
-              listName={listName}
               addingList={addingList}
               onHandleSubmitItem={handleSubmitItem}
               onCloseDialog={closeDialog}
