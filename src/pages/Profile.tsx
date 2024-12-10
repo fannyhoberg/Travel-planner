@@ -1,11 +1,13 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import UpdateProfile from "../components/UpdateProfile";
 import { FirebaseError } from "firebase/app";
+import ConfirmationModal from "../components/ConfirmationModal";
 
 const ProfilePage = () => {
   const [updateProfile, setUpdateProfile] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -53,7 +55,7 @@ const ProfilePage = () => {
   useEffect(() => {
     setFormData({
       ...formData,
-      name: userName ? userName : "No name",
+      name: userName ? userName : "",
       email: userEmail ? userEmail : "",
     });
   }, []);
@@ -63,27 +65,86 @@ const ProfilePage = () => {
       <Container maxWidth="sm">
         {!updateProfile && (
           <>
-            <Typography variant="h4">My profile</Typography>
-            <Typography>Name: {formData.name}</Typography>
-            <Typography>Email: {currentUser?.email}</Typography>
-            <Button
-              type="submit"
-              sx={{ mt: 4, mr: 4 }}
-              className="btn-delete"
-              variant="contained"
-              onClick={handleDeleteProfile}
+            <Box
+              sx={{
+                mt: 4,
+                p: 3,
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                border: "0.1px solid lightgray",
+              }}
             >
-              Delete account
-            </Button>
-            <Button
-              type="submit"
-              sx={{ mt: 4 }}
-              className="btn-primary"
-              variant="contained"
-              onClick={() => setUpdateProfile(true)}
-            >
-              Update profile
-            </Button>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h4">My Profile</Typography>
+              </Box>
+
+              <Stack
+                spacing={2}
+                sx={{
+                  padding: 2,
+                  borderRadius: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body1" sx={{ fontWeight: 300 }}>
+                    Name:
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    {formData.name || "Not set"}
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body1" sx={{ fontWeight: 300 }}>
+                    Email:
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    {currentUser?.email || "Not available"}
+                  </Typography>
+                </Box>
+              </Stack>
+              <Button
+                type="submit"
+                sx={{ mt: 4, mr: 4 }}
+                className="btn-delete"
+                variant="contained"
+                aria-label="Delete account"
+                title="Delete account"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                Delete account
+              </Button>
+              <Button
+                type="submit"
+                sx={{ mt: 4 }}
+                className="btn-primary"
+                variant="contained"
+                aria-label="Update profile"
+                title="Update profile"
+                onClick={() => setUpdateProfile(true)}
+              >
+                Update profile
+              </Button>
+              <ConfirmationModal
+                onOpen={showDeleteModal}
+                onConfirm={handleDeleteProfile}
+                onCancel={() => setShowDeleteModal(false)}
+              >
+                Sure you want to delete this account?
+              </ConfirmationModal>
+            </Box>
           </>
         )}
         {updateProfile && <UpdateProfile onClose={exitUpdate} />}
