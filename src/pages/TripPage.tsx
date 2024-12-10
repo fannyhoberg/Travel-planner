@@ -106,10 +106,7 @@ const TripPage = () => {
     await markItemAsCompleted(listName, itemId);
   };
 
-  const removeItemFromListHandler = async (
-    listName: string,
-    itemId: string
-  ) => {
+  const handleRemoveItem = async (listName: string, itemId: string) => {
     await removeItemFromList(listName, itemId);
   };
   return (
@@ -136,7 +133,7 @@ const TripPage = () => {
               setListName={setListName}
               setAddingList={setAddingList}
               onMarkPlaceAsDone={markPlaceAsDone}
-              onRemoveItemFromList={removeItemFromListHandler}
+              onRemoveItemFromList={handleRemoveItem}
               updateItemDialog={updateItemDialog}
               setUpdateItemDialog={setUpdateItemDialog}
               setItemToUpdate={setItemToUpdate}
@@ -158,7 +155,7 @@ const TripPage = () => {
               setListName={setListName}
               setAddingList={setAddingList}
               onMarkPlaceAsDone={markPlaceAsDone}
-              onRemoveItemFromList={removeItemFromListHandler}
+              onRemoveItemFromList={handleRemoveItem}
               updateItemDialog={updateItemDialog}
               setUpdateItemDialog={setUpdateItemDialog}
               setItemToUpdate={setItemToUpdate}

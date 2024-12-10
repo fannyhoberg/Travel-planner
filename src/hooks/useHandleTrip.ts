@@ -35,6 +35,33 @@ export const useHandleTrip = (
     }
   };
 
+  // Update list
+  const updateList = async (listName: string, selectedColor: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const tripDocRef = doc(db, "trips", tripId as string);
+
+      const updatedLists = trip?.lists?.map((list) =>
+        list.name === listName
+          ? {
+              ...list,
+              name: listName,
+              color: selectedColor,
+            }
+          : list
+      );
+
+      await updateDoc(tripDocRef, {
+        lists: updatedLists,
+      });
+    } catch (err) {
+      setError("Error when trying to update list");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Add item to list
   const addNewItem = async (
     listName: string | null,
@@ -189,6 +216,7 @@ export const useHandleTrip = (
     isLoading,
     error,
     addNewList,
+    updateList,
     addNewItem,
     updateItem,
     markItemAsCompleted,

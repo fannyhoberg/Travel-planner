@@ -3,7 +3,6 @@ import { Item, PositionCoords } from "../types/trip";
 import { useCallback, useMemo, useState } from "react";
 import useGetTrip from "../hooks/useGetTrip";
 import { useParams } from "react-router-dom";
-import { GeoPoint } from "firebase/firestore";
 import { Box, Typography } from "@mui/material";
 import { getDirectionsURL } from "../services/geocodingAPI";
 
