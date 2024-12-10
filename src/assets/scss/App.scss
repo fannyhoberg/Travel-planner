@@ -43,6 +43,22 @@ body {
   opacity: 0.8 !important;
 }
 
+.btn-delete {
+  height: 2.5rem;
+  border-radius: 0.6rem !important;
+  text-transform: none !important;
+  background-color: #f06464 !important;
+  padding: 0 1.5rem !important;
+  color: #2a3132 !important;
+  font-size: 1rem !important;
+  transition: background-color 0.3s, opacity 0.3s !important;
+}
+
+.btn-delete:hover {
+  background-color: #d23535 !important;
+  // opacity: 0.8 !important;
+}
+
 .card-primary {
   background-color: #ede3d6 !important;
   transition: background-color 0.3s, opacity 0.3s !important;

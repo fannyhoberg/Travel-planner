@@ -6,7 +6,7 @@ import {
   collection,
   getFirestore,
 } from "firebase/firestore";
-import { NewUser } from "../types/user";
+import { NewUser, User } from "../types/user";
 import { NewTrip, Trip } from "../types/trip";
 
 // Firebase configuration
@@ -36,6 +36,7 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
 export const tripCol = createCollection<Trip>("trips");
 export const newTripCol = createCollection<NewTrip>("trips");
 
+export const userCol = createCollection<User>("users");
 export const newUsersCol = createCollection<NewUser>("users");
 
 export default app;

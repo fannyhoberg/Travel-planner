@@ -5,6 +5,12 @@ import {
   signOut,
   UserCredential,
   User,
+  updateProfile,
+  updateEmail,
+  updatePassword,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
 import React, {
   createContext,
@@ -18,7 +24,15 @@ interface Authtypes {
   signup: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
+  userName: string | null;
+  userEmail: string | null;
+  setDisplayName: (name: string) => Promise<void>;
+  setEmail: (email: string) => Promise<void>;
+  setPassword: (password: string) => Promise<void>;
+  reloadUser: () => boolean;
   currentUser: User | null;
+  deleteAccount: () => Promise<void>;
+  reauthenticateUser: (password: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<Authtypes | null>(null);
@@ -26,6 +40,8 @@ export const AuthContext = createContext<Authtypes | null>(null);
 const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   const signup = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -39,16 +55,83 @@ const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return signOut(auth);
   };
 
+  const setDisplayName = (name: string) => {
+    if (!currentUser) {
+      throw new Error("You can't update username, you need to log in first!");
+    }
+    return updateProfile(currentUser, { displayName: name });
+  };
+
+  const setEmail = (email: string) => {
+    if (!currentUser) {
+      throw new Error("You can't update email, you need to log in first!");
+    }
+    return updateEmail(currentUser, email);
+  };
+
+  const setPassword = (password: string) => {
+    if (!currentUser) {
+      throw new Error("You can't update password, you need to log in first!");
+    }
+    return updatePassword(currentUser, password);
+  };
+
+  const deleteAccount = () => {
+    if (!currentUser) {
+      throw new Error("You can't delete account, you need to log in first!");
+    }
+    return deleteUser(currentUser);
+  };
+
+  const reauthenticateUser = async (password: string) => {
+    if (!currentUser || !currentUser.email) {
+      throw new Error("User must be logged in to reauthenticate.");
+    }
+
+    const credential = EmailAuthProvider.credential(
+      currentUser.email,
+      password
+    );
+
+    await reauthenticateWithCredential(currentUser, credential);
+  };
+
+  const reloadUser = () => {
+    if (!currentUser) {
+      return false;
+    }
+    setUserName(currentUser.displayName);
+    setUserEmail(currentUser.email);
+
+    return true;
+  };
+
   const authContextValue: Authtypes = {
     signup,
     login,
     logout,
+    userEmail,
+    userName,
+    setDisplayName,
+    setEmail,
+    setPassword,
+    reloadUser,
     currentUser,
+    deleteAccount,
+    reauthenticateUser,
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+
+      if (user) {
+        setUserName(user.displayName);
+        setUserEmail(user.email);
+      } else {
+        setUserName(null);
+        setUserEmail(null);
+      }
       setLoading(false);
     });
     return unsubscribe;

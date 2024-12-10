@@ -38,7 +38,7 @@ const Navigation = () => {
     await logout();
     console.log("You are signing out.");
     await new Promise((r) => setTimeout(r, 1500));
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -121,7 +121,12 @@ const Navigation = () => {
           position="sticky"
         >
           <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1, color: "black" }}>
+            <Typography
+              component={Link}
+              to="/home"
+              variant="h6"
+              sx={{ flexGrow: 1, color: "black" }}
+            >
               Vista
             </Typography>
             {currentUser && (
@@ -129,7 +134,7 @@ const Navigation = () => {
                 <Button component={Link} to="/home" sx={{ color: "black" }}>
                   My trips
                 </Button>
-                <Button sx={{ color: "black" }}>
+                <Button component={Link} to="/profile" sx={{ color: "black" }}>
                   <FaceIcon />
                 </Button>
                 <Button sx={{ color: "black" }} onClick={handleLogOut}>

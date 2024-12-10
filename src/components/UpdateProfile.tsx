@@ -1,14 +1,24 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Container,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
+import useGetUser from "../hooks/useGetUser";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../services/firebase";
+import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
-import BackButton from "../components/BackButton";
-import Snackbar from "@mui/material/Snackbar";
-import useAddDocument from "../hooks/useAddDocument";
-import { userCol } from "../services/firebase";
 
-const SignUp = () => {
+type UpdateProfileProps = {
+  onClose: () => void;
+};
+
+const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,22 +28,23 @@ const SignUp = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkPassword, setCheckPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
 
-  const [isSuccessSnackbar, setIsSuccessSnackbar] = useState({
-    open: false,
-    vertical: "top",
-    horizontal: "right",
-  });
+  const {
+    currentUser,
+    reloadUser,
+    setDisplayName,
+    setEmail,
+    setPassword,
+    userEmail,
+    userName,
+  } = useAuth();
 
-  const { open, vertical, horizontal } = isSuccessSnackbar;
+  const { data: userData, isLoading } = useGetUser(currentUser?.uid);
 
-  const handleCloseSnackbar = () => {
-    setIsSuccessSnackbar((prev) => ({ ...prev, open: false }));
-  };
-
-  const { signup } = useAuth();
-  const { addDocument } = useAddDocument();
-
+  const userId = userData && userData.length > 0 ? userData[0]._id : null;
+  const userDocRef = userId ? doc(db, "users", userId) : null;
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,29 +61,33 @@ const SignUp = () => {
       setCheckPassword(true);
       return;
     }
-    console.log("Submitted Data:", formData);
-
-    setIsSubmitting(true);
     try {
-      const userCred = await signup(formData.email, formData.password);
-      const user = userCred.user;
+      setIsSubmitting(true);
+      setIsError(false);
+      setError(null);
+      if (userDocRef) {
+        if (formData.email !== userEmail) {
+          await setEmail(formData.email);
+        }
 
-      await addDocument(userCol, {
-        _id: user.uid,
-        email: user.email || "",
-      });
+        if (formData.name !== userName) {
+          await setDisplayName(formData.name);
+          await updateDoc(userDocRef, { name: formData.name });
+        }
 
+        if (formData.password) {
+          await setPassword(formData.password);
+        }
+        reloadUser();
+      }
       setIsSuccessSnackbar({
         open: true,
         vertical: "top",
         horizontal: "right",
       });
-
-      // Navigate to start page as logged in
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
+      navigate("/home");
     } catch (err) {
+      setIsError(true);
       if (err instanceof FirebaseError) {
         console.error(err.message);
       } else if (err instanceof Error) {
@@ -83,18 +98,37 @@ const SignUp = () => {
     }
     setIsSubmitting(false);
   };
+  const [isSuccessSnackbar, setIsSuccessSnackbar] = useState({
+    open: false,
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const { open, vertical, horizontal } = isSuccessSnackbar;
+
+  const handleCloseSnackbar = () => {
+    setIsSuccessSnackbar((prev) => ({ ...prev, open: false }));
+  };
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      name: userName ? userName : "",
+      email: userEmail ? userEmail : "",
+    });
+  }, []);
 
   return (
     <>
-      <BackButton to="/" />
       <Container maxWidth="sm">
-        <Typography variant="h4">Create account</Typography>
+        {isLoading && <div className="loading">Loading...</div>}
+        {isError && error && <div className="error">{error}</div>}
+        <Typography variant="h4">Update profile</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
           <TextField
             label="Name"
             name="name"
             variant="standard"
-            required
             fullWidth
             value={formData.name}
             onChange={handleChange}
@@ -104,7 +138,6 @@ const SignUp = () => {
             name="email"
             type="email"
             variant="standard"
-            required
             fullWidth
             value={formData.email}
             onChange={handleChange}
@@ -114,7 +147,6 @@ const SignUp = () => {
             name="password"
             type="password"
             variant="standard"
-            required
             fullWidth
             value={formData.password}
             onChange={handleChange}
@@ -124,7 +156,6 @@ const SignUp = () => {
             name="confirmPassword"
             type="password"
             variant="standard"
-            required
             fullWidth
             value={formData.confirmPassword}
             helperText={
@@ -137,20 +168,29 @@ const SignUp = () => {
             onChange={handleChange}
           />
           <Button
+            sx={{ mt: 4, mr: 4 }}
+            type="submit"
+            className="btn-secondary"
+            variant="text"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
             disabled={isSubmitting}
             sx={{ mt: 4 }}
             type="submit"
             className="btn-primary"
             variant="contained"
           >
-            Create
+            Save
           </Button>
         </Box>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           open={open}
           onClose={handleCloseSnackbar}
-          message="Account successfully created!"
+          message="Profile successfully updated!"
           key={vertical + horizontal}
           sx={{ backgroundColor: "F5F5F5", borderBlockColor: "black" }}
         />
@@ -159,4 +199,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default UpdateProfile;

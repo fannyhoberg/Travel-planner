@@ -9,6 +9,7 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 import Start from "./pages/Start";
 import TripPage from "./pages/TripPage";
 import { LoadScriptNext } from "@react-google-maps/api";
+import ProfilePage from "./pages/Profile";
 
 function App() {
   const theme = useTheme();
@@ -32,6 +33,7 @@ function App() {
                   transform: "translateX(-50%)",
                   zIndex: 1300,
                   textAlign: "center",
+                  pb: 4,
                 }}
               >
                 <Typography variant="h6" sx={{ color: "black" }}>
@@ -47,6 +49,7 @@ function App() {
               <Route element={<ProtectedRoutes />}>
                 <Route path="/home" element={<Dashboard />} />
                 <Route path="/trip/:id" element={<TripPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
               </Route>
             </Routes>
             {isMobile && <Navigation />}
