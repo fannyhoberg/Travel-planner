@@ -19,11 +19,14 @@ export const useHandleTrip = (
     try {
       const tripDocRef = doc(db, "trips", tripId as string);
 
-      const updatedLists = arrayUnion({
+      const newList = {
+        _id: uuidv4(),
         name: listName,
         color: selectedColor,
         items: [],
-      });
+      };
+
+      const updatedLists = arrayUnion(newList);
 
       await updateDoc(tripDocRef, {
         lists: updatedLists,
@@ -36,22 +39,27 @@ export const useHandleTrip = (
   };
 
   // Update list
-  const updateList = async (listName: string, selectedColor: string) => {
+  const updateList = async (listId: string | null, newListName: string) => {
     setIsLoading(true);
     setError(null);
     try {
       const tripDocRef = doc(db, "trips", tripId as string);
+      console.log("newListName i hook", newListName);
+      console.log("listId i hook", listId);
 
+      // Uppdatera listnamnet för den lista som matchar listId
       const updatedLists = trip?.lists?.map((list) =>
-        list.name === listName
+        list._id === listId // Se till att vi hittar rätt lista med hjälp av listId
           ? {
               ...list,
-              name: listName,
-              color: selectedColor,
+              name: newListName, // Uppdatera listans namn
             }
           : list
       );
 
+      console.log("Updated list", updatedLists);
+
+      // Skicka tillbaka uppdaterade listor till Firestore
       await updateDoc(tripDocRef, {
         lists: updatedLists,
       });

@@ -25,6 +25,7 @@ const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
   const [updateItemDialog, setUpdateItemDialog] = useState(false);
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
+
   const [listName, setListName] = useState<string>("");
   const [addingList, setAddingList] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
@@ -214,11 +215,8 @@ const TripPage = () => {
                   setSelectedColor={setSelectedColor}
                 />
               )}
-              {trip && (
+              <Box sx={{ width: "100%" }}>
                 <TripList
-                  id={id}
-                  trip={trip}
-                  lists={trip?.lists}
                   setAddingList={setAddingList}
                   handleOpenPopup={handleOpenPopup}
                   isPopupOpen={isPopupOpen}
@@ -229,8 +227,10 @@ const TripPage = () => {
                   setListName={setListName}
                   setUpdateItemDialog={setUpdateItemDialog}
                   setItemToUpdate={setItemToUpdate}
+                  trip={trip}
+                  id={id}
                 />
-              )}
+              </Box>
               {addingList && (
                 <ItemFormDialog
                   onSubmit={handleSubmitItem}
