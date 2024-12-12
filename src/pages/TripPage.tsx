@@ -1,13 +1,25 @@
 import { useParams } from "react-router-dom";
 import useGetTrip from "../hooks/useGetTrip";
-import { Container, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Container,
+  TextField,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Button,
+} from "@mui/material";
+
 import { useState } from "react";
 import { GeoPoint } from "firebase/firestore";
 import { getGeopoint } from "../services/geocodingAPI";
-import MobileTripPage from "../components/MobileTripPage";
-import DesktopTripPage from "../components/DesktopTripPage";
 import { v4 as uuidv4 } from "uuid";
 import { useHandleTrip } from "../hooks/useHandleTrip";
+import TripList from "../components/TripList";
+import ItemFormDialog from "../components/ItemFormDialog";
+import AddNewTripList from "../components/AddNewTripList";
+import Map from "../components/Map";
+import { Item } from "../types/trip";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -16,6 +28,13 @@ const TripPage = () => {
   const [listName, setListName] = useState<string>("");
   const [addingList, setAddingList] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [initialValues, setInitialValues] = useState<Partial<Item>>({
+    title: "",
+    address: "",
+    city: "",
+  });
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItem, setSelectedItem] = useState<null | string>(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -24,17 +43,22 @@ const TripPage = () => {
 
   const { data: trip, isError, isLoading } = useGetTrip(id);
 
-  const {
-    addNewList,
-    addNewItem,
-    updateItem,
-    markItemAsCompleted,
-    removeItemFromList,
-  } = useHandleTrip(id, trip);
+  const { addNewList, addNewItem, updateItem } = useHandleTrip(id, trip);
 
-  const handleAddNewList = () => {
-    setAddNewTripDialog(true);
+  const handleOpenPopup = (
+    event: React.MouseEvent<HTMLElement>,
+    itemId: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedItem(itemId);
   };
+
+  const handleClosePopup = () => {
+    setAnchorEl(null);
+    setSelectedItem(null);
+  };
+
+  const isPopupOpen = Boolean(anchorEl);
 
   const closeDialog = () => {
     setAddNewTripDialog(false);
@@ -45,6 +69,10 @@ const TripPage = () => {
   const hasItemsInLists = trip?.lists?.some(
     (list) => list.items && list.items.length > 0
   );
+
+  const handleAddNewList = () => {
+    setAddNewTripDialog(true);
+  };
 
   const handleSubmitNewList = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,13 +130,6 @@ const TripPage = () => {
     }
   };
 
-  const markPlaceAsDone = async (listName: string, itemId: string) => {
-    await markItemAsCompleted(listName, itemId);
-  };
-
-  const handleRemoveItem = async (listName: string, itemId: string) => {
-    await removeItemFromList(listName, itemId);
-  };
   return (
     <>
       {isLoading && <div>Loading...</div>}
@@ -119,50 +140,137 @@ const TripPage = () => {
             {trip?.title}
           </Typography>
 
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              justifyContent: "space-between",
+              gap: 4,
+              mt: 4,
+            }}
+          >
+            <Box
+              sx={{
+                flex: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              {hasItemsInLists && !isMobile && <Map />}
+              {!isMobile && (
+                <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mt: 3,
+                    }}
+                  >
+                    <Typography>Notes</Typography>
+                  </Box>
+                  <TextField
+                    fullWidth
+                    id="outlined-multiline-static"
+                    label=""
+                    multiline
+                    rows={4}
+                  />
+                </>
+              )}
+            </Box>
+            <Box
+              sx={{
+                flex: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                alignItems: "flex-start",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: isMobile ? "center" : "flex-end",
+                }}
+              >
+                <Button
+                  onClick={handleAddNewList}
+                  className="btn-primary"
+                  aria-label="Add list"
+                  title="Add list"
+                >
+                  Add list
+                </Button>
+              </Box>
+
+              {addNewListDialog && trip && (
+                <AddNewTripList
+                  setAddNewTripDialog={setAddNewTripDialog}
+                  handleSubmitNewList={handleSubmitNewList}
+                  setListName={setListName}
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedColor}
+                />
+              )}
+              {trip && (
+                <TripList
+                  id={id}
+                  trip={trip}
+                  lists={trip?.lists}
+                  setAddingList={setAddingList}
+                  handleOpenPopup={handleOpenPopup}
+                  isPopupOpen={isPopupOpen}
+                  selectedItem={selectedItem}
+                  anchorEl={anchorEl}
+                  handleClosePopup={handleClosePopup}
+                  setInitialValues={setInitialValues}
+                  setListName={setListName}
+                  setUpdateItemDialog={setUpdateItemDialog}
+                  setItemToUpdate={setItemToUpdate}
+                />
+              )}
+              {addingList && (
+                <ItemFormDialog
+                  onSubmit={handleSubmitItem}
+                  onClose={closeDialog}
+                  listName={addingList}
+                />
+              )}
+
+              {updateItemDialog && (
+                <ItemFormDialog
+                  onSubmit={handleSubmitItem}
+                  onClose={closeDialog}
+                  listName={addingList}
+                  initialValues={initialValues}
+                />
+              )}
+            </Box>
+          </Box>
+
           {isMobile && (
-            <MobileTripPage
-              onAddNewList={handleAddNewList}
-              addNewListDialog={addNewListDialog}
-              data={trip}
-              handleSubmitNewList={handleSubmitNewList}
-              addingList={addingList}
-              onHandleSubmitItem={handleSubmitItem}
-              onCloseDialog={closeDialog}
-              hasItemsInLists={hasItemsInLists}
-              setAddNewTripDialog={setAddNewTripDialog}
-              setListName={setListName}
-              setAddingList={setAddingList}
-              onMarkPlaceAsDone={markPlaceAsDone}
-              onRemoveItemFromList={handleRemoveItem}
-              updateItemDialog={updateItemDialog}
-              setUpdateItemDialog={setUpdateItemDialog}
-              setItemToUpdate={setItemToUpdate}
-              selectedColor={selectedColor}
-              setSelectedColor={setSelectedColor}
-            />
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mt: 3,
+                }}
+              >
+                <Typography>Notes</Typography>
+              </Box>
+              <TextField
+                fullWidth
+                id="outlined-multiline-static"
+                label=""
+                multiline
+                rows={4}
+              />
+            </>
           )}
-          {!isMobile && (
-            <DesktopTripPage
-              onAddNewList={handleAddNewList}
-              addNewListDialog={addNewListDialog}
-              data={trip}
-              handleSubmitNewList={handleSubmitNewList}
-              addingList={addingList}
-              onHandleSubmitItem={handleSubmitItem}
-              onCloseDialog={closeDialog}
-              hasItemsInLists={hasItemsInLists}
-              setAddNewTripDialog={setAddNewTripDialog}
-              setListName={setListName}
-              setAddingList={setAddingList}
-              onMarkPlaceAsDone={markPlaceAsDone}
-              onRemoveItemFromList={handleRemoveItem}
-              updateItemDialog={updateItemDialog}
-              setUpdateItemDialog={setUpdateItemDialog}
-              setItemToUpdate={setItemToUpdate}
-              selectedColor={selectedColor}
-              setSelectedColor={setSelectedColor}
-            />
-          )}
+          {hasItemsInLists && isMobile && <Map />}
         </Container>
       )}
     </>
