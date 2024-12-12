@@ -4,6 +4,11 @@ import useAuth from "../hooks/useAuth";
 import UpdateProfile from "../components/UpdateProfile";
 import { FirebaseError } from "firebase/app";
 import ConfirmationModal from "../components/ConfirmationModal";
+import { useNavigate } from "react-router-dom";
+import { db } from "../services/firebase";
+import useGetUser from "../hooks/useGetUser";
+import useHandleUser from "../hooks/useHandleUser";
+import { doc, getDoc } from "firebase/firestore";
 
 const ProfilePage = () => {
   const [updateProfile, setUpdateProfile] = useState(false);
@@ -15,6 +20,8 @@ const ProfilePage = () => {
     confirmPassword: "",
   });
 
+  const navigate = useNavigate();
+
   const {
     currentUser,
     userEmail,
@@ -22,6 +29,9 @@ const ProfilePage = () => {
     deleteAccount,
     reauthenticateUser,
   } = useAuth();
+
+  const { data: user } = useGetUser(currentUser?.uid);
+  const { deleteUser } = useHandleUser();
 
   const exitUpdate = () => {
     setUpdateProfile(false);
@@ -40,7 +50,30 @@ const ProfilePage = () => {
     try {
       await reauthenticateUser(password);
       await deleteAccount();
-      console.log("Account deleted successfully.");
+      if (user && user?.length > 0) {
+        const userDoc = user[0];
+        const docRef = doc(db, "users", userDoc._id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const docData = docSnap.data();
+          const storedUid = docData?._id;
+
+          console.log("Stored UID in document:", storedUid);
+
+          console.log("currentUser?.uid", currentUser?.uid);
+
+          if (storedUid === currentUser?.uid) {
+            console.log("UID matchade! Raderar dokument.");
+            console.log("userDoc._id", userDoc._id);
+
+            await deleteUser(userDoc._id);
+          } else {
+            console.error("You cannot delete another user's account.");
+          }
+        }
+      }
+      navigate("/");
     } catch (err) {
       if (err instanceof FirebaseError) {
         console.error(`Firebase Error: ${err.message}`);
@@ -65,6 +98,9 @@ const ProfilePage = () => {
       <Container maxWidth="sm">
         {!updateProfile && (
           <>
+            {/* {error && <div>{error}</div>}
+            {isLoading && <div>Deleting account...</div>} */}
+
             <Box
               sx={{
                 mt: 4,

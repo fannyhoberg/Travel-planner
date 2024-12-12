@@ -199,49 +199,6 @@ const MobileTripPage = ({
                 >
                   <AddIcon />
                 </IconButton>
-                <IconButton
-                  // onClick={(e) => handleOpenPopup(e, item._id)}
-                  size="small"
-                  aria-label="More actions"
-                  title="More actions"
-                >
-                  <MoreVertIcon />
-                </IconButton>
-                <Popover
-                  open={isPopupOpen}
-                  anchorEl={anchorEl}
-                  onClose={handleClosePopup}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                >
-                  <Box>
-                    <MenuItem
-                    // onClick={() => {
-                    //   setInitialValues({
-                    //     title: item.title,
-                    //     address: item.address,
-                    //     city: item.city,
-                    //   });
-                    //   setListName(list.name);
-                    //   setUpdateItemDialog(true);
-                    //   setItemToUpdate(item._id);
-                    //   handleClosePopup();
-                    // }}
-                    >
-                      Edit
-                    </MenuItem>
-                    <MenuItem
-                    // onClick={() => {
-                    //   onRemoveItemFromList(list.name, item._id);
-                    //   handleClosePopup();
-                    // }}
-                    >
-                      Delete
-                    </MenuItem>
-                  </Box>
-                </Popover>
               </Box>
               <Divider sx={{ marginTop: 1 }} />
               {list.items && list.items.length > 0 ? (

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import useGetUser from "../hooks/useGetUser";
+import useGetUserDoc from "../hooks/useGetUserDoc";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +41,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
     userName,
   } = useAuth();
 
-  const { data: userData, isLoading } = useGetUser(currentUser?.uid);
+  const { data: userData, isLoading } = useGetUserDoc(currentUser?.uid);
 
   const userId = userData && userData.length > 0 ? userData[0]._id : null;
   const userDocRef = userId ? doc(db, "users", userId) : null;

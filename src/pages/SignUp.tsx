@@ -10,7 +10,6 @@ import { userCol } from "../services/firebase";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -90,15 +89,7 @@ const SignUp = () => {
       <Container maxWidth="sm">
         <Typography variant="h4">Create account</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-          <TextField
-            label="Name"
-            name="name"
-            variant="standard"
-            required
-            fullWidth
-            value={formData.name}
-            onChange={handleChange}
-          />
+
           <TextField
             label="Email"
             name="email"
