@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -6,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -22,7 +24,7 @@ type TripListProps = {
   initialValues?: Partial<List>;
 };
 
-const AddNewTripList = ({
+const ListFormDialog = ({
   onClose,
   handleSubmitNewList,
   handleEditList,
@@ -45,13 +47,11 @@ const AddNewTripList = ({
     "#FF69B4",
     "#FF4500",
   ];
-
   const [name, setName] = useState("");
   const [color, setColor] = useState("#FFB2AA");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     setListName(name);
     setSelectedColor(color);
 
@@ -126,4 +126,4 @@ const AddNewTripList = ({
   );
 };
 
-export default AddNewTripList;
+export default ListFormDialog;

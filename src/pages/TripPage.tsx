@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useHandleTrip } from "../hooks/useHandleTrip";
 import TripList from "../components/TripList";
 import ItemFormDialog from "../components/ItemFormDialog";
-import AddNewTripList from "../components/AddNewTripList";
+import ListFormDialog from "../components/ListFormDialog";
 import Map from "../components/Map";
 import { Item, ListTextData } from "../types/trip";
 
@@ -206,7 +206,7 @@ const TripPage = () => {
               </Box>
 
               {addNewListDialog && trip && (
-                <AddNewTripList
+                <ListFormDialog
                   onClose={closeDialog}
                   handleSubmitNewList={handleSubmitNewList}
                   setListName={setListName}

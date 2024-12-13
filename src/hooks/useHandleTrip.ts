@@ -73,6 +73,27 @@ export const useHandleTrip = (
     }
   };
 
+  const deleteList = async (listId: string) => {
+    if (!trip) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      const tripDocRef = doc(db, "trips", tripId as string);
+      console.log("tripDocRef", tripDocRef);
+      const updatedLists = trip.lists?.filter((list) => list._id !== listId);
+      console.log("updatedLists", updatedLists);
+
+      await updateDoc(tripDocRef, {
+        lists: updatedLists,
+      });
+    } catch (err) {
+      setError("Error when trying to delete list.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Add item to list
   const addNewItem = async (
     listName: string | null,
@@ -228,6 +249,7 @@ export const useHandleTrip = (
     error,
     addNewList,
     updateList,
+    deleteList,
     addNewItem,
     updateItem,
     markItemAsCompleted,

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Item, ListTextData, Trip } from "../types/trip";
 import {
+  Alert,
   Box,
   Divider,
   IconButton,
@@ -13,7 +14,8 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { useHandleTrip } from "../hooks/useHandleTrip";
-import AddNewTripList from "./AddNewTripList";
+import ListFormDialog from "./ListFormDialog";
+import ConfirmationModal from "./ConfirmationModal";
 
 type TripListProps = {
   id: string | undefined;
@@ -47,17 +49,18 @@ const TripList = ({
   id,
   trip,
 }: TripListProps) => {
-  const { markItemAsCompleted, removeItemFromList, updateList } = useHandleTrip(
-    id,
-    trip
-  );
+  const { markItemAsCompleted, removeItemFromList, updateList, deleteList } =
+    useHandleTrip(id, trip);
 
+  const [showListDeleteModal, setShowListDeleteModal] = useState(false);
+  const [showItemDeleteModal, setShowItemDeleteModal] = useState(false);
   const [listToUpdate, setListToUpdate] = useState<string | null>(null);
   const [newListName, setNewListName] = useState<string>("");
   const [anchorListEl, setAnchorListEl] = useState<null | HTMLElement>(null);
   const [updateListDialog, setUpdateListDialog] = useState(false);
   const [selectedList, setSelectedList] = useState<null | string>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const isListPopupOpen = Boolean(anchorListEl);
 
@@ -81,12 +84,18 @@ const TripList = ({
   const handleEditList = async (data: ListTextData) => {
     try {
       await updateList(listToUpdate, data.name, data.color);
+      setIsSuccess(true);
       setListToUpdate(null);
       setNewListName("");
       setUpdateListDialog(false);
     } catch (err) {
+      setIsSuccess(false);
       console.error("Error updating list:", err);
     }
+  };
+
+  const handleDeleteList = async (listId: string) => {
+    await deleteList(listId);
   };
 
   const markPlaceAsDone = async (listName: string, itemId: string) => {
@@ -158,9 +167,22 @@ const TripList = ({
                 >
                   Edit
                 </MenuItem>
-                <MenuItem>Delete</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setShowListDeleteModal(true);
+                  }}
+                >
+                  Delete
+                </MenuItem>
               </Box>
             </Popover>
+            <ConfirmationModal
+              onOpen={showListDeleteModal}
+              onConfirm={() => handleDeleteList(list._id)}
+              onCancel={() => setShowListDeleteModal(false)}
+            >
+              Sure you want to delete this list?
+            </ConfirmationModal>
           </Box>
           <Divider sx={{ marginTop: 1 }} />
           {list.items && list.items.length > 0 ? (
@@ -232,7 +254,7 @@ const TripList = ({
                       </MenuItem>
                       <MenuItem
                         onClick={() => {
-                          handleRemoveItem(list.name, item._id);
+                          setShowItemDeleteModal(true);
                           handleClosePopup();
                         }}
                       >
@@ -240,13 +262,20 @@ const TripList = ({
                       </MenuItem>
                     </Box>
                   </Popover>
+                  <ConfirmationModal
+                    onOpen={showItemDeleteModal}
+                    onConfirm={() => handleRemoveItem(list.name, item._id)}
+                    onCancel={() => setShowItemDeleteModal(false)}
+                  >
+                    Sure you want to remove this item?
+                  </ConfirmationModal>
                 </Box>
               ))}
             </Box>
           ) : null}
 
           {updateListDialog && (
-            <AddNewTripList
+            <ListFormDialog
               onClose={closeDialog}
               handleEditList={handleEditList}
               setListName={setNewListName}
@@ -257,6 +286,7 @@ const TripList = ({
           )}
         </Box>
       ))}
+      {isSuccess && <Alert>Changes saved!</Alert>}
     </Box>
   );
 };

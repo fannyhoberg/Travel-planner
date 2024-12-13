@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ItemFormDialog from "./ItemFormDialog";
 import Map from "./Map";
 import { Item, Trip } from "../types/trip";
-import AddNewTripList from "./AddNewTripList";
+import AddNewTripList from "./ListFormDialog";
 import TripList from "./TripList";
 
 type DesktopTripPageProps = {
