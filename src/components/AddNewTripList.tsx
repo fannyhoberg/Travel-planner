@@ -1,21 +1,38 @@
-import { Box, Button, ClickAwayListener, TextField } from "@mui/material";
-import React from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { List, ListTextData } from "../types/trip";
 
 type TripListProps = {
-  setAddNewTripDialog: (value: boolean) => void;
-  handleSubmitNewList: (e: React.FormEvent) => void;
+  onClose: () => void;
+  handleSubmitNewList?: (data: ListTextData) => void;
+  handleEditList?: (data: ListTextData) => void;
   setListName: (value: string) => void;
   setSelectedColor: (value: string) => void;
   selectedColor: string;
+  initialValues?: Partial<List>;
 };
 
 const AddNewTripList = ({
-  setAddNewTripDialog,
+  onClose,
   handleSubmitNewList,
+  handleEditList,
   setListName,
-  selectedColor,
   setSelectedColor,
+  initialValues,
 }: TripListProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const colors = [
     "#FFB2AA",
     "#FFA07A",
@@ -28,61 +45,84 @@ const AddNewTripList = ({
     "#FF69B4",
     "#FF4500",
   ];
+
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("#FFB2AA");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setListName(name);
+    setSelectedColor(color);
+
+    const data: ListTextData = { name, color };
+
+    if (initialValues) {
+      handleEditList && handleEditList(data);
+    } else {
+      handleSubmitNewList && handleSubmitNewList(data);
+    }
+    onClose();
+  };
+
+  useEffect(() => {
+    if (initialValues) {
+      setName(initialValues.name || "");
+      setColor(initialValues.color || "#FFB2AA");
+    }
+  }, [initialValues]);
+
   return (
-    <ClickAwayListener onClickAway={() => setAddNewTripDialog(false)}>
-      <Box>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            mb: 2,
-          }}
-          component="form"
-          onSubmit={handleSubmitNewList}
-        >
+    <Dialog open={true} onClose={onClose}>
+      <DialogTitle>
+        {initialValues ? "Update List" : "Add New List"}
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
           <TextField
-            label="Name your list"
-            name="new-list"
-            type="text"
+            label="List Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             variant="standard"
-            // value={listName}
-            onChange={(e) => setListName(e.target.value)}
             required
-            sx={{ flex: 1 }}
+            sx={{
+              maxWidth: isMobile ? "450px" : "600px",
+              width: "100%",
+              mb: 3,
+            }}
           />
-          <Button
-            sx={{ marginLeft: 0, color: "black" }}
-            variant="text"
-            type="submit"
-            aria-label="Enter OK"
-            title="OK add to list"
-          >
-            OK
-          </Button>
-        </Box>
-        <Box sx={{ mb: 4 }}>
-          {/* <Typography sx={{ alignItems: "left" }}>
-                    Select a Color
-                  </Typography> */}
-          <Box style={{ display: "flex", gap: "10px" }}>
-            {colors.map((color) => (
+          <Box sx={{ mb: 4, display: "flex", gap: "10px" }}>
+            {colors.map((c) => (
               <Box
-                key={color}
-                style={{
+                key={c}
+                sx={{
                   width: "30px",
                   height: "30px",
-                  backgroundColor: color,
+                  backgroundColor: c,
                   borderRadius: "50%",
-                  border: selectedColor === color ? "2px solid black" : "none",
+                  border: color === c ? "2px solid black" : "none",
                   cursor: "pointer",
                 }}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => {
+                  setColor(c), setSelectedColor(color);
+                }}
               />
             ))}
           </Box>
+          <Button
+            variant="text"
+            type="submit"
+            className="btn-primary"
+            sx={{ mt: 4 }}
+          >
+            {initialValues ? "Update" : "Add"}
+          </Button>
         </Box>
-      </Box>
-    </ClickAwayListener>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

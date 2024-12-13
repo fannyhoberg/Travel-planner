@@ -39,7 +39,11 @@ export const useHandleTrip = (
   };
 
   // Update list
-  const updateList = async (listId: string | null, newListName: string) => {
+  const updateList = async (
+    listId: string | null,
+    newListName: string,
+    color: string
+  ) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -47,19 +51,18 @@ export const useHandleTrip = (
       console.log("newListName i hook", newListName);
       console.log("listId i hook", listId);
 
-      // Uppdatera listnamnet för den lista som matchar listId
       const updatedLists = trip?.lists?.map((list) =>
-        list._id === listId // Se till att vi hittar rätt lista med hjälp av listId
+        list._id === listId
           ? {
               ...list,
-              name: newListName, // Uppdatera listans namn
+              name: newListName,
+              color: color,
             }
           : list
       );
 
       console.log("Updated list", updatedLists);
 
-      // Skicka tillbaka uppdaterade listor till Firestore
       await updateDoc(tripDocRef, {
         lists: updatedLists,
       });

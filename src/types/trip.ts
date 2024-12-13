@@ -15,6 +15,8 @@ export type List = {
   items?: Item[];
 };
 
+export type ListTextData = Omit<List, "_id">;
+
 export type Item = {
   _id: string;
   title: string;

@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import { Item, Trip } from "../types/trip";
+import { Item, ListTextData, Trip } from "../types/trip";
 import {
   Box,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Divider,
   IconButton,
   MenuItem,
   Popover,
-  TextField,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,6 +13,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { useHandleTrip } from "../hooks/useHandleTrip";
+import AddNewTripList from "./AddNewTripList";
 
 type TripListProps = {
   id: string | undefined;
@@ -59,13 +55,14 @@ const TripList = ({
   const [listToUpdate, setListToUpdate] = useState<string | null>(null);
   const [newListName, setNewListName] = useState<string>("");
   const [anchorListEl, setAnchorListEl] = useState<null | HTMLElement>(null);
-  const [updateListDialog, setUpdateListDialogState] = useState(false);
+  const [updateListDialog, setUpdateListDialog] = useState(false);
   const [selectedList, setSelectedList] = useState<null | string>(null);
+  const [selectedColor, setSelectedColor] = useState<string>("");
 
   const isListPopupOpen = Boolean(anchorListEl);
 
   const closeDialog = () => {
-    setUpdateListDialogState(false);
+    setUpdateListDialog(false);
   };
 
   const handleOpenPopupList = (
@@ -81,13 +78,12 @@ const TripList = ({
     setSelectedList(null);
   };
 
-  const handleEditList = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEditList = async (data: ListTextData) => {
     try {
-      await updateList(listToUpdate, newListName);
+      await updateList(listToUpdate, data.name, data.color);
       setListToUpdate(null);
       setNewListName("");
-      setUpdateListDialogState(false);
+      setUpdateListDialog(false);
     } catch (err) {
       console.error("Error updating list:", err);
     }
@@ -135,7 +131,9 @@ const TripList = ({
               <AddIcon />
             </IconButton>
             <IconButton
-              onClick={(e) => handleOpenPopupList(e, list._id)}
+              onClick={(e) => {
+                handleOpenPopupList(e, list._id), setSelectedColor(list.color);
+              }}
               size="small"
               title="More actions"
               aria-label="More actions"
@@ -154,7 +152,7 @@ const TripList = ({
                     setListName(list.name);
                     setListToUpdate(list._id);
                     setNewListName(list.name);
-                    setUpdateListDialogState(true);
+                    setUpdateListDialog(true);
                     handleClosePopupList();
                   }}
                 >
@@ -248,22 +246,14 @@ const TripList = ({
           ) : null}
 
           {updateListDialog && (
-            <Dialog open={true} onClose={closeDialog}>
-              <DialogTitle>Update listname</DialogTitle>
-              <DialogContent>
-                <Box sx={{ mt: 4 }} component="form" onSubmit={handleEditList}>
-                  <TextField
-                    value={newListName}
-                    onChange={(e) => setNewListName(e.target.value)}
-                    variant="standard"
-                    required
-                  />
-                  <Button variant="text" type="submit" sx={{ mt: 4 }}>
-                    Save
-                  </Button>
-                </Box>
-              </DialogContent>
-            </Dialog>
+            <AddNewTripList
+              onClose={closeDialog}
+              handleEditList={handleEditList}
+              setListName={setNewListName}
+              setSelectedColor={setSelectedColor}
+              selectedColor={selectedColor}
+              initialValues={{ name: list.name, color: list.color }}
+            />
           )}
         </Box>
       ))}

@@ -19,7 +19,7 @@ import TripList from "../components/TripList";
 import ItemFormDialog from "../components/ItemFormDialog";
 import AddNewTripList from "../components/AddNewTripList";
 import Map from "../components/Map";
-import { Item } from "../types/trip";
+import { Item, ListTextData } from "../types/trip";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -75,11 +75,10 @@ const TripPage = () => {
     setAddNewTripDialog(true);
   };
 
-  const handleSubmitNewList = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitNewList = async (data: ListTextData) => {
     if (!listName.trim()) return;
 
-    await addNewList(listName, selectedColor);
+    await addNewList(data.name, data.color);
     setListName("");
     setAddNewTripDialog(false);
   };
@@ -208,7 +207,7 @@ const TripPage = () => {
 
               {addNewListDialog && trip && (
                 <AddNewTripList
-                  setAddNewTripDialog={setAddNewTripDialog}
+                  onClose={closeDialog}
                   handleSubmitNewList={handleSubmitNewList}
                   setListName={setListName}
                   selectedColor={selectedColor}
