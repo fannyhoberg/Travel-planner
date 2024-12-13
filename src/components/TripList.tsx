@@ -286,7 +286,6 @@ const TripList = ({
           )}
         </Box>
       ))}
-      {isSuccess && <Alert>Changes saved!</Alert>}
     </Box>
   );
 };
