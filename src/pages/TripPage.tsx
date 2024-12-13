@@ -76,8 +76,6 @@ const TripPage = () => {
   };
 
   const handleSubmitNewList = async (data: ListTextData) => {
-    if (!listName.trim()) return;
-
     await addNewList(data.name, data.color);
     setListName("");
     setAddNewTripDialog(false);

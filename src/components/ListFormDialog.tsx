@@ -57,9 +57,13 @@ const ListFormDialog = ({
 
     const data: ListTextData = { name, color };
 
+    console.log("Submitting data:", data);
+
     if (initialValues) {
       handleEditList && handleEditList(data);
     } else {
+      console.log("handleSubmitNewList");
+
       handleSubmitNewList && handleSubmitNewList(data);
     }
     onClose();
