@@ -7,6 +7,9 @@ export type Trip = {
   notes?: string;
   lists?: List[];
 };
+export type TripTextData = {
+  title: string;
+};
 
 export type List = {
   _id: string;

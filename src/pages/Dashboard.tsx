@@ -2,10 +2,15 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid2,
   IconButton,
   MenuItem,
   Popover,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme,
@@ -15,10 +20,11 @@ import AddNewTrip from "../components/AddNewTrip";
 import { Link } from "react-router-dom";
 import useGetTrips from "../hooks/useGetTrips";
 import useAuth from "../hooks/useAuth";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import ConfirmationModal from "../components/ConfirmationModal";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { TripTextData } from "../types/trip";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -28,12 +34,12 @@ const Dashboard = () => {
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
+  const [tripName, setTripName] = useState("");
+  const [updateTripDialog, setUpdateTripDialog] = useState(false);
 
   const { currentUser } = useAuth();
 
   const { data: trips, isLoading } = useGetTrips(currentUser?.uid);
-
-  console.log("data trips", trips);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, trip: any) => {
     setAnchorEl(event.currentTarget);
@@ -56,12 +62,34 @@ const Dashboard = () => {
     }
   };
 
+  const handleEditTrip = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data: TripTextData = { title: tripName };
+
+    console.log("data", data);
+
+    try {
+      const tripDocRef = doc(db, "trips", selectedTripId as string);
+
+      await updateDoc(tripDocRef, {
+        title: data.title,
+      });
+      setUpdateTripDialog(false);
+      console.log(
+        `Trip with ID: ${selectedTripId} has been updated with title: ${data.title}`
+      );
+    } catch (err) {
+      console.error("Error updating trip:", err);
+    }
+  };
+
   const addNewTrip = () => {
     setAddNewTripDialog(true);
   };
 
   const closeDialog = () => {
     setAddNewTripDialog(false);
+    setUpdateTripDialog(false);
   };
 
   return (
@@ -129,7 +157,10 @@ const Dashboard = () => {
                           <MenuItem
                             onClick={() => {
                               console.log("Editing trip:", selectedTrip);
+                              setSelectedTripId(selectedTrip._id);
+                              setTripName(trip.title);
                               handleCloseMenu();
+                              setUpdateTripDialog(true);
                             }}
                           >
                             Edit
@@ -172,6 +203,39 @@ const Dashboard = () => {
 
       {addNewTripDialog && (
         <AddNewTrip isMobile={isMobile} onClose={closeDialog} />
+      )}
+
+      {updateTripDialog && (
+        <Dialog open={true} onClose={closeDialog}>
+          <DialogTitle>Update trip</DialogTitle>
+          <DialogContent>
+            <Box sx={{ mt: 4 }} component="form" onSubmit={handleEditTrip}>
+              <TextField
+                label="List Name"
+                value={tripName}
+                onChange={(e) => setTripName(e.target.value)}
+                variant="standard"
+                required
+                sx={{
+                  maxWidth: isMobile ? "450px" : "600px",
+                  width: "100%",
+                  mb: 3,
+                }}
+              />
+              <Button
+                variant="text"
+                type="submit"
+                className="btn-primary"
+                sx={{ mt: 4 }}
+              >
+                Save
+              </Button>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeDialog}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
       )}
     </>
   );
