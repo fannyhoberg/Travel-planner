@@ -9,6 +9,7 @@ import { db } from "../services/firebase";
 import useGetUser from "../hooks/useGetUser";
 import useHandleUser from "../hooks/useHandleUser";
 import { doc, getDoc } from "firebase/firestore";
+import BackButton from "../components/BackButton";
 
 const ProfilePage = () => {
   const [updateProfile, setUpdateProfile] = useState(false);
@@ -96,6 +97,8 @@ const ProfilePage = () => {
   return (
     <>
       <Container maxWidth="sm">
+        <BackButton />
+
         {!updateProfile && (
           <>
             {/* {error && <div>{error}</div>}

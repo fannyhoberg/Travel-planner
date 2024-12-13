@@ -20,6 +20,7 @@ import ItemFormDialog from "../components/ItemFormDialog";
 import ListFormDialog from "../components/ListFormDialog";
 import Map from "../components/Map";
 import { Item, ListTextData } from "../types/trip";
+import BackButton from "../components/BackButton";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -135,6 +136,8 @@ const TripPage = () => {
       {isError && <div>Something went wrong</div>}
       {!isLoading && !isError && (
         <Container sx={{ mb: "10vh" }} maxWidth={isMobile ? "sm" : "lg"}>
+          <BackButton />
+
           <Typography sx={{ pt: 4 }} variant="h3">
             {trip?.title}
           </Typography>

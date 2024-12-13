@@ -85,11 +85,10 @@ const SignUp = () => {
 
   return (
     <>
-      <BackButton to="/" />
+      <BackButton />
       <Container maxWidth="sm">
         <Typography variant="h4">Create account</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-
           <TextField
             label="Email"
             name="email"

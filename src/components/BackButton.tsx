@@ -1,31 +1,29 @@
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
-interface BackButtonProps {
-  to?: string;
-}
-
-const BackButton = ({ to = "/" }: BackButtonProps) => {
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+const BackButton = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(to);
+    navigate(-1);
   };
 
   return (
     <Button
       onClick={handleClick}
       sx={{
-        position: "absolute",
-        top: "1rem",
-        left: "1rem",
+        position: "fixed",
+        top: "5rem",
+        left: "2rem",
         color: "#2A3132",
         textTransform: "none",
+        zIndex: 10000,
       }}
-      aria-label="back button"
+      aria-label="Go back to previous page"
+      title="Go back to previous page"
     >
-      <ArrowBackIosNewIcon />
+      <ArrowBackIcon fontSize="large" />
+      <span style={{ marginLeft: "0.5rem" }}>Back</span>
     </Button>
   );
 };
