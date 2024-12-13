@@ -12,7 +12,7 @@ const BackButton = () => {
     <Button
       onClick={handleClick}
       sx={{
-        position: "fixed",
+        position: "absolute",
         top: "5rem",
         left: "2rem",
         color: "#2A3132",
