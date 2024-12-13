@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Item, ListTextData, Trip } from "../types/trip";
 import {
-  Alert,
   Box,
   Divider,
   IconButton,
@@ -60,7 +59,7 @@ const TripList = ({
   const [updateListDialog, setUpdateListDialog] = useState(false);
   const [selectedList, setSelectedList] = useState<null | string>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [isSuccess, setIsSuccess] = useState(false);
+  // const [isSuccess, setIsSuccess] = useState(false);
 
   const isListPopupOpen = Boolean(anchorListEl);
 
@@ -82,14 +81,15 @@ const TripList = ({
   };
 
   const handleEditList = async (data: ListTextData) => {
+    console.log("data", data);
     try {
       await updateList(listToUpdate, data.name, data.color);
-      setIsSuccess(true);
+      // setIsSuccess(true);
       setListToUpdate(null);
       setNewListName("");
       setUpdateListDialog(false);
     } catch (err) {
-      setIsSuccess(false);
+      // setIsSuccess(false);
       console.error("Error updating list:", err);
     }
   };
@@ -158,9 +158,10 @@ const TripList = ({
               <Box>
                 <MenuItem
                   onClick={() => {
-                    setListName(list.name);
+                    // setListName(list.name);
                     setListToUpdate(list._id);
                     setNewListName(list.name);
+                    setSelectedColor(list.color);
                     setUpdateListDialog(true);
                     handleClosePopupList();
                   }}
@@ -281,7 +282,7 @@ const TripList = ({
               setListName={setNewListName}
               setSelectedColor={setSelectedColor}
               selectedColor={selectedColor}
-              initialValues={{ name: list.name, color: list.color }}
+              initialValues={{ name: newListName, color: selectedColor }}
             />
           )}
         </Box>
