@@ -155,6 +155,9 @@ const Dashboard = () => {
                       >
                         <Box>
                           <MenuItem
+                            tabIndex={1}
+                            aria-label="Edit trip"
+                            title="Edit trip"
                             onClick={() => {
                               console.log("Editing trip:", selectedTrip);
                               setSelectedTripId(selectedTrip._id);
@@ -166,6 +169,9 @@ const Dashboard = () => {
                             Edit
                           </MenuItem>
                           <MenuItem
+                            tabIndex={1}
+                            aria-label="Delete trip"
+                            title="Delete trip"
                             onClick={() => {
                               setSelectedTripId(selectedTrip._id);
                               setShowDeleteModal(true);

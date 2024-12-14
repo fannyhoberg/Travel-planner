@@ -34,16 +34,13 @@ const ListFormDialog = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const colors = [
-    "#FFB2AA",
-    "#FFA07A",
-    "#FF6347",
-    "#FFD700",
-    "#ADFF2F",
-    "#32CD32",
-    "#1E90FF",
-    "#9370DB",
-    "#FF69B4",
-    "#FF4500",
+    "#F48FB1",
+    "#66BB6A",
+    "#3A8DFF",
+    "#FFCA28",
+    "#80DEEA",
+    "#FF6F61",
+    "#D672EA",
   ];
   const [name, setName] = useState("");
   const [color, setColor] = useState("#FFB2AA");

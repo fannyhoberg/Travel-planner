@@ -59,6 +59,8 @@ const TripList = ({
   const [updateListDialog, setUpdateListDialog] = useState(false);
   const [selectedList, setSelectedList] = useState<null | string>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+
   // const [isSuccess, setIsSuccess] = useState(false);
 
   const isListPopupOpen = Boolean(anchorListEl);
@@ -94,16 +96,31 @@ const TripList = ({
     }
   };
 
-  const handleDeleteList = async (listId: string) => {
-    await deleteList(listId);
+  const handleDeleteList = async () => {
+    if (!selectedList) return;
+    try {
+      await deleteList(selectedList);
+      setShowListDeleteModal(false);
+      setSelectedList(null);
+    } catch (err) {
+      console.error("Error deleting list:", err);
+    }
   };
 
   const markPlaceAsDone = async (listName: string, itemId: string) => {
     await markItemAsCompleted(listName, itemId);
   };
 
-  const handleRemoveItem = async (listName: string, itemId: string) => {
-    await removeItemFromList(listName, itemId);
+  const handleRemoveItem = async () => {
+    if (!itemToDelete || !listToUpdate) return;
+
+    try {
+      await removeItemFromList(listToUpdate, itemToDelete);
+      setShowItemDeleteModal(false);
+      setItemToDelete(null);
+    } catch (err) {
+      console.error("Error deleting item:", err);
+    }
   };
 
   return (
@@ -157,8 +174,10 @@ const TripList = ({
             >
               <Box>
                 <MenuItem
+                  tabIndex={1}
+                  aria-label="Edit list"
+                  title="Edit list"
                   onClick={() => {
-                    // setListName(list.name);
                     setListToUpdate(list._id);
                     setNewListName(list.name);
                     setSelectedColor(list.color);
@@ -169,7 +188,11 @@ const TripList = ({
                   Edit
                 </MenuItem>
                 <MenuItem
+                  tabIndex={1}
+                  aria-label="Delete list"
+                  title="Delete list"
                   onClick={() => {
+                    setSelectedList(list._id);
                     setShowListDeleteModal(true);
                   }}
                 >
@@ -179,8 +202,10 @@ const TripList = ({
             </Popover>
             <ConfirmationModal
               onOpen={showListDeleteModal}
-              onConfirm={() => handleDeleteList(list._id)}
-              onCancel={() => setShowListDeleteModal(false)}
+              onConfirm={() => handleDeleteList()}
+              onCancel={() => {
+                setShowListDeleteModal(false), setSelectedList(null);
+              }}
             >
               Sure you want to delete this list?
             </ConfirmationModal>
@@ -239,6 +264,9 @@ const TripList = ({
                   >
                     <Box>
                       <MenuItem
+                        tabIndex={1}
+                        aria-label="Edit place"
+                        title="Edit place"
                         onClick={() => {
                           setInitialValues({
                             title: item.title,
@@ -254,7 +282,12 @@ const TripList = ({
                         Edit
                       </MenuItem>
                       <MenuItem
+                        tabIndex={1}
+                        aria-label="Remove place from list"
+                        title="Remove place from list"
                         onClick={() => {
+                          setListToUpdate(list.name);
+                          setItemToDelete(item._id);
                           setShowItemDeleteModal(true);
                           handleClosePopup();
                         }}
@@ -265,8 +298,10 @@ const TripList = ({
                   </Popover>
                   <ConfirmationModal
                     onOpen={showItemDeleteModal}
-                    onConfirm={() => handleRemoveItem(list.name, item._id)}
-                    onCancel={() => setShowItemDeleteModal(false)}
+                    onConfirm={() => handleRemoveItem()}
+                    onCancel={() => {
+                      setShowItemDeleteModal(false), setItemToDelete(null);
+                    }}
                   >
                     Sure you want to remove this item?
                   </ConfirmationModal>
