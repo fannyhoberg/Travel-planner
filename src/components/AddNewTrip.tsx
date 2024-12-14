@@ -1,35 +1,37 @@
 import {
   Box,
   Button,
-  ClickAwayListener,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TextField,
-  Typography,
 } from "@mui/material";
 import useAddTrip from "../hooks/useAddTrip";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
 import useAuth from "../hooks/useAuth";
+import { TripTextData } from "../types/trip";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../services/firebase";
 
 type Props = {
   isMobile: boolean;
-  onClose: () => void;
+  closeDialog: () => void;
+  initialValue?: string;
+  id?: string | null;
 };
 
-const AddNewTrip = ({ isMobile, onClose }: Props) => {
+const AddNewTrip = ({ isMobile, closeDialog, initialValue, id }: Props) => {
   const [formData, setFormData] = useState({
-    title: "",
+    title: initialValue || "",
   });
 
   const { addTrip, error, loading } = useAddTrip();
 
   const { currentUser } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  console.log("initialValue", initialValue);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,107 +41,124 @@ const AddNewTrip = ({ isMobile, onClose }: Props) => {
     if (!currentUser) {
       return;
     }
-    try {
-      await addTrip({ title: formData.title, userId: currentUser.uid });
-      onClose();
-    } catch (err) {
-      if (err instanceof FirebaseError) {
-        console.error(err.message);
-      } else if (err instanceof Error) {
-        console.error(err.message);
-      } else {
-        console.error("Could not add new trip, something went wrong..");
+    if (!initialValue) {
+      try {
+        await addTrip({ title: formData.title, userId: currentUser.uid });
+      } catch (err) {
+        if (err instanceof FirebaseError) {
+          console.error(err.message);
+        } else if (err instanceof Error) {
+          console.error(err.message);
+        } else {
+          console.error("Could not add new trip, something went wrong..");
+        }
+      }
+    } else if (initialValue) {
+      const data: TripTextData = { title: formData.title };
+      try {
+        const tripDocRef = doc(db, "trips", id as string);
+
+        await updateDoc(tripDocRef, {
+          title: data.title,
+        });
+        console.log(
+          `Trip with ID: ${id} has been updated with title: ${data.title}`
+        );
+      } catch (err) {
+        console.error("Error updating trip:", err);
       }
     }
+
+    closeDialog();
   };
 
   return (
     <>
-      <ClickAwayListener onClickAway={onClose}>
-        <Box
+      <Dialog
+        open={true}
+        onClose={closeDialog}
+        fullScreen={isMobile}
+        PaperProps={{
+          sx: {
+            borderRadius: isMobile ? 0 : 4,
+            maxWidth: isMobile ? "100%" : "400px",
+            minWidth: isMobile ? "100%" : "300px",
+            maxHeight: isMobile ? "100%" : "400px",
+            padding: 2,
+            margin: isMobile ? 0 : "auto",
+          },
+        }}
+      >
+        <DialogTitle
           sx={{
-            position: "fixed",
-            inset: 0,
-            top: isMobile ? 0 : "50%",
-            left: isMobile ? 0 : "50%",
-            width: isMobile ? "100%" : "30%",
-            height: isMobile ? "100%" : "40%",
-            backgroundColor: "#F5F5F5",
-            zIndex: 1300,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: isMobile ? "center" : "flex-start",
-            padding: isMobile ? "0px" : "40px",
-            ...(isMobile
-              ? {}
-              : {
-                  transform: "translate(-50%, -50%)",
-                  borderRadius: "10px",
-                  boxShadow: 2,
-                }),
+            fontSize: "1.5rem",
+            textAlign: "center",
+            marginBottom: 2,
+            paddingTop: 4,
           }}
         >
-          {/* Close button */}
-          <Button
-            variant="text"
-            sx={{
-              position: "absolute",
-              top: isMobile ? 20 : 10,
-              right: isMobile ? 20 : 10,
-              padding: 0,
-              color: "black",
-            }}
-            onClick={onClose}
-          >
-            X
-          </Button>
-
-          <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Where we going?
-          </Typography>
-
+          {initialValue ? "Update trip" : "Add new trip"}
+        </DialogTitle>
+        <DialogContent>
           <Box
-            sx={{ mt: 4, p: isMobile ? 2 : 1 }}
             component="form"
             onSubmit={handleSubmit}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              mt: 2,
+            }}
           >
             <TextField
-              label="Name your trip"
-              name="title"
-              type="text"
-              variant="standard"
+              label="Trip Name"
+              value={formData.title}
+              onChange={(e) => setFormData({ title: e.target.value })}
+              variant="outlined"
               required
               fullWidth
-              value={formData.title}
-              onChange={handleChange}
+              sx={{
+                "& .MuiInputBase-root": {
+                  borderRadius: 2,
+                },
+              }}
             />
-
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-              <Button variant="text" type="submit" className="btn-primary">
-                Create
-              </Button>
-            </Box>
           </Box>
-        </Box>
-      </ClickAwayListener>
-      {error && <div>{error}</div>}
-      {loading && <div>{loading}</div>}
-      {/* Blurred background */}
-      {!isMobile && (
-        <Box
+        </DialogContent>
+        <DialogActions
           sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            backdropFilter: "blur(0.5px)",
-            zIndex: 1200,
+            justifyContent: "space-between",
+            padding: 2,
           }}
-        />
-      )}
+        >
+          <Button
+            onClick={closeDialog}
+            color="secondary"
+            variant="outlined"
+            className="btn-secondary"
+            aria-label="Cancel"
+            title="Cancel"
+            sx={{
+              borderRadius: 2,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            className="btn-primary"
+            color="primary"
+            aria-label={initialValue ? "Save" : "Add"}
+            title={initialValue ? "Save" : "Add"}
+            sx={{
+              borderRadius: 2,
+            }}
+          >
+            {initialValue ? "Save" : "Add"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

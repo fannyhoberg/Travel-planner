@@ -2,15 +2,10 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid2,
   IconButton,
   MenuItem,
   Popover,
-  TextField,
   Typography,
   useMediaQuery,
   useTheme,
@@ -20,11 +15,11 @@ import AddNewTrip from "../components/AddNewTrip";
 import { Link } from "react-router-dom";
 import useGetTrips from "../hooks/useGetTrips";
 import useAuth from "../hooks/useAuth";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import ConfirmationModal from "../components/ConfirmationModal";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { TripTextData } from "../types/trip";
+import { Trip } from "../types/trip";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -33,8 +28,7 @@ const Dashboard = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedTrip, setSelectedTrip] = useState<any>(null);
-  const [tripName, setTripName] = useState("");
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [updateTripDialog, setUpdateTripDialog] = useState(false);
 
   const { currentUser } = useAuth();
@@ -44,6 +38,7 @@ const Dashboard = () => {
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, trip: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedTrip(trip);
+    setSelectedTripId(trip._id);
   };
 
   const handleCloseMenu = () => {
@@ -59,27 +54,6 @@ const Dashboard = () => {
       console.log(`Trip with ID: ${tripId} has been deleted successfully`);
     } catch (err) {
       console.error("Error deleting trip:", err);
-    }
-  };
-
-  const handleEditTrip = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const data: TripTextData = { title: tripName };
-
-    console.log("data", data);
-
-    try {
-      const tripDocRef = doc(db, "trips", selectedTripId as string);
-
-      await updateDoc(tripDocRef, {
-        title: data.title,
-      });
-      setUpdateTripDialog(false);
-      console.log(
-        `Trip with ID: ${selectedTripId} has been updated with title: ${data.title}`
-      );
-    } catch (err) {
-      console.error("Error updating trip:", err);
     }
   };
 
@@ -159,9 +133,7 @@ const Dashboard = () => {
                             aria-label="Edit trip"
                             title="Edit trip"
                             onClick={() => {
-                              console.log("Editing trip:", selectedTrip);
-                              setSelectedTripId(selectedTrip._id);
-                              setTripName(trip.title);
+                              setSelectedTripId(trip._id);
                               handleCloseMenu();
                               setUpdateTripDialog(true);
                             }}
@@ -173,7 +145,7 @@ const Dashboard = () => {
                             aria-label="Delete trip"
                             title="Delete trip"
                             onClick={() => {
-                              setSelectedTripId(selectedTrip._id);
+                              setSelectedTripId(trip._id);
                               setShowDeleteModal(true);
                               handleCloseMenu();
                             }}
@@ -208,40 +180,16 @@ const Dashboard = () => {
       </Container>
 
       {addNewTripDialog && (
-        <AddNewTrip isMobile={isMobile} onClose={closeDialog} />
+        <AddNewTrip isMobile={isMobile} closeDialog={closeDialog} />
       )}
 
       {updateTripDialog && (
-        <Dialog open={true} onClose={closeDialog}>
-          <DialogTitle>Update trip</DialogTitle>
-          <DialogContent>
-            <Box sx={{ mt: 4 }} component="form" onSubmit={handleEditTrip}>
-              <TextField
-                label="List Name"
-                value={tripName}
-                onChange={(e) => setTripName(e.target.value)}
-                variant="standard"
-                required
-                sx={{
-                  maxWidth: isMobile ? "450px" : "600px",
-                  width: "100%",
-                  mb: 3,
-                }}
-              />
-              <Button
-                variant="text"
-                type="submit"
-                className="btn-primary"
-                sx={{ mt: 4 }}
-              >
-                Save
-              </Button>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeDialog}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
+        <AddNewTrip
+          id={selectedTrip?._id}
+          initialValue={selectedTrip?.title}
+          isMobile={isMobile}
+          closeDialog={closeDialog}
+        />
       )}
     </>
   );
