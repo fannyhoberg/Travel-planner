@@ -11,6 +11,10 @@ body {
   color: #2a3132;
 }
 
+.pac-container {
+  z-index: 2000 !important;
+}
+
 .btn-primary {
   background-color: #ffbc59 !important;
   color: white !important;

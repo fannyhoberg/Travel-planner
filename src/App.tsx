@@ -22,7 +22,10 @@ function App() {
       {!isMobile && <Navigation />}
 
       <div id="App">
-        <LoadScriptNext googleMapsApiKey={google_api_key}>
+        <LoadScriptNext
+          googleMapsApiKey={google_api_key}
+          libraries={["places"]}
+        >
           <>
             {isMobile && (
               <Box
