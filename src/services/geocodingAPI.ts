@@ -17,6 +17,8 @@ interface GeopointRes {
 }
 
 export const getGeopoint = async (address: string) => {
+  if (!address) return null;
+
   const res = await axios.get<GeopointRes>(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY}`
   );

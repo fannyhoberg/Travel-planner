@@ -245,7 +245,11 @@ const TripList = ({
                       <strong>{item.title}</strong>
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      {item.address}, {item.postcode}
+                      {item.address
+                        ? `${item.address}${
+                            item.postcode ? `, ${item.postcode}` : ""
+                          }`
+                        : null}
                     </Typography>
                   </Box>
                   <IconButton

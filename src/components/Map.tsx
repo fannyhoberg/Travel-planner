@@ -106,11 +106,11 @@ const Map = () => {
         {trip?.lists?.map((list) => {
           return list?.items?.map((item) => {
             const { geopoint } = item;
-            const position: PositionCoords = {
-              lat: geopoint.latitude,
-              lng: geopoint.longitude,
-            };
             if (geopoint) {
+              const position: PositionCoords = {
+                lat: geopoint.latitude,
+                lng: geopoint.longitude,
+              };
               return (
                 <Marker
                   key={item._id}

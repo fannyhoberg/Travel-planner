@@ -28,15 +28,8 @@ const ItemFormDialog = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  //   const [item, setItem] = useState({
-  //     id: "",
-  //     title: "",
-  //     address: "",
-  //     city: "",
-  //   })
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
-  // const [city, setCity] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +40,6 @@ const ItemFormDialog = ({
     if (initialValues) {
       setTitle(initialValues.title || "");
       setAddress(initialValues.address || "");
-      // setCity(initialValues.city || "");
     }
   }, [initialValues]);
 
@@ -76,23 +68,11 @@ const ItemFormDialog = ({
               onChange={(e) => setAddress(e.target.value)}
               variant="standard"
               helperText="example: Potsdamer Str. 3, 10785 Berlin, Tyskland"
-              required
               sx={{
                 maxWidth: isMobile ? "450px" : "600px",
                 width: "100%",
               }}
             />
-            {/* <TextField
-              label="City"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              variant="standard"
-              required
-              sx={{
-                maxWidth: isMobile ? "450px" : "600px",
-                width: "100%",
-              }}
-            /> */}
             <Button
               variant="text"
               type="submit"

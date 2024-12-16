@@ -100,27 +100,33 @@ export const useHandleTrip = (
     itemData: {
       title: string;
       address: string;
-      // city: string;
     }
   ) => {
     if (!tripId || !trip) return;
     setIsLoading(true);
     setError(null);
 
+    let newItemObj: any = {
+      _id: uuidv4(),
+      title: itemData.title,
+      address: itemData.address,
+      completed: false,
+    };
+
     try {
-      const payload = await getGeopoint(itemData.address);
+      if (itemData.address) {
+        const payload = await getGeopoint(itemData.address);
 
-      if (!payload) {
-        throw new Error("Could not get geopoint");
+        if (!payload) {
+          throw new Error("Could not get geopoint");
+        }
+
+        newItemObj = {
+          ...newItemObj,
+          geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
+          place_id: payload.place_id,
+        };
       }
-
-      const newItemObj = {
-        _id: uuidv4(),
-        ...itemData,
-        geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
-        completed: false,
-        place_id: payload.place_id,
-      };
 
       const tripDocRef = doc(db, "trips", tripId);
 
@@ -149,8 +155,7 @@ export const useHandleTrip = (
     itemId: string,
     updatedData: {
       title: string;
-      address: string;
-      // city: string;
+      address?: string;
       geopoint?: GeoPoint;
       completed?: boolean;
     }
@@ -166,9 +171,18 @@ export const useHandleTrip = (
         list.name === listName
           ? {
               ...list,
-              items: list.items?.map((item) =>
-                item._id === itemId ? { ...item, ...updatedData } : item
-              ),
+              items: list.items?.map((item) => {
+                if (item._id === itemId) {
+                  const updatedItem = {
+                    ...item,
+                    ...updatedData,
+                    address: updatedData.address || "",
+                    geopoint: updatedData.geopoint || null,
+                  };
+                  return updatedItem;
+                }
+                return item;
+              }),
             }
           : list
       );

@@ -90,19 +90,25 @@ const TripPage = () => {
   const handleSubmitItem = async (item: { title: string; address: string }) => {
     if (!trip) return;
 
-    const payload = await getGeopoint(item.address);
-
-    if (!payload) {
-      console.error("Geopoint retrieval failed");
-      return;
-    }
-
-    const newItemObj = {
-      geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
-      place_id: payload.place_id,
+    let newItemObj: any = {
       title: item.title,
       address: item.address,
     };
+
+    if (item.address) {
+      const payload = await getGeopoint(item.address);
+
+      if (!payload) {
+        console.error("Geopoint retrieval failed");
+        return;
+      }
+
+      newItemObj = {
+        ...newItemObj,
+        geopoint: new GeoPoint(payload.coords.lat, payload.coords.lng),
+        place_id: payload.place_id,
+      };
+    }
 
     if (updateItemDialog) {
       const updatedItemObj = {
