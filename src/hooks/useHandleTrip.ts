@@ -258,6 +258,21 @@ export const useHandleTrip = (
     }
   };
 
+  // update notes
+  const updateTripNotes = async (notes: string) => {
+    if (!tripId) return;
+    try {
+      const tripDocRef = doc(db, "trips", tripId);
+      await updateDoc(tripDocRef, {
+        notes,
+      });
+      console.log("Notes updated!");
+    } catch (err) {
+      setError("Error when trying to remove item");
+      console.error("Error when trying to remove item");
+    }
+  };
+
   return {
     isLoading,
     error,
@@ -268,5 +283,6 @@ export const useHandleTrip = (
     updateItem,
     markItemAsCompleted,
     removeItemFromList,
+    updateTripNotes,
   };
 };

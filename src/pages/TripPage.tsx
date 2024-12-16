@@ -47,9 +47,14 @@ const TripPage = () => {
 
   const { currentUser } = useAuth();
   const { data: trip, isError, isLoading } = useGetTrip(id);
-  console.log("trip user id", trip?.userId);
 
-  const { addNewList, addNewItem, updateItem } = useHandleTrip(id, trip);
+  const [localNotes, setLocalNotes] = useState<string>("");
+  const [isNotesChanged, setIsNotesChanged] = useState(false);
+
+  const { addNewList, addNewItem, updateItem, updateTripNotes } = useHandleTrip(
+    id,
+    trip
+  );
 
   const handleOpenPopup = (
     event: React.MouseEvent<HTMLElement>,
@@ -135,6 +140,12 @@ const TripPage = () => {
     }
   };
 
+  const handleSaveNotes = async () => {
+    if (!trip) return;
+    await updateTripNotes(localNotes);
+    setIsNotesChanged(false);
+  };
+
   if (currentUser?.uid !== trip?.userId) {
     return <AccessDenied />;
   }
@@ -178,15 +189,31 @@ const TripPage = () => {
                       mt: 3,
                     }}
                   >
-                    <Typography>Notes</Typography>
+                    <TextField
+                      fullWidth
+                      id="outlined-multiline-static"
+                      label="Notes"
+                      multiline
+                      rows={4}
+                      value={isNotesChanged ? localNotes : trip?.notes || ""}
+                      onChange={(e) => {
+                        setLocalNotes(e.target.value);
+                        setIsNotesChanged(true);
+                      }}
+                      sx={{ mt: 2 }}
+                    />
                   </Box>
-                  <TextField
-                    fullWidth
-                    id="outlined-multiline-static"
-                    label=""
-                    multiline
-                    rows={4}
-                  />
+                  {isNotesChanged && (
+                    <Button
+                      variant="contained"
+                      title="Save"
+                      aria-label="Save notes"
+                      onClick={handleSaveNotes}
+                      sx={{ alignSelf: "flex-end" }}
+                    >
+                      Save
+                    </Button>
+                  )}
                 </>
               )}
             </Box>
@@ -262,22 +289,40 @@ const TripPage = () => {
 
           {isMobile && (
             <>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mt: 3,
-                }}
-              >
-                <Typography>Notes</Typography>
+              <Box sx={{ pb: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    mt: 3,
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    id="outlined-multiline-static"
+                    label="Notes"
+                    multiline
+                    rows={4}
+                    value={isNotesChanged ? localNotes : trip?.notes || ""}
+                    onChange={(e) => {
+                      setLocalNotes(e.target.value);
+                      setIsNotesChanged(true);
+                    }}
+                    sx={{ mt: 2 }}
+                  />
+                </Box>
+                {isNotesChanged && (
+                  <Button
+                    variant="contained"
+                    title="Save"
+                    aria-label="Save notes"
+                    onClick={handleSaveNotes}
+                    sx={{ mt: 2 }}
+                  >
+                    Save
+                  </Button>
+                )}
               </Box>
-              <TextField
-                fullWidth
-                id="outlined-multiline-static"
-                label=""
-                multiline
-                rows={4}
-              />
             </>
           )}
           {hasItemsInLists && isMobile && <Map />}
