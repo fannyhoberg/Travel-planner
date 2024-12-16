@@ -21,6 +21,8 @@ import ListFormDialog from "../components/ListFormDialog";
 import Map from "../components/Map";
 import { Item, ListTextData } from "../types/trip";
 import BackButton from "../components/BackButton";
+import useAuth from "../hooks/useAuth";
+import AccessDenied from "../components/AccessDenied";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -43,7 +45,9 @@ const TripPage = () => {
 
   const { id } = useParams();
 
+  const { currentUser } = useAuth();
   const { data: trip, isError, isLoading } = useGetTrip(id);
+  console.log("trip user id", trip?.userId);
 
   const { addNewList, addNewItem, updateItem } = useHandleTrip(id, trip);
 
@@ -129,6 +133,10 @@ const TripPage = () => {
       setAddingList(null);
     }
   };
+
+  if (currentUser?.uid !== trip?.userId) {
+    return <AccessDenied />;
+  }
 
   return (
     <>
