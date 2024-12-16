@@ -100,7 +100,7 @@ export const useHandleTrip = (
     itemData: {
       title: string;
       address: string;
-      city: string;
+      // city: string;
     }
   ) => {
     if (!tripId || !trip) return;
@@ -108,7 +108,7 @@ export const useHandleTrip = (
     setError(null);
 
     try {
-      const payload = await getGeopoint(itemData.address, itemData.city);
+      const payload = await getGeopoint(itemData.address);
 
       if (!payload) {
         throw new Error("Could not get geopoint");
@@ -150,8 +150,8 @@ export const useHandleTrip = (
     updatedData: {
       title: string;
       address: string;
-      city: string;
-      geopoint: GeoPoint;
+      // city: string;
+      geopoint?: GeoPoint;
       completed?: boolean;
     }
   ) => {

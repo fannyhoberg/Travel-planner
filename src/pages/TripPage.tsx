@@ -87,14 +87,10 @@ const TripPage = () => {
     setAddNewTripDialog(false);
   };
 
-  const handleSubmitItem = async (item: {
-    title: string;
-    address: string;
-    city: string;
-  }) => {
+  const handleSubmitItem = async (item: { title: string; address: string }) => {
     if (!trip) return;
 
-    const payload = await getGeopoint(item.address, item.city);
+    const payload = await getGeopoint(item.address);
 
     if (!payload) {
       console.error("Geopoint retrieval failed");
@@ -106,7 +102,6 @@ const TripPage = () => {
       place_id: payload.place_id,
       title: item.title,
       address: item.address,
-      city: item.city,
     };
 
     if (updateItemDialog) {

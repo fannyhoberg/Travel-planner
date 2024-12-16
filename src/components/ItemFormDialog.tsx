@@ -15,7 +15,7 @@ import { Item } from "../types/trip";
 type Props = {
   onClose: () => void;
   listName: string | null;
-  onSubmit: (item: { title: string; address: string; city: string }) => void;
+  onSubmit: (item: { title: string; address: string }) => void;
   initialValues?: Partial<Item>;
 };
 
@@ -36,18 +36,18 @@ const ItemFormDialog = ({
   //   })
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
+  // const [city, setCity] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, address, city });
+    onSubmit({ title, address });
   };
 
   useEffect(() => {
     if (initialValues) {
       setTitle(initialValues.title || "");
       setAddress(initialValues.address || "");
-      setCity(initialValues.city || "");
+      // setCity(initialValues.city || "");
     }
   }, [initialValues]);
 
@@ -75,13 +75,14 @@ const ItemFormDialog = ({
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               variant="standard"
+              helperText="example: Potsdamer Str. 3, 10785 Berlin, Tyskland"
               required
               sx={{
                 maxWidth: isMobile ? "450px" : "600px",
                 width: "100%",
               }}
             />
-            <TextField
+            {/* <TextField
               label="City"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -91,7 +92,7 @@ const ItemFormDialog = ({
                 maxWidth: isMobile ? "450px" : "600px",
                 width: "100%",
               }}
-            />
+            /> */}
             <Button
               variant="text"
               type="submit"
