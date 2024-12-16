@@ -1,11 +1,19 @@
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-const BackButton = () => {
+
+type BackButtonProps = {
+  to?: string;
+};
+const BackButton = ({ to }: BackButtonProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(-1);
+    if (to) {
+      navigate(to);
+    } else {
+      navigate(-1);
+    }
   };
 
   return (

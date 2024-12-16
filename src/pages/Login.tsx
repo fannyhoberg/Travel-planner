@@ -51,7 +51,7 @@ const Login = () => {
 
   return (
     <>
-      <BackButton />
+      <BackButton to="/" />
       <Container maxWidth="sm">
         <Typography variant="h4">Log in</Typography>
         <Box sx={{ mt: 4, p: 5 }} component="form" onSubmit={handleSubmit}>

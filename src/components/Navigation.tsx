@@ -37,8 +37,6 @@ const Navigation = () => {
   const handleLogOut = async () => {
     await logout();
     console.log("You are signing out.");
-    await new Promise((r) => setTimeout(r, 1500));
-    navigate("/");
   };
 
   return (
@@ -107,7 +105,7 @@ const Navigation = () => {
             </BottomNavigation>
           </Box>
           {openDialog && (
-            <AddNewTrip isMobile={isMobile} onClose={closeDialog} />
+            <AddNewTrip isMobile={isMobile} closeDialog={closeDialog} />
           )}
         </>
       )}

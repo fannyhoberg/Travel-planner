@@ -85,7 +85,7 @@ const SignUp = () => {
 
   return (
     <>
-      <BackButton />
+      <BackButton to="/" />
       <Container maxWidth="sm">
         <Typography variant="h4">Create account</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
