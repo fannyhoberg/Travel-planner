@@ -1,6 +1,6 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { useState } from "react";
-import { db } from "../services/firebase";
+import { db, userCol } from "../services/firebase";
 import { FirebaseError } from "firebase/app";
 
 const useHandleUser = () => {
@@ -8,15 +8,10 @@ const useHandleUser = () => {
   const [error, setError] = useState(false);
 
   const deleteUser = async (docId: string) => {
-    console.log("docId", docId);
     try {
       setIsLoading(true);
       setError(false);
-      const userDocRef = doc(db, "users", docId);
-      console.log(
-        "Attempting to delete document with reference:",
-        userDocRef.path
-      );
+      const userDocRef = doc(userCol, docId);
 
       await deleteDoc(userDocRef);
       console.log("Document deleted successfully:", userDocRef.path);

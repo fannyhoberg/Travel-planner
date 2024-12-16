@@ -50,7 +50,6 @@ const ProfilePage = () => {
 
     try {
       await reauthenticateUser(password);
-      await deleteAccount();
       if (user && user?.length > 0) {
         const userDoc = user[0];
         const docRef = doc(db, "users", userDoc._id);
@@ -59,21 +58,15 @@ const ProfilePage = () => {
         if (docSnap.exists()) {
           const docData = docSnap.data();
           const storedUid = docData?._id;
-
-          console.log("Stored UID in document:", storedUid);
-
-          console.log("currentUser?.uid", currentUser?.uid);
-
           if (storedUid === currentUser?.uid) {
-            console.log("UID matchade! Raderar dokument.");
-            console.log("userDoc._id", userDoc._id);
-
             await deleteUser(userDoc._id);
           } else {
             console.error("You cannot delete another user's account.");
           }
         }
       }
+      await deleteAccount();
+
       navigate("/");
     } catch (err) {
       if (err instanceof FirebaseError) {

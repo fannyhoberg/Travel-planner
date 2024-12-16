@@ -15,16 +15,14 @@ import HomeIcon from "@mui/icons-material/Home";
 import FaceIcon from "@mui/icons-material/Face";
 import AddNewTrip from "./AddNewTrip";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Navigation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
-  //   const [value, setValue] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
 
   const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
 
   const addNewTrip = () => {
     setOpenDialog(true);
