@@ -22,7 +22,7 @@ type Props = {
   id?: string | null;
 };
 
-const AddNewTrip = ({ isMobile, closeDialog, initialValue, id }: Props) => {
+const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
   const [formData, setFormData] = useState({
     title: initialValue || "",
   });
@@ -163,4 +163,4 @@ const AddNewTrip = ({ isMobile, closeDialog, initialValue, id }: Props) => {
   );
 };
 
-export default AddNewTrip;
+export default TripFormDialog;

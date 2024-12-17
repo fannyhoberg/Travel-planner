@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import AddNewTrip from "../components/AddNewTrip";
+import TripFormDialog from "../components/TripFormDialog";
 import { Link } from "react-router-dom";
 import useGetTrips from "../hooks/useGetTrips";
 import useAuth from "../hooks/useAuth";
@@ -180,11 +180,11 @@ const Dashboard = () => {
       </Container>
 
       {addNewTripDialog && (
-        <AddNewTrip isMobile={isMobile} closeDialog={closeDialog} />
+        <TripFormDialog isMobile={isMobile} closeDialog={closeDialog} />
       )}
 
       {updateTripDialog && (
-        <AddNewTrip
+        <TripFormDialog
           id={selectedTrip?._id}
           initialValue={selectedTrip?.title}
           isMobile={isMobile}

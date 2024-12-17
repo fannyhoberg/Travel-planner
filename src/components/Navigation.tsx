@@ -13,7 +13,7 @@ import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import FaceIcon from "@mui/icons-material/Face";
-import AddNewTrip from "./AddNewTrip";
+import TripFormDialog from "./TripFormDialog";
 import useAuth from "../hooks/useAuth";
 import { Link } from "react-router-dom";
 
@@ -103,7 +103,7 @@ const Navigation = () => {
             </BottomNavigation>
           </Box>
           {openDialog && (
-            <AddNewTrip isMobile={isMobile} closeDialog={closeDialog} />
+            <TripFormDialog isMobile={isMobile} closeDialog={closeDialog} />
           )}
         </>
       )}

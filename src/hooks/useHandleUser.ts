@@ -1,6 +1,6 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { useState } from "react";
-import { db, userCol } from "../services/firebase";
+import { userCol } from "../services/firebase";
 import { FirebaseError } from "firebase/app";
 
 const useHandleUser = () => {
