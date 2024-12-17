@@ -21,6 +21,7 @@ import ConfirmationModal from "../components/ConfirmationModal";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Trip } from "../types/trip";
 import { FirebaseError } from "firebase/app";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Dashboard = () => {
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
@@ -98,8 +99,8 @@ const Dashboard = () => {
       </Box>
 
       <Container maxWidth="md">
-        {isLoading && <Typography>Loading...</Typography>}
-        {loading && <Typography>Loading...</Typography>}
+        {isLoading && <LoadingSpinner />}
+        {loading && <LoadingSpinner />}
 
         {isError && (
           <Typography color="error" sx={{ mt: 2 }}>
@@ -109,7 +110,6 @@ const Dashboard = () => {
 
         {trips && (
           <>
-            {isLoading && <div>Loading...</div>}
             <Box sx={!isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1 }}>
               <Grid2
                 container

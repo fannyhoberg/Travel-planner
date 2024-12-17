@@ -10,6 +10,7 @@ import useGetUser from "../hooks/useGetUser";
 import useHandleUser from "../hooks/useHandleUser";
 import { doc, getDoc } from "firebase/firestore";
 import BackButton from "../components/BackButton";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProfilePage = () => {
   const [updateProfile, setUpdateProfile] = useState(false);
@@ -98,8 +99,8 @@ const ProfilePage = () => {
 
         {!updateProfile && (
           <>
-            {isLoading && <Typography>Loading...</Typography>}
-            {loading && <Typography>Loading...</Typography>}
+            {isLoading && <LoadingSpinner />}
+            {loading && <LoadingSpinner />}
 
             {isError && (
               <Typography color="error" sx={{ mt: 2 }}>

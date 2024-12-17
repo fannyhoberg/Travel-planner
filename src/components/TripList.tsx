@@ -15,6 +15,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { useHandleTrip } from "../hooks/useHandleTrip";
 import ListFormDialog from "./ListFormDialog";
 import ConfirmationModal from "./ConfirmationModal";
+import LoadingSpinner from "./LoadingSpinner";
 
 type TripListProps = {
   id: string | undefined;
@@ -117,7 +118,7 @@ const TripList = ({
 
   return (
     <Box sx={{ width: "100%" }}>
-      {isLoading && <Typography>Loading...</Typography>}
+      {isLoading && <LoadingSpinner />}
 
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>

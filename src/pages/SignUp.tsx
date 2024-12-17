@@ -7,6 +7,7 @@ import BackButton from "../components/BackButton";
 import Snackbar from "@mui/material/Snackbar";
 import useAddDocument from "../hooks/useAddDocument";
 import { userCol } from "../services/firebase";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -92,8 +93,8 @@ const SignUp = () => {
       <Container maxWidth="sm">
         <Typography variant="h4">Create account</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-          {isLoading && <Typography>Loading...</Typography>}
-          {loading && <Typography>Loading...</Typography>}
+          {isLoading && <LoadingSpinner />}
+          {loading && <LoadingSpinner />}
 
           {isError && (
             <Typography color="error" sx={{ mt: 2 }}>

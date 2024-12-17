@@ -12,6 +12,7 @@ import useGetUserDoc from "../hooks/useGetUserDoc";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { FirebaseError } from "firebase/app";
+import LoadingSpinner from "./LoadingSpinner";
 
 type UpdateProfileProps = {
   onClose: () => void;
@@ -122,8 +123,8 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
       <Container maxWidth="sm">
         <Typography variant="h4">Update profile</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-          {isLoading && <Typography>Loading...</Typography>}
-          {loading && <Typography>Loading...</Typography>}
+          {isLoading && <LoadingSpinner />}
+          {loading && <LoadingSpinner />}
 
           {isError && (
             <Typography color="error" sx={{ mt: 2 }}>

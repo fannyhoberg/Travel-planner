@@ -23,6 +23,7 @@ import { Item, ListTextData } from "../types/trip";
 import BackButton from "../components/BackButton";
 import useAuth from "../hooks/useAuth";
 import AccessDenied from "../components/AccessDenied";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -157,13 +158,13 @@ const TripPage = () => {
 
   return (
     <>
-      {getTripLoading && <Typography>Loading...</Typography>}
+      {getTripLoading && <LoadingSpinner />}
       {getTripError && (
         <Typography color="error" sx={{ mt: 2 }}>
           {getTripError}
         </Typography>
       )}
-      {handleTripLoading && <div>Loading...</div>}
+      {handleTripLoading && <LoadingSpinner />}
       {handleTripError && (
         <Typography color="error" sx={{ mt: 2 }}>
           {handleTripError}

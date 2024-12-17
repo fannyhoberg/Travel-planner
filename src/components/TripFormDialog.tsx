@@ -15,6 +15,7 @@ import useAuth from "../hooks/useAuth";
 import { TripTextData } from "../types/trip";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
+import LoadingSpinner from "./LoadingSpinner";
 
 type Props = {
   isMobile: boolean;
@@ -186,8 +187,8 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
           </Box>
         </DialogContent>
 
-        {isLoading && <Typography>Loading...</Typography>}
-        {addTripLoading && <Typography>Loading...</Typography>}
+        {isLoading && <LoadingSpinner />}
+        {addTripLoading && <LoadingSpinner />}
       </Dialog>
       {/* {isSuccess && <SnackbarComponent/>} */}
     </>
