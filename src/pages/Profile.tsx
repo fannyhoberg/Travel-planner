@@ -21,6 +21,9 @@ const ProfilePage = () => {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const {
@@ -31,7 +34,7 @@ const ProfilePage = () => {
     reauthenticateUser,
   } = useAuth();
 
-  const { data: user } = useGetUser(currentUser?.uid);
+  const { data: user, isLoading } = useGetUser(currentUser?.uid);
   const { deleteUser } = useHandleUser();
 
   const exitUpdate = () => {
@@ -47,7 +50,7 @@ const ProfilePage = () => {
       console.error("Password is required to delete the account.");
       return;
     }
-
+    setLoading(true);
     try {
       await reauthenticateUser(password);
       if (user && user?.length > 0) {
@@ -70,13 +73,14 @@ const ProfilePage = () => {
       navigate("/");
     } catch (err) {
       if (err instanceof FirebaseError) {
-        console.error(`Firebase Error: ${err.message}`);
+        setIsError(`Firebase Error: ${err.message}`);
       } else if (err instanceof Error) {
-        console.error(`Error: ${err.message}`);
+        setIsError(`Error: ${err.message}`);
       } else {
-        console.error("An unknown error occurred.");
+        setIsError("Could not delete profile, something went wrong..");
       }
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -94,8 +98,14 @@ const ProfilePage = () => {
 
         {!updateProfile && (
           <>
-            {/* {error && <div>{error}</div>}
-            {isLoading && <div>Deleting account...</div>} */}
+            {isLoading && <Typography>Loading...</Typography>}
+            {loading && <Typography>Loading...</Typography>}
+
+            {isError && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {isError}
+              </Typography>
+            )}
 
             <Box
               sx={{

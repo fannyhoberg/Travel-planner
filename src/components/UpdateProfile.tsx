@@ -11,7 +11,6 @@ import useAuth from "../hooks/useAuth";
 import useGetUserDoc from "../hooks/useGetUserDoc";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
-import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 
 type UpdateProfileProps = {
@@ -28,8 +27,8 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkPassword, setCheckPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     currentUser,
@@ -45,7 +44,6 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 
   const userId = userData && userData.length > 0 ? userData[0]._id : null;
   const userDocRef = userId ? doc(db, "users", userId) : null;
-  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -61,10 +59,9 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
       setCheckPassword(true);
       return;
     }
+    setLoading(true);
     try {
       setIsSubmitting(true);
-      setIsError(false);
-      setError(null);
       if (userDocRef) {
         if (formData.email !== userEmail) {
           await setEmail(formData.email);
@@ -85,18 +82,20 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
         vertical: "top",
         horizontal: "right",
       });
-      navigate("/home");
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (err) {
-      setIsError(true);
       if (err instanceof FirebaseError) {
-        console.error(err.message);
+        setIsError(err.message);
       } else if (err instanceof Error) {
-        console.error(err.message);
+        setIsError(err.message);
       } else {
-        console.error("Could not create account, something went wrong..");
+        setIsError("Could not create account, something went wrong..");
       }
     }
     setIsSubmitting(false);
+    setLoading(false);
   };
   const [isSuccessSnackbar, setIsSuccessSnackbar] = useState({
     open: false,
@@ -121,10 +120,17 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
   return (
     <>
       <Container maxWidth="sm">
-        {isLoading && <div className="loading">Loading...</div>}
-        {isError && error && <div className="error">{error}</div>}
         <Typography variant="h4">Update profile</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
+          {isLoading && <Typography>Loading...</Typography>}
+          {loading && <Typography>Loading...</Typography>}
+
+          {isError && (
+            <Typography color="error" sx={{ mt: 2 }}>
+              {isError}
+            </Typography>
+          )}
+
           <TextField
             label="Name"
             name="name"
@@ -186,14 +192,16 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
             Save
           </Button>
         </Box>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={open}
-          onClose={handleCloseSnackbar}
-          message="Profile successfully updated!"
-          key={vertical + horizontal}
-          sx={{ backgroundColor: "F5F5F5", borderBlockColor: "black" }}
-        />
+        {!isError && !loading && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={open}
+            onClose={handleCloseSnackbar}
+            message="Profile successfully updated!"
+            key={vertical + horizontal}
+            sx={{ backgroundColor: "F5F5F5", borderBlockColor: "black" }}
+          />
+        )}
       </Container>
     </>
   );

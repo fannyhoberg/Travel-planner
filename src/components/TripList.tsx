@@ -48,9 +48,6 @@ const TripList = ({
   id,
   trip,
 }: TripListProps) => {
-  const { markItemAsCompleted, removeItemFromList, updateList, deleteList } =
-    useHandleTrip(id, trip);
-
   const [showListDeleteModal, setShowListDeleteModal] = useState(false);
   const [showItemDeleteModal, setShowItemDeleteModal] = useState(false);
   const [listToUpdate, setListToUpdate] = useState<string | null>(null);
@@ -61,7 +58,14 @@ const TripList = ({
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
-  // const [isSuccess, setIsSuccess] = useState(false);
+  const {
+    isLoading,
+    error,
+    markItemAsCompleted,
+    removeItemFromList,
+    updateList,
+    deleteList,
+  } = useHandleTrip(id, trip);
 
   const isListPopupOpen = Boolean(anchorListEl);
 
@@ -84,27 +88,19 @@ const TripList = ({
 
   const handleEditList = async (data: ListTextData) => {
     console.log("data", data);
-    try {
-      await updateList(listToUpdate, data.name, data.color);
-      // setIsSuccess(true);
-      setListToUpdate(null);
-      setNewListName("");
-      setUpdateListDialog(false);
-    } catch (err) {
-      // setIsSuccess(false);
-      console.error("Error updating list:", err);
-    }
+
+    await updateList(listToUpdate, data.name, data.color);
+    setListToUpdate(null);
+    setNewListName("");
+    setUpdateListDialog(false);
   };
 
   const handleDeleteList = async () => {
     if (!selectedList) return;
-    try {
-      await deleteList(selectedList);
-      setShowListDeleteModal(false);
-      setSelectedList(null);
-    } catch (err) {
-      console.error("Error deleting list:", err);
-    }
+
+    await deleteList(selectedList);
+    setShowListDeleteModal(false);
+    setSelectedList(null);
   };
 
   const markPlaceAsDone = async (listName: string, itemId: string) => {
@@ -114,17 +110,21 @@ const TripList = ({
   const handleRemoveItem = async () => {
     if (!itemToDelete || !listToUpdate) return;
 
-    try {
-      await removeItemFromList(listToUpdate, itemToDelete);
-      setShowItemDeleteModal(false);
-      setItemToDelete(null);
-    } catch (err) {
-      console.error("Error deleting item:", err);
-    }
+    await removeItemFromList(listToUpdate, itemToDelete);
+    setShowItemDeleteModal(false);
+    setItemToDelete(null);
   };
 
   return (
     <Box sx={{ width: "100%" }}>
+      {isLoading && <Typography>Loading...</Typography>}
+
+      {error && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
+
       {trip?.lists?.map((list) => (
         <Box key={list._id} sx={{ paddingBottom: 2 }}>
           <Box

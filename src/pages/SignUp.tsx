@@ -15,7 +15,8 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
   const [checkPassword, setCheckPassword] = useState(false);
 
   const [isSuccessSnackbar, setIsSuccessSnackbar] = useState({
@@ -31,7 +32,7 @@ const SignUp = () => {
   };
 
   const { signup } = useAuth();
-  const { addDocument } = useAddDocument();
+  const { addDocument, loading } = useAddDocument();
 
   const navigate = useNavigate();
 
@@ -51,7 +52,7 @@ const SignUp = () => {
     }
     console.log("Submitted Data:", formData);
 
-    setIsSubmitting(true);
+    setIsLoading(true);
     try {
       const userCred = await signup(formData.email, formData.password);
       const user = userCred.user;
@@ -60,6 +61,8 @@ const SignUp = () => {
         _id: user.uid,
         email: user.email || "",
       });
+
+      setIsError(null);
 
       setIsSuccessSnackbar({
         open: true,
@@ -73,14 +76,14 @@ const SignUp = () => {
       }, 3000);
     } catch (err) {
       if (err instanceof FirebaseError) {
-        console.error(err.message);
+        setIsError(err.message);
       } else if (err instanceof Error) {
-        console.error(err.message);
+        setIsError(err.message);
       } else {
-        console.error("Could not create account, something went wrong..");
+        setIsError("Could not create account, something went wrong..");
       }
     }
-    setIsSubmitting(false);
+    setIsLoading(false);
   };
 
   return (
@@ -89,6 +92,15 @@ const SignUp = () => {
       <Container maxWidth="sm">
         <Typography variant="h4">Create account</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
+          {isLoading && <Typography>Loading...</Typography>}
+          {loading && <Typography>Loading...</Typography>}
+
+          {isError && (
+            <Typography color="error" sx={{ mt: 2 }}>
+              {isError}
+            </Typography>
+          )}
+
           <TextField
             label="Email"
             name="email"
@@ -127,7 +139,7 @@ const SignUp = () => {
             onChange={handleChange}
           />
           <Button
-            disabled={isSubmitting}
+            disabled={isLoading}
             sx={{ mt: 4 }}
             type="submit"
             className="btn-primary"

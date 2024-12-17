@@ -5,24 +5,22 @@ import { FirebaseError } from "firebase/app";
 
 const useHandleUser = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const deleteUser = async (docId: string) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      setError(false);
       const userDocRef = doc(userCol, docId);
 
       await deleteDoc(userDocRef);
       console.log("Document deleted successfully:", userDocRef.path);
     } catch (err) {
-      setError(true);
       if (err instanceof FirebaseError) {
-        console.error(err.message);
+        setError(err.message);
       } else if (err instanceof Error) {
-        console.error(err.message);
+        setError(err.message);
       } else {
-        console.error("Could not add new trip, something went wrong..");
+        setError("Could not add new trip, something went wrong...");
       }
     }
     setIsLoading(false);

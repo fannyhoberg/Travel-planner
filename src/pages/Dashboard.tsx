@@ -20,10 +20,9 @@ import { db } from "../services/firebase";
 import ConfirmationModal from "../components/ConfirmationModal";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Trip } from "../types/trip";
+import { FirebaseError } from "firebase/app";
 
 const Dashboard = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
@@ -31,9 +30,15 @@ const Dashboard = () => {
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [updateTripDialog, setUpdateTripDialog] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
+
   const { currentUser } = useAuth();
 
   const { data: trips, isLoading } = useGetTrips(currentUser?.uid);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, trip: any) => {
     setAnchorEl(event.currentTarget);
@@ -47,14 +52,22 @@ const Dashboard = () => {
 
   const handleDeleteTrip = async (tripId: string) => {
     if (!selectedTripId) return;
+    setLoading(true);
     try {
       const tripDocRef = doc(db, "trips", tripId as string);
       await deleteDoc(tripDocRef);
       setShowDeleteModal(false);
       console.log(`Trip with ID: ${tripId} has been deleted successfully`);
     } catch (err) {
-      console.error("Error deleting trip:", err);
+      if (err instanceof FirebaseError) {
+        setIsError(err.message);
+      } else if (err instanceof Error) {
+        setIsError(err.message);
+      } else {
+        setIsError("Could not add delete trip, something went wrong..");
+      }
     }
+    setLoading(false);
   };
 
   const addNewTrip = () => {
@@ -85,6 +98,15 @@ const Dashboard = () => {
       </Box>
 
       <Container maxWidth="md">
+        {isLoading && <Typography>Loading...</Typography>}
+        {loading && <Typography>Loading...</Typography>}
+
+        {isError && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {isError}
+          </Typography>
+        )}
+
         {trips && (
           <>
             {isLoading && <div>Loading...</div>}

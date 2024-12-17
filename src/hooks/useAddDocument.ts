@@ -11,13 +11,9 @@ const useAddDocument = () => {
     data: NewDocumentType
   ) => {
     const docRef = doc(colRef);
+    setLoading(true);
     try {
-      setLoading(true);
-      console.log("addDocumnt hook: docRef", docRef);
-      console.log("addDocumnt hook: data", data);
       await setDoc(docRef, data);
-
-      console.log("addDocumnt hook: efter setDoc");
     } catch (err) {
       if (err instanceof FirebaseError) {
         setError(err.message);

@@ -17,11 +17,6 @@ const useAddTrip = () => {
       userId: currentUser.uid,
     };
 
-    // add trip to db
-
-    console.log("addtrip hook: newTripCol", newTripCol);
-    console.log("addtrip hook: newTripObj", newTripObj);
-
     addDocument(newTripCol, newTripObj);
   };
   return { addTrip, error, loading };

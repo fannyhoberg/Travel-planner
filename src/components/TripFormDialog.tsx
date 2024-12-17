@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Typography,
 } from "@mui/material";
 import useAddTrip from "../hooks/useAddTrip";
 import { useState } from "react";
@@ -23,20 +24,25 @@ type Props = {
 };
 
 const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const [formData, setFormData] = useState({
     title: initialValue || "",
   });
 
-  const { addTrip, error, loading } = useAddTrip();
+  const {
+    addTrip,
+    error: addTripError,
+    loading: addTripLoading,
+  } = useAddTrip();
 
   const { currentUser } = useAuth();
 
-  console.log("initialValue", initialValue);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("AddNewTrip: formData", formData);
+    setIsLoading(true);
 
     if (!currentUser) {
       return;
@@ -44,13 +50,14 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
     if (!initialValue) {
       try {
         await addTrip({ title: formData.title, userId: currentUser.uid });
+        setIsSuccess(true);
       } catch (err) {
         if (err instanceof FirebaseError) {
-          console.error(err.message);
+          setIsError(err.message);
         } else if (err instanceof Error) {
-          console.error(err.message);
+          setIsError(err.message);
         } else {
-          console.error("Could not add new trip, something went wrong..");
+          setIsError("Could not add new trip, something went wrong..");
         }
       }
     } else if (initialValue) {
@@ -64,10 +71,19 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
         console.log(
           `Trip with ID: ${id} has been updated with title: ${data.title}`
         );
+        setIsSuccess(true);
       } catch (err) {
-        console.error("Error updating trip:", err);
+        if (err instanceof FirebaseError) {
+          setIsError(err.message);
+        } else if (err instanceof Error) {
+          setIsError(err.message);
+        } else {
+          setIsError("Could not add new trip, something went wrong..");
+        }
       }
     }
+    setIsLoading(false);
+    setIsSuccess(false);
 
     closeDialog();
   };
@@ -123,42 +139,57 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
                 },
               }}
             />
+            <DialogActions
+              sx={{
+                justifyContent: "space-between",
+                padding: 2,
+              }}
+            >
+              <Button
+                onClick={closeDialog}
+                color="secondary"
+                variant="outlined"
+                className="btn-secondary"
+                aria-label="Cancel"
+                title="Cancel"
+                sx={{
+                  borderRadius: 2,
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                className="btn-primary"
+                color="primary"
+                aria-label={initialValue ? "Save" : "Add"}
+                title={initialValue ? "Save" : "Add"}
+                disabled={isLoading ? true : false}
+                sx={{
+                  borderRadius: 2,
+                }}
+              >
+                {initialValue ? "Save" : "Add"}
+              </Button>
+            </DialogActions>
+            {isError && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {isError}
+              </Typography>
+            )}
+            {addTripError && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {addTripError}
+              </Typography>
+            )}
           </Box>
         </DialogContent>
-        <DialogActions
-          sx={{
-            justifyContent: "space-between",
-            padding: 2,
-          }}
-        >
-          <Button
-            onClick={closeDialog}
-            color="secondary"
-            variant="outlined"
-            className="btn-secondary"
-            aria-label="Cancel"
-            title="Cancel"
-            sx={{
-              borderRadius: 2,
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            className="btn-primary"
-            color="primary"
-            aria-label={initialValue ? "Save" : "Add"}
-            title={initialValue ? "Save" : "Add"}
-            sx={{
-              borderRadius: 2,
-            }}
-          >
-            {initialValue ? "Save" : "Add"}
-          </Button>
-        </DialogActions>
+
+        {isLoading && <Typography>Loading...</Typography>}
+        {addTripLoading && <Typography>Loading...</Typography>}
       </Dialog>
+      {/* {isSuccess && <SnackbarComponent/>} */}
     </>
   );
 };
