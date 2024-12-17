@@ -154,6 +154,7 @@ const TripList = ({
               size="small"
               sx={{ color: "#2a3132" }}
               aria-label="Add new item to list"
+              title="Add new item to list"
             >
               <AddIcon />
             </IconButton>
@@ -201,15 +202,6 @@ const TripList = ({
                 </MenuItem>
               </Box>
             </Popover>
-            <ConfirmationModal
-              onOpen={showListDeleteModal}
-              onConfirm={() => handleDeleteList()}
-              onCancel={() => {
-                setShowListDeleteModal(false), setSelectedList(null);
-              }}
-            >
-              Sure you want to delete this list?
-            </ConfirmationModal>
           </Box>
           <Divider sx={{ marginTop: 1 }} />
           {list.items && list.items.length > 0 ? (
@@ -301,15 +293,6 @@ const TripList = ({
                       </MenuItem>
                     </Box>
                   </Popover>
-                  <ConfirmationModal
-                    onOpen={showItemDeleteModal}
-                    onConfirm={() => handleRemoveItem()}
-                    onCancel={() => {
-                      setShowItemDeleteModal(false), setItemToDelete(null);
-                    }}
-                  >
-                    Sure you want to remove this item?
-                  </ConfirmationModal>
                 </Box>
               ))}
             </Box>
@@ -324,6 +307,28 @@ const TripList = ({
               selectedColor={selectedColor}
               initialValues={{ name: newListName, color: selectedColor }}
             />
+          )}
+
+          {showListDeleteModal && (
+            <ConfirmationModal
+              onOpen={showListDeleteModal}
+              onConfirm={() => handleDeleteList()}
+              onCancel={() => setShowListDeleteModal(false)}
+            >
+              Sure you want to delete this list?
+            </ConfirmationModal>
+          )}
+
+          {showItemDeleteModal && (
+            <ConfirmationModal
+              onOpen={showItemDeleteModal}
+              onConfirm={() => handleRemoveItem()}
+              onCancel={() => {
+                setShowItemDeleteModal(false), setItemToDelete(null);
+              }}
+            >
+              Sure you want to remove this item?
+            </ConfirmationModal>
           )}
         </Box>
       ))}

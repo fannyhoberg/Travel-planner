@@ -51,14 +51,16 @@ const Dashboard = () => {
     setAnchorEl(null);
   };
 
-  const handleDeleteTrip = async (tripId: string) => {
+  const handleDeleteTrip = async () => {
     if (!selectedTripId) return;
     setLoading(true);
     try {
-      const tripDocRef = doc(db, "trips", tripId as string);
+      const tripDocRef = doc(db, "trips", selectedTripId as string);
       await deleteDoc(tripDocRef);
       setShowDeleteModal(false);
-      console.log(`Trip with ID: ${tripId} has been deleted successfully`);
+      console.log(
+        `Trip with ID: ${selectedTripId} has been deleted successfully`
+      );
     } catch (err) {
       if (err instanceof FirebaseError) {
         setIsError(err.message);
@@ -176,13 +178,6 @@ const Dashboard = () => {
                           </MenuItem>
                         </Box>
                       </Popover>
-                      <ConfirmationModal
-                        onOpen={showDeleteModal}
-                        onConfirm={() => handleDeleteTrip(trip._id)}
-                        onCancel={() => setShowDeleteModal(false)}
-                      >
-                        Sure you want to delete this trip?
-                      </ConfirmationModal>
                       <Link
                         className="card-primary"
                         to={`/trip/${trip._id}`}
@@ -212,6 +207,16 @@ const Dashboard = () => {
           isMobile={isMobile}
           closeDialog={closeDialog}
         />
+      )}
+
+      {showDeleteModal && (
+        <ConfirmationModal
+          onOpen={showDeleteModal}
+          onConfirm={() => handleDeleteTrip()}
+          onCancel={() => setShowDeleteModal(false)}
+        >
+          Sure you want to delete this trip?
+        </ConfirmationModal>
       )}
     </>
   );

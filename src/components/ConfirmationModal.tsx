@@ -33,6 +33,7 @@ const ConfirmationModal = ({
       onClose={onCancel}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      sx={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
