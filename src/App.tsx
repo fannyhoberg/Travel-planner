@@ -10,6 +10,7 @@ import Start from "./pages/Start";
 import TripPage from "./pages/TripPage";
 import { LoadScriptNext } from "@react-google-maps/api";
 import ProfilePage from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const theme = useTheme();
@@ -49,6 +50,8 @@ function App() {
               <Route path="/" element={<Start />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+
               <Route element={<ProtectedRoutes />}>
                 <Route path="/home" element={<Dashboard />} />
                 <Route path="/trip/:id" element={<TripPage />} />

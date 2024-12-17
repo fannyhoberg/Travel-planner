@@ -15,6 +15,11 @@ body {
   z-index: 2000 !important;
 }
 
+.btn-text-black {
+  text-transform: none !important;
+  color: black !important;
+}
+
 .btn-primary {
   background-color: #ffbc59 !important;
   color: white !important;
@@ -29,6 +34,13 @@ body {
 .btn-primary:hover {
   background-color: #ff9800 !important;
   opacity: 0.8 !important;
+}
+
+.btn-primary:disabled {
+  background-color: #c29044 !important;
+  color: #6b593e !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
 }
 
 .btn-secondary {

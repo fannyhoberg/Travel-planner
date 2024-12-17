@@ -33,7 +33,6 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 
   const {
     currentUser,
-    reloadUser,
     setDisplayName,
     setEmail,
     setPassword,
@@ -76,7 +75,6 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
         if (formData.password) {
           await setPassword(formData.password);
         }
-        reloadUser();
       }
       setIsSuccessSnackbar({
         open: true,

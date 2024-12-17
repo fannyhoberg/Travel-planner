@@ -93,17 +93,9 @@ const SignUp = () => {
       <Container maxWidth="sm">
         <Typography variant="h4">Create account</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
-          {isLoading && <LoadingSpinner />}
-          {loading && <LoadingSpinner />}
-
-          {isError && (
-            <Typography color="error" sx={{ mt: 2 }}>
-              {isError}
-            </Typography>
-          )}
-
           <TextField
             label="Email"
+            aria-label="email"
             name="email"
             type="email"
             variant="standard"
@@ -114,6 +106,7 @@ const SignUp = () => {
           />
           <TextField
             label="Password"
+            aria-label="password"
             name="password"
             type="password"
             variant="standard"
@@ -124,6 +117,7 @@ const SignUp = () => {
           />
           <TextField
             label="Confirm password"
+            aria-label="Confirm password"
             name="confirmPassword"
             type="password"
             variant="standard"
@@ -145,18 +139,30 @@ const SignUp = () => {
             type="submit"
             className="btn-primary"
             variant="contained"
+            aria-label="Create account"
+            title="Create account"
           >
             Create
           </Button>
         </Box>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={open}
-          onClose={handleCloseSnackbar}
-          message="Account successfully created!"
-          key={vertical + horizontal}
-          sx={{ backgroundColor: "F5F5F5", borderBlockColor: "black" }}
-        />
+        {isLoading && <LoadingSpinner />}
+        {loading && <LoadingSpinner />}
+
+        {isError && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {isError}
+          </Typography>
+        )}
+        {!isLoading && !isError && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={open}
+            onClose={handleCloseSnackbar}
+            message="Account successfully created!"
+            key={vertical + horizontal}
+            sx={{ backgroundColor: "FFFFF", borderBlockColor: "white" }}
+          />
+        )}
       </Container>
     </>
   );

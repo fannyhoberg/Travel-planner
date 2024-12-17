@@ -33,12 +33,14 @@ const ProfilePage = () => {
     userName,
     deleteAccount,
     reauthenticateUser,
+    reloadUser,
   } = useAuth();
 
   const { data: user, isLoading } = useGetUser(currentUser?.uid);
   const { deleteUser } = useHandleUser();
 
   const exitUpdate = () => {
+    reloadUser();
     setUpdateProfile(false);
   };
 
@@ -85,12 +87,14 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    setFormData({
-      ...formData,
-      name: userName ? userName : "",
-      email: userEmail ? userEmail : "",
-    });
-  }, []);
+    if (userName && userEmail) {
+      setFormData({
+        ...formData,
+        name: userName,
+        email: userEmail,
+      });
+    }
+  }, [userName, userEmail]);
 
   return (
     <>

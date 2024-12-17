@@ -11,6 +11,7 @@ import {
   deleteUser,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import React, {
   createContext,
@@ -23,6 +24,7 @@ import { auth } from "../services/firebase";
 interface Authtypes {
   signup: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
+  resetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
   userName: string | null;
   userEmail: string | null;
@@ -49,6 +51,12 @@ const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const login = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const resetPassword = (email: string) => {
+    return sendPasswordResetEmail(auth, email, {
+      url: window.location.origin + "/login",
+    });
   };
 
   const logout = () => {
@@ -109,6 +117,7 @@ const AuthContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const authContextValue: Authtypes = {
     signup,
     login,
+    resetPassword,
     logout,
     userEmail,
     userName,

@@ -49,6 +49,9 @@ const Login = () => {
     setIsSubmitting(false);
   };
 
+  const handleResetPassword = () => {
+    navigate("/forgot-password");
+  };
   return (
     <>
       <BackButton to="/" />
@@ -87,10 +90,21 @@ const Login = () => {
             type="submit"
             className="btn-primary"
             variant="contained"
+            aria-label="Log in"
+            title="Log in"
           >
             Log in
           </Button>
         </Box>
+        <Button
+          type="submit"
+          className="btn-text-black"
+          aria-label="Forgot password"
+          title="Forgot password"
+          onClick={handleResetPassword}
+        >
+          Forgot password?
+        </Button>
       </Container>
     </>
   );
