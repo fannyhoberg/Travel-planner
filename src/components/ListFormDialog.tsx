@@ -72,7 +72,21 @@ const ListFormDialog = ({
   }, [initialValues]);
 
   return (
-    <Dialog open={true} onClose={onClose}>
+    <Dialog
+      open={true}
+      onClose={onClose}
+      disableScrollLock
+      PaperProps={{
+        sx: {
+          borderRadius: isMobile ? 0 : 4,
+          maxWidth: isMobile ? "100%" : "400px",
+          minWidth: isMobile ? "100%" : "300px",
+          maxHeight: isMobile ? "100%" : "400px",
+          padding: 2,
+          margin: isMobile ? 0 : "auto",
+        },
+      }}
+    >
       <DialogTitle>
         {initialValues ? "Update List" : "Add New List"}
       </DialogTitle>
