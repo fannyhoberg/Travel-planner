@@ -124,7 +124,7 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
             }}
           >
             <TextField
-              label="Trip Name"
+              label="Where you going?"
               value={formData.title}
               onChange={(e) => setFormData({ title: e.target.value })}
               variant="outlined"

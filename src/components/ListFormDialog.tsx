@@ -128,19 +128,42 @@ const ListFormDialog = ({
               />
             ))}
           </Box>
-          <Button
-            variant="text"
-            type="submit"
-            className="btn-primary"
-            sx={{ mt: 4 }}
+          <DialogActions
+            sx={{
+              justifyContent: "space-between",
+              padding: 2,
+            }}
           >
-            {initialValues ? "Update" : "Add"}
-          </Button>
+            <Button
+              onClick={onClose}
+              color="secondary"
+              variant="outlined"
+              className="btn-secondary"
+              aria-label="Cancel"
+              title="Cancel"
+              sx={{
+                borderRadius: 2,
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="text"
+              type="submit"
+              className="btn-primary"
+              aria-label={initialValues ? "Save" : "Add"}
+              title={initialValues ? "Save" : "Add"}
+              // disabled={isLoading ? true : false}
+
+              sx={{
+                borderRadius: 2,
+              }}
+            >
+              {initialValues ? "Update" : "Add"}
+            </Button>
+          </DialogActions>
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-      </DialogActions>
     </Dialog>
   );
 };
