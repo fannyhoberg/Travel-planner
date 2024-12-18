@@ -4,13 +4,11 @@ import { useState } from "react";
 import { useHandleTrip } from "../hooks/useHandleTrip";
 
 type NotesProp = {
-  isMobile: boolean;
   id: string | undefined;
-
   trip: Trip | null;
 };
 
-const Notes = ({ isMobile, id, trip }: NotesProp) => {
+const Notes = ({ id, trip }: NotesProp) => {
   const [localNotes, setLocalNotes] = useState<string>("");
   const [isNotesChanged, setIsNotesChanged] = useState(false);
 

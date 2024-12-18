@@ -254,7 +254,7 @@ const TripPage = () => {
           >
             {hasItemsInLists && !isMobile && <Map />}
 
-            {!isMobile && <Notes isMobile={isMobile} id={id} trip={trip} />}
+            {!isMobile && <Notes id={id} trip={trip} />}
           </Box>
           <Box
             sx={{
@@ -547,7 +547,7 @@ const TripPage = () => {
           </Box>
         </Box>
 
-        {isMobile && <Notes isMobile={isMobile} id={id} trip={trip} />}
+        {isMobile && <Notes id={id} trip={trip} />}
 
         {hasItemsInLists && isMobile && <Map />}
       </Container>
