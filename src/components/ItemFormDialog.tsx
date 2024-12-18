@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -62,16 +63,24 @@ const ItemFormDialog = ({
             borderRadius: isMobile ? 0 : 4,
             maxWidth: isMobile ? "100%" : "400px",
             minWidth: isMobile ? "100%" : "300px",
-            maxHeight: isMobile ? "100%" : "400px",
+            maxHeight: isMobile ? "100%" : "500px",
             padding: 2,
             margin: isMobile ? 0 : "auto",
           },
         }}
       >
         <DialogTitle>
-          {initialValues ? `Update place` : `Add place to ${listName}`}
+          {initialValues ? (
+            <Typography variant="h4">Update place</Typography>
+          ) : (
+            <Typography variant="h4">{`Add place to ${listName}`}</Typography>
+          )}
         </DialogTitle>
         <DialogContent>
+          <Typography variant="body2">
+            Enter adress if you want to see place on map
+          </Typography>
+
           <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
             <TextField
               label="Name of place"
@@ -125,19 +134,42 @@ const ItemFormDialog = ({
                 }}
               />
             </Autocomplete>
-            <Button
-              variant="text"
-              type="submit"
-              className="btn-primary"
-              sx={{ mt: 4 }}
+
+            <DialogActions
+              sx={{
+                justifyContent: "space-between",
+                padding: 2,
+                mt: 2,
+              }}
             >
-              {initialValues ? "Update" : "Add to list"}
-            </Button>
+              <Button
+                onClick={onClose}
+                color="secondary"
+                variant="outlined"
+                className="btn-secondary"
+                aria-label="Cancel"
+                title="Cancel"
+                sx={{
+                  borderRadius: 2,
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="btn-primary"
+                aria-label={initialValues ? "Save" : "Add"}
+                title={initialValues ? "Save" : "Add"}
+                // disabled={isLoading ? true : false}
+                sx={{
+                  borderRadius: 2,
+                }}
+              >
+                {initialValues ? "Save" : "Add"}
+              </Button>
+            </DialogActions>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-        </DialogActions>
       </Dialog>
     </>
   );

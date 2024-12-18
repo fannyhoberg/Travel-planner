@@ -87,7 +87,13 @@ const ListFormDialog = ({
         },
       }}
     >
-      <DialogTitle>
+      <DialogTitle
+        sx={{
+          fontSize: "1.5rem",
+          textAlign: "center",
+          paddingTop: 4,
+        }}
+      >
         {initialValues ? "Update List" : "Add New List"}
       </DialogTitle>
       <DialogContent>

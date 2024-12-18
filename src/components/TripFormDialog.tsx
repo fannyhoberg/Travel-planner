@@ -90,6 +90,7 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
         open={true}
         onClose={closeDialog}
         fullScreen={isMobile}
+        disableScrollLock
         PaperProps={{
           sx: {
             borderRadius: isMobile ? 0 : 4,
