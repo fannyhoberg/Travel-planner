@@ -81,7 +81,7 @@ const ListFormDialog = ({
           borderRadius: isMobile ? 0 : 4,
           maxWidth: isMobile ? "100%" : "400px",
           minWidth: isMobile ? "100%" : "300px",
-          maxHeight: isMobile ? "100%" : "400px",
+          maxHeight: isMobile ? "100%" : "500px",
           padding: 2,
           margin: isMobile ? 0 : "auto",
         },

@@ -2,12 +2,15 @@ import { useParams } from "react-router-dom";
 import useGetTrip from "../hooks/useGetTrip";
 import {
   Container,
-  TextField,
   Box,
   Typography,
   useMediaQuery,
   useTheme,
   Button,
+  IconButton,
+  Popover,
+  MenuItem,
+  Divider,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -15,7 +18,6 @@ import { GeoPoint } from "firebase/firestore";
 import { getGeopoint } from "../services/geocodingAPI";
 import { v4 as uuidv4 } from "uuid";
 import { useHandleTrip } from "../hooks/useHandleTrip";
-import TripList from "../components/TripList";
 import ItemFormDialog from "../components/ItemFormDialog";
 import ListFormDialog from "../components/ListFormDialog";
 import Map from "../components/Map";
@@ -24,12 +26,23 @@ import BackButton from "../components/BackButton";
 import useAuth from "../hooks/useAuth";
 import AccessDenied from "../components/AccessDenied";
 import LoadingSpinner from "../components/LoadingSpinner";
+import AddIcon from "@mui/icons-material/Add";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import ConfirmationModal from "../components/ConfirmationModal";
+import Notes from "../components/Notes";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
   const [listName, setListName] = useState<string>("");
   const [addingList, setAddingList] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedList, setSelectedList] = useState<null | string>(null);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const [newListName, setNewListName] = useState<string>("");
+  const [updateListDialog, setUpdateListDialog] = useState(false);
+  const [listToUpdate, setListToUpdate] = useState<string | null>(null);
 
   const [updateItemDialog, setUpdateItemDialog] = useState(false);
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
@@ -39,10 +52,12 @@ const TripPage = () => {
     city: "",
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [listAnchorEl, setListAnchorEl] = useState<null | HTMLElement>(null);
+  const [itemAnchorEl, setItemAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItem, setSelectedItem] = useState<null | string>(null);
 
-  const [localNotes, setLocalNotes] = useState<string>("");
-  const [isNotesChanged, setIsNotesChanged] = useState(false);
+  const [showListDeleteModal, setShowListDeleteModal] = useState(false);
+  const [showItemDeleteModal, setShowItemDeleteModal] = useState(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -62,28 +77,48 @@ const TripPage = () => {
     addNewList,
     addNewItem,
     updateItem,
-    updateTripNotes,
+    markItemAsCompleted,
+    removeItemFromList,
+    updateList,
+    deleteList,
   } = useHandleTrip(id, trip);
 
-  const handleOpenPopup = (
+  const handleOpenListPopup = (
+    event: React.MouseEvent<HTMLElement>,
+    listId: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setListAnchorEl(event.currentTarget);
+    setSelectedList(listId);
+  };
+
+  const handleOpenItemPopup = (
     event: React.MouseEvent<HTMLElement>,
     itemId: string
   ) => {
     setAnchorEl(event.currentTarget);
+
+    setItemAnchorEl(event.currentTarget);
     setSelectedItem(itemId);
   };
 
   const handleClosePopup = () => {
-    setAnchorEl(null);
+    setListAnchorEl(null);
+    setItemAnchorEl(null);
     setSelectedItem(null);
+    setSelectedList(null);
   };
 
-  const isPopupOpen = Boolean(anchorEl);
+  const isListPopupOpen = Boolean(listAnchorEl);
+  const isItemPopupOpen = Boolean(itemAnchorEl);
 
   const closeDialog = () => {
     setAddNewTripDialog(false);
     setAddingList(null);
     setUpdateItemDialog(false);
+    setUpdateListDialog(false);
+    setNewListName("");
+    setSelectedColor("");
   };
 
   const hasItemsInLists = trip?.lists?.some(
@@ -145,11 +180,33 @@ const TripPage = () => {
     }
   };
 
-  const handleSaveNotes = async () => {
-    if (!trip) return;
+  const handleEditList = async (data: ListTextData) => {
+    if (!listToUpdate) return;
 
-    await updateTripNotes(localNotes);
-    setIsNotesChanged(false);
+    await updateList(listToUpdate, data.name, data.color);
+    setSelectedList(null);
+    setNewListName("");
+    setUpdateListDialog(false);
+  };
+
+  const handleDeleteList = async () => {
+    if (!selectedList) return;
+
+    await deleteList(selectedList);
+    setShowListDeleteModal(false);
+    setSelectedList(null);
+  };
+
+  const markPlaceAsDone = async (listName: string, itemId: string) => {
+    await markItemAsCompleted(listName, itemId);
+  };
+
+  const handleRemoveItem = async () => {
+    if (!itemToDelete || !listToUpdate) return;
+
+    await removeItemFromList(listToUpdate, itemToDelete);
+    setShowItemDeleteModal(false);
+    setItemToDelete(null);
   };
 
   if (currentUser?.uid !== trip?.userId) {
@@ -196,42 +253,8 @@ const TripPage = () => {
             }}
           >
             {hasItemsInLists && !isMobile && <Map />}
-            {!isMobile && (
-              <>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    mt: 3,
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    id="outlined-multiline-static"
-                    label="Notes"
-                    multiline
-                    rows={4}
-                    value={isNotesChanged ? localNotes : trip?.notes || ""}
-                    onChange={(e) => {
-                      setLocalNotes(e.target.value);
-                      setIsNotesChanged(true);
-                    }}
-                    sx={{ mt: 2, backgroundColor: "#FFFFFF" }}
-                  />
-                </Box>
-                {isNotesChanged && (
-                  <Button
-                    variant="contained"
-                    title="Save"
-                    aria-label="Save notes"
-                    onClick={handleSaveNotes}
-                    sx={{ alignSelf: "flex-end" }}
-                  >
-                    Save
-                  </Button>
-                )}
-              </>
-            )}
+
+            {!isMobile && <Notes isMobile={isMobile} id={id} trip={trip} />}
           </Box>
           <Box
             sx={{
@@ -269,26 +292,225 @@ const TripPage = () => {
               />
             )}
             <Box sx={{ width: "100%" }}>
-              <TripList
-                setAddingList={setAddingList}
-                handleOpenPopup={handleOpenPopup}
-                isPopupOpen={isPopupOpen}
-                selectedItem={selectedItem}
-                anchorEl={anchorEl}
-                handleClosePopup={handleClosePopup}
-                setInitialValues={setInitialValues}
-                setListName={setListName}
-                setUpdateItemDialog={setUpdateItemDialog}
-                setItemToUpdate={setItemToUpdate}
-                trip={trip}
-                id={id}
-              />
+              {handleTripLoading && <LoadingSpinner />}
+
+              {handleTripError && (
+                <Typography color="error" sx={{ mt: 2 }}>
+                  {handleTripError}
+                </Typography>
+              )}
+
+              {trip?.lists?.map((list) => (
+                <Box key={list._id} sx={{ paddingBottom: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "left",
+                      justifyContent: "space-between",
+                      padding: "8px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        backgroundColor: list.color,
+                        borderRadius: "50%",
+                        marginRight: "10px",
+                      }}
+                    />
+                    <Typography
+                      variant="h3"
+                      color="#2a3132"
+                      sx={{ textAlign: "left", flex: 1 }}
+                    >
+                      {list.name}
+                    </Typography>
+
+                    <IconButton
+                      onClick={() => setAddingList(list.name)}
+                      size="small"
+                      sx={{ color: "#2a3132" }}
+                      aria-label="Add new item to list"
+                      title="Add new item to list"
+                    >
+                      <AddIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={(e) => {
+                        handleOpenListPopup(e, list._id),
+                          setSelectedColor(list.color);
+                      }}
+                      size="small"
+                      title="More actions"
+                      aria-label="More actions"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Popover
+                      open={isListPopupOpen && selectedList === list._id}
+                      anchorEl={anchorEl}
+                      onClose={handleClosePopup}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    >
+                      <Box>
+                        <MenuItem
+                          tabIndex={1}
+                          aria-label="Edit list"
+                          title="Edit list"
+                          onClick={() => {
+                            setListToUpdate(list._id);
+                            setNewListName(list.name);
+                            setSelectedColor(list.color);
+                            setUpdateListDialog(true);
+                            handleClosePopup();
+                          }}
+                        >
+                          Edit
+                        </MenuItem>
+                        <MenuItem
+                          tabIndex={1}
+                          aria-label="Delete list"
+                          title="Delete list"
+                          onClick={() => {
+                            setSelectedList(list._id);
+                            setShowListDeleteModal(true);
+                          }}
+                        >
+                          Delete
+                        </MenuItem>
+                      </Box>
+                    </Popover>
+                  </Box>
+                  <Divider sx={{ marginTop: 1 }} />
+                  {list.items && list.items.length > 0 ? (
+                    <Box sx={{ padding: 3 }}>
+                      {list.items.map((item) => (
+                        <Box
+                          key={item._id}
+                          sx={{
+                            marginBottom: 1,
+                            padding: 2,
+                            backgroundColor: item.completed
+                              ? "#DAD2C7"
+                              : "#FFFFFF",
+                            border: "0.1px solid lightgrey",
+                            borderRadius: 3,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          <Box sx={{ marginRight: 1 }}>
+                            <IconButton
+                              size="medium"
+                              onClick={() =>
+                                markPlaceAsDone(list.name, item._id)
+                              }
+                              sx={{ color: "black" }}
+                              title={
+                                item.completed
+                                  ? "Mark as undone"
+                                  : "Mark as done"
+                              }
+                            >
+                              {item.completed ? (
+                                <TaskAltIcon />
+                              ) : (
+                                <RadioButtonUncheckedIcon />
+                              )}
+                            </IconButton>
+                          </Box>
+                          <Box sx={{ width: "100%", textAlign: "left" }}>
+                            <Typography variant="body1" color={"textPrimary"}>
+                              <strong>{item.title}</strong>
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              {item.address
+                                ? `${item.address}${
+                                    item.postcode ? `, ${item.postcode}` : ""
+                                  }`
+                                : null}
+                            </Typography>
+                          </Box>
+                          <IconButton
+                            onClick={(e) => handleOpenItemPopup(e, item._id)}
+                            size="small"
+                            title="More actions"
+                            aria-label="More actions"
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Popover
+                            open={isItemPopupOpen && selectedItem === item._id}
+                            anchorEl={anchorEl}
+                            onClose={handleClosePopup}
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "left",
+                            }}
+                          >
+                            <Box>
+                              <MenuItem
+                                tabIndex={1}
+                                aria-label="Edit place"
+                                title="Edit place"
+                                onClick={() => {
+                                  setInitialValues({
+                                    title: item.title,
+                                    address: item.address,
+                                    city: item.city,
+                                  });
+                                  setListName(list.name);
+                                  setUpdateItemDialog(true);
+                                  setItemToUpdate(item._id);
+                                  handleClosePopup();
+                                }}
+                              >
+                                Edit
+                              </MenuItem>
+                              <MenuItem
+                                tabIndex={1}
+                                aria-label="Remove place from list"
+                                title="Remove place from list"
+                                onClick={() => {
+                                  setListToUpdate(list.name);
+                                  setItemToDelete(item._id);
+                                  setShowItemDeleteModal(true);
+                                  handleClosePopup();
+                                }}
+                              >
+                                Delete
+                              </MenuItem>
+                            </Box>
+                          </Popover>
+                        </Box>
+                      ))}
+                    </Box>
+                  ) : null}
+                </Box>
+              ))}
             </Box>
+
             {addingList && (
               <ItemFormDialog
                 onSubmit={handleSubmitItem}
                 onClose={closeDialog}
                 listName={addingList}
+              />
+            )}
+
+            {updateListDialog && (
+              <ListFormDialog
+                onClose={closeDialog}
+                handleEditList={handleEditList}
+                setListName={setNewListName}
+                setSelectedColor={setSelectedColor}
+                selectedColor={selectedColor}
+                initialValues={{
+                  name: newListName,
+                  color: selectedColor,
+                }}
               />
             )}
 
@@ -300,47 +522,33 @@ const TripPage = () => {
                 initialValues={initialValues}
               />
             )}
+
+            {showListDeleteModal && (
+              <ConfirmationModal
+                onOpen={showListDeleteModal}
+                onConfirm={() => handleDeleteList()}
+                onCancel={() => setShowListDeleteModal(false)}
+              >
+                Sure you want to delete this list?
+              </ConfirmationModal>
+            )}
+
+            {showItemDeleteModal && (
+              <ConfirmationModal
+                onOpen={showItemDeleteModal}
+                onConfirm={() => handleRemoveItem()}
+                onCancel={() => {
+                  setShowItemDeleteModal(false), setItemToDelete(null);
+                }}
+              >
+                Sure you want to remove this item?
+              </ConfirmationModal>
+            )}
           </Box>
         </Box>
 
-        {isMobile && (
-          <>
-            <Box sx={{ pb: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mt: 3,
-                }}
-              >
-                <TextField
-                  fullWidth
-                  id="outlined-multiline-static"
-                  label="Notes"
-                  multiline
-                  rows={4}
-                  value={isNotesChanged ? localNotes : trip?.notes || ""}
-                  onChange={(e) => {
-                    setLocalNotes(e.target.value);
-                    setIsNotesChanged(true);
-                  }}
-                  sx={{ mt: 2, backgroundColor: "#FFFFFF" }}
-                />
-              </Box>
-              {isNotesChanged && (
-                <Button
-                  variant="contained"
-                  title="Save"
-                  aria-label="Save notes"
-                  onClick={handleSaveNotes}
-                  sx={{ mt: 2 }}
-                >
-                  Save
-                </Button>
-              )}
-            </Box>
-          </>
-        )}
+        {isMobile && <Notes isMobile={isMobile} id={id} trip={trip} />}
+
         {hasItemsInLists && isMobile && <Map />}
       </Container>
     </>
