@@ -174,7 +174,7 @@ const TripPage = () => {
       <Container sx={{ mb: "10vh" }} maxWidth={isMobile ? "sm" : "lg"}>
         <BackButton />
 
-        <Typography sx={{ pt: 4 }} variant="h3">
+        <Typography sx={{ pt: 4 }} variant="h1">
           {trip?.title}
         </Typography>
 
@@ -216,7 +216,7 @@ const TripPage = () => {
                       setLocalNotes(e.target.value);
                       setIsNotesChanged(true);
                     }}
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2, backgroundColor: "#FFFFFF" }}
                   />
                 </Box>
                 {isNotesChanged && (
@@ -324,7 +324,7 @@ const TripPage = () => {
                     setLocalNotes(e.target.value);
                     setIsNotesChanged(true);
                   }}
-                  sx={{ mt: 2 }}
+                  sx={{ mt: 2, backgroundColor: "#FFFFFF" }}
                 />
               </Box>
               {isNotesChanged && (

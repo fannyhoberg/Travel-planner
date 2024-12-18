@@ -166,7 +166,6 @@ const ProfilePage = () => {
                 type="submit"
                 sx={{ mt: 4, mr: 4 }}
                 className="btn-delete"
-                variant="contained"
                 aria-label="Delete account"
                 title="Delete account"
                 onClick={() => setShowDeleteModal(true)}
@@ -177,7 +176,6 @@ const ProfilePage = () => {
                 type="submit"
                 sx={{ mt: 4 }}
                 className="btn-primary"
-                variant="contained"
                 aria-label="Update profile"
                 title="Update profile"
                 onClick={() => setUpdateProfile(true)}

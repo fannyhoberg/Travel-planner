@@ -145,7 +145,11 @@ const TripList = ({
                 marginRight: "10px",
               }}
             />
-            <Typography color="#2a3132" sx={{ textAlign: "left", flex: 1 }}>
+            <Typography
+              variant="h3"
+              color="#2a3132"
+              sx={{ textAlign: "left", flex: 1 }}
+            >
               {list.name}
             </Typography>
 
@@ -212,7 +216,8 @@ const TripList = ({
                   sx={{
                     marginBottom: 1,
                     padding: 2,
-                    backgroundColor: item.completed ? "#DAD2C7" : "#F0EBE6",
+                    backgroundColor: item.completed ? "#DAD2C7" : "#FFFFFF",
+                    border: "0.1px solid lightgrey",
                     borderRadius: 3,
                     display: "flex",
                     alignItems: "center",

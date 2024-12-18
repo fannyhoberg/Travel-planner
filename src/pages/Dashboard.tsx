@@ -92,7 +92,7 @@ const Dashboard = () => {
           padding: "8px",
         }}
       >
-        <Typography variant="h3">My trips</Typography>
+        <Typography variant="h1">My trips</Typography>
         {!isMobile && (
           <Button onClick={addNewTrip} className="btn-primary">
             New trip +
@@ -122,7 +122,8 @@ const Dashboard = () => {
                   <Grid2 size={8} key={trip._id}>
                     <Box
                       sx={{
-                        backgroundColor: "#ede3d6",
+                        backgroundColor: "#FFFFFF",
+                        border: "0.1px solid lightgrey",
                         height: 150,
                         display: "flex",
                         alignItems: "center",
@@ -179,11 +180,10 @@ const Dashboard = () => {
                         </Box>
                       </Popover>
                       <Link
-                        className="card-primary"
                         to={`/trip/${trip._id}`}
                         style={{ textDecoration: "none" }}
                       >
-                        <Typography variant="h4" color="#2a3132">
+                        <Typography variant="h2" color="#2a3132">
                           {trip.title}
                         </Typography>
                       </Link>

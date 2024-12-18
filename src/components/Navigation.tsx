@@ -110,7 +110,7 @@ const Navigation = () => {
       {!isMobile && (
         <AppBar
           sx={{
-            backgroundColor: "white",
+            backgroundColor: "#f5f3ed",
             width: "100%",
             boxShadow: "none",
           }}

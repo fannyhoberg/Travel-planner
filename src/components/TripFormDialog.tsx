@@ -27,8 +27,6 @@ type Props = {
 const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
-
   const [formData, setFormData] = useState({
     title: initialValue || "",
   });
@@ -51,7 +49,6 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
     if (!initialValue) {
       try {
         await addTrip({ title: formData.title, userId: currentUser.uid });
-        setIsSuccess(true);
       } catch (err) {
         if (err instanceof FirebaseError) {
           setIsError(err.message);
@@ -72,7 +69,6 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
         console.log(
           `Trip with ID: ${id} has been updated with title: ${data.title}`
         );
-        setIsSuccess(true);
       } catch (err) {
         if (err instanceof FirebaseError) {
           setIsError(err.message);
@@ -84,7 +80,6 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
       }
     }
     setIsLoading(false);
-    setIsSuccess(false);
 
     closeDialog();
   };
@@ -161,9 +156,7 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
               </Button>
               <Button
                 type="submit"
-                variant="contained"
                 className="btn-primary"
-                color="primary"
                 aria-label={initialValue ? "Save" : "Add"}
                 title={initialValue ? "Save" : "Add"}
                 disabled={isLoading ? true : false}
@@ -190,7 +183,6 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
         {isLoading && <LoadingSpinner />}
         {addTripLoading && <LoadingSpinner />}
       </Dialog>
-      {/* {isSuccess && <SnackbarComponent/>} */}
     </>
   );
 };

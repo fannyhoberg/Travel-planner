@@ -89,6 +89,7 @@ const Map = () => {
       style={{
         width: "100%",
         height: "500px",
+        border: "0.2px solid lightgrey",
         borderRadius: "1rem",
         marginTop: 4,
         overflow: "hidden",
