@@ -22,6 +22,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Trip } from "../types/trip";
 import { FirebaseError } from "firebase/app";
 import LoadingSpinner from "../components/LoadingSpinner";
+import NoTrips from "../assets/images/Notrips.png";
 
 const Dashboard = () => {
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
@@ -216,6 +217,43 @@ const Dashboard = () => {
               </Grid2>
             </Box>
           </>
+        )}
+        {trips && trips.length < 1 && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              mt: 5,
+              overflow: "hidden",
+            }}
+          >
+            <Typography variant="h2">
+              Add your first trip and start planning!
+            </Typography>
+
+            <Box
+              sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <img
+                src={NoTrips}
+                alt="404 Not Found"
+                style={{
+                  width: isMobile ? "100%" : "50%",
+                  height: isMobile ? "100%" : "50%",
+                  maxHeight: "100vh",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                }}
+              />
+            </Box>
+          </Box>
         )}
       </Container>
 
