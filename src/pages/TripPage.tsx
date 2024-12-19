@@ -32,6 +32,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import ConfirmationModal from "../components/ConfirmationModal";
 import Notes from "../components/Notes";
+import PDFGenerator from "../components/ExportTrip";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -255,6 +256,16 @@ const TripPage = () => {
             {hasItemsInLists && !isMobile && <Map />}
 
             {!isMobile && <Notes id={id} trip={trip} />}
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: isMobile ? "center" : "flex-start",
+                marginBottom: 2,
+              }}
+            >
+              <PDFGenerator trip={trip} />
+            </Box>
           </Box>
           <Box
             sx={{
