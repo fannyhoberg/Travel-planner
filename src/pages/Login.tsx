@@ -55,8 +55,8 @@ const Login = () => {
   return (
     <>
       <BackButton to="/" />
-      <Container maxWidth="sm">
-        <Typography variant="h4">Log in</Typography>
+      <Container maxWidth="sm" sx={{ mt: 5 }}>
+        <Typography variant="h2">Log in</Typography>
         <Box sx={{ mt: 4, p: 5 }} component="form" onSubmit={handleSubmit}>
           <TextField
             label="Email"

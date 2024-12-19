@@ -61,6 +61,8 @@ const Start = () => {
               type="submit"
               className="btn-primary"
               variant="contained"
+              aria-label="Create account"
+              title="Create account"
             >
               Create account
             </Button>
@@ -68,6 +70,8 @@ const Start = () => {
               onClick={handleLogIn}
               className="btn-secondary"
               variant="outlined"
+              aria-label="Log in"
+              title="Log in"
             >
               Log in
             </Button>

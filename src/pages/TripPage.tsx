@@ -296,7 +296,10 @@ const TripPage = () => {
                 Add list
               </Button>
             </Box>
-
+            <Typography variant="body1" sx={{ mt: 2, textAlign: "center" }}>
+              Add list to fill with places to visit! For example:{"\n"}
+              Restaurants, Museums, or Parks.
+            </Typography>
             {addNewListDialog && trip && (
               <ListFormDialog
                 onClose={closeDialog}
@@ -306,6 +309,7 @@ const TripPage = () => {
                 setSelectedColor={setSelectedColor}
               />
             )}
+
             <Box sx={{ width: "100%" }}>
               {handleTripLoading && <LoadingSpinner />}
 

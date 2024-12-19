@@ -69,11 +69,12 @@ const ForgotPassword = () => {
   return (
     <>
       <BackButton />
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ mt: 5 }}>
         <Stack spacing={2}>
-          <Typography variant="h5">Reset password</Typography>
+          <Typography variant="h2">Reset password</Typography>
           <Typography>
-            Enter your email and you'll get a password reset link in your inbox!
+            Submit your email and you'll get a password reset link in your
+            inbox!
           </Typography>
         </Stack>
         <Box sx={{ mt: 4, p: 5 }} component="form" onSubmit={handleSubmit}>
@@ -94,6 +95,8 @@ const ForgotPassword = () => {
             type="submit"
             className="btn-primary"
             variant="contained"
+            aria-label="Send"
+            title="Send"
           >
             Send
           </Button>
