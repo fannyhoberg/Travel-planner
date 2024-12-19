@@ -55,6 +55,28 @@ const Navigation = () => {
             sx={{
               position: "absolute",
               top: 16,
+              left: 16,
+              zIndex: 1300,
+            }}
+          >
+            <Typography
+              component={Link}
+              to="/home"
+              sx={{
+                color: "black",
+                textDecoration: "none",
+                fontFamily: "Caveat, cursive",
+                fontWeight: 500,
+                fontSize: "2rem",
+              }}
+            >
+              Vista
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              position: "absolute",
+              top: 16,
               right: 16,
               zIndex: 1300,
             }}
@@ -144,9 +166,6 @@ const Navigation = () => {
                   >
                     Profile
                   </Button>
-                  {/* <Button sx={{ color: "black" }} onClick={handleLogOut}>
-                    Log out
-                  </Button> */}
                 </Box>
               </>
             )}

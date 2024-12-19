@@ -91,6 +91,7 @@ const Dashboard = () => {
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "center" : "flex-start",
           justifyContent: "space-between",
+          mt: isMobile ? 5 : 0,
         }}
       >
         <Typography variant="h1" sx={{ marginBottom: isMobile ? "16px" : "0" }}>

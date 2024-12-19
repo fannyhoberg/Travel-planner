@@ -229,7 +229,10 @@ const TripPage = () => {
         </Typography>
       )}
 
-      <Container sx={{ mb: "10vh" }} maxWidth={isMobile ? "sm" : "lg"}>
+      <Container
+        sx={isMobile ? { mb: "10vh", mt: 6 } : { mb: "10vh" }}
+        maxWidth={isMobile ? "sm" : "lg"}
+      >
         <BackButton />
 
         <Typography sx={{ pt: 4 }} variant="h1">
@@ -261,7 +264,7 @@ const TripPage = () => {
               sx={{
                 display: "flex",
                 justifyContent: isMobile ? "center" : "flex-start",
-                marginBottom: 2,
+                // marginBottom: 2,
               }}
             >
               <PDFGenerator trip={trip} />
@@ -288,6 +291,7 @@ const TripPage = () => {
                 className="btn-primary"
                 aria-label="Add list"
                 title="Add list"
+                sx={{ mb: 2 }}
               >
                 Add list
               </Button>

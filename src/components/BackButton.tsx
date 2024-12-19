@@ -22,7 +22,7 @@ const BackButton = ({ to }: BackButtonProps) => {
       sx={{
         position: "absolute",
         top: "5rem",
-        left: "2rem",
+        left: "0.9rem",
         color: "#2A3132",
         textTransform: "none",
         zIndex: 10000,

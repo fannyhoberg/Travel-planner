@@ -1,4 +1,12 @@
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import UpdateProfile from "../components/UpdateProfile";
@@ -26,6 +34,9 @@ const ProfilePage = () => {
   const [isError, setIsError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   const {
     currentUser,
@@ -104,7 +115,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={isMobile ? { pt: 8 } : null}>
         <BackButton />
 
         {!updateProfile && (
