@@ -121,7 +121,7 @@ const Navigation = () => {
         </>
       )}
 
-      {!isMobile && (
+      {!isMobile && currentUser && (
         <AppBar
           sx={{
             backgroundColor: "#f5f3ed",
