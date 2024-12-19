@@ -86,15 +86,35 @@ const Dashboard = () => {
     <>
       <Box
         sx={{
+          padding: isMobile ? "16px" : "32px",
           display: "flex",
-          alignItems: "left",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "center" : "flex-start",
           justifyContent: "space-between",
-          padding: "8px",
         }}
       >
-        <Typography variant="h1">My trips</Typography>
+        <Typography variant="h1" sx={{ marginBottom: isMobile ? "16px" : "0" }}>
+          My trips
+        </Typography>
+
+        <Box sx={{ display: isMobile ? "block" : "none", mt: 2, mb: 2 }}>
+          <Button
+            onClick={addNewTrip}
+            className="btn-primary"
+            aria-label="Add new trip"
+            title="Add new trip"
+          >
+            New trip +
+          </Button>
+        </Box>
+
         {!isMobile && (
-          <Button onClick={addNewTrip} className="btn-primary">
+          <Button
+            onClick={addNewTrip}
+            className="btn-primary"
+            aria-label="Add new trip"
+            title="Add new trip"
+          >
             New trip +
           </Button>
         )}
@@ -182,6 +202,8 @@ const Dashboard = () => {
                       <Link
                         to={`/trip/${trip._id}`}
                         style={{ textDecoration: "none" }}
+                        title="Go to trip page"
+                        aria-label="Go to trip page"
                       >
                         <Typography variant="h2" color="#2a3132">
                           {trip.title}

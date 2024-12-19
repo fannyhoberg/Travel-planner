@@ -14,9 +14,22 @@ const Start = () => {
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h1" gutterBottom>
-        VISTA
-      </Typography>
+      <Box sx={{ pb: 5, pt: 4 }}>
+        <Typography
+          variant="h1"
+          sx={{
+            flexGrow: 1,
+            color: "black",
+            textDecoration: "none",
+            fontFamily: "Caveat, cursive",
+            fontWeight: 900,
+            fontSize: "7rem",
+          }}
+          gutterBottom
+        >
+          VISTA
+        </Typography>
+      </Box>
       <Box
         sx={{
           display: "flex",

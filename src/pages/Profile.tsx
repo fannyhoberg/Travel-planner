@@ -34,6 +34,7 @@ const ProfilePage = () => {
     deleteAccount,
     reauthenticateUser,
     reloadUser,
+    logout,
   } = useAuth();
 
   const { data: user, isLoading } = useGetUser(currentUser?.uid);
@@ -42,6 +43,11 @@ const ProfilePage = () => {
   const exitUpdate = () => {
     reloadUser();
     setUpdateProfile(false);
+  };
+
+  const handleLogOut = async () => {
+    await logout();
+    console.log("You are signing out.");
   };
 
   const handleDeleteProfile = async () => {
@@ -189,6 +195,16 @@ const ProfilePage = () => {
               >
                 Sure you want to delete this account?
               </ConfirmationModal>
+            </Box>
+            <Box sx={{ mt: 4 }}>
+              <Button
+                onClick={handleLogOut}
+                className="btn-secondary"
+                aria-label="Log out"
+                title="Log out"
+              >
+                Log out
+              </Button>
             </Box>
           </>
         )}

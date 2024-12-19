@@ -12,10 +12,13 @@ import { LoadScriptNext } from "@react-google-maps/api";
 import ProfilePage from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFoundPage from "./pages/NotFoundPage";
+import useAuth from "./hooks/useAuth";
 
 function App() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const { currentUser } = useAuth();
 
   const google_api_key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -29,7 +32,7 @@ function App() {
           libraries={["places"]}
         >
           <>
-            {isMobile && (
+            {isMobile && currentUser && (
               <Box
                 sx={{
                   position: "relative",
@@ -39,9 +42,20 @@ function App() {
                   zIndex: 1300,
                   textAlign: "center",
                   pb: 4,
+                  t: 4,
                 }}
               >
-                <Typography variant="h6" sx={{ color: "black" }}>
+                <Typography
+                  variant="h1"
+                  sx={{
+                    flexGrow: 1,
+                    color: "black",
+                    textDecoration: "none",
+                    fontFamily: "Caveat, cursive",
+                    fontWeight: 700,
+                    fontSize: "3rem",
+                  }}
+                >
                   Vista
                 </Typography>
               </Box>
