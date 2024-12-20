@@ -32,23 +32,31 @@ const ItemFormDialog = ({
 
   const [title, setTitle] = useState<string>("");
   const [address, setAddress] = useState<string>("");
+  const [isAddressSelected, setIsAddressSelected] = useState<boolean>(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, address });
+    if (isAddressSelected || address === "") {
+      onSubmit({ title, address });
+    } else {
+      alert("Please select a place from the autocomplete suggestions.");
+    }
   };
 
   const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
     if (place.formatted_address) {
       setAddress(place.formatted_address);
+      setIsAddressSelected(true);
     } else {
       console.log("No address available for this place.");
     }
   };
+
   useEffect(() => {
     if (initialValues) {
       setTitle(initialValues.title || "");
       setAddress(initialValues.address || "");
+      setIsAddressSelected(!!initialValues.address);
     }
   }, [initialValues]);
 
@@ -78,7 +86,8 @@ const ItemFormDialog = ({
         </DialogTitle>
         <DialogContent>
           <Typography variant="body2">
-            Enter adress if you want to see place on map
+            Enter address and select from suggestions to see the place on the
+            map.
           </Typography>
 
           <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
@@ -103,11 +112,6 @@ const ItemFormDialog = ({
                     try {
                       const place = autocomplete.getPlace();
                       handlePlaceSelected(place);
-                      if (place.formatted_address) {
-                        setAddress(place.formatted_address);
-                      } else {
-                        console.log("No formatted address available.");
-                      }
                     } catch (error) {
                       console.error("Error handling place_changed:", error);
                     }
@@ -123,7 +127,10 @@ const ItemFormDialog = ({
                 placeholder="Enter address"
                 value={address}
                 aria-label="Enter address"
-                onChange={(e) => setAddress(e.target.value)}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                  setIsAddressSelected(false);
+                }}
                 style={{
                   width: "100%",
                   fontSize: "16px",
@@ -160,7 +167,7 @@ const ItemFormDialog = ({
                 className="btn-primary"
                 aria-label={initialValues ? "Save" : "Add"}
                 title={initialValues ? "Save" : "Add"}
-                // disabled={isLoading ? true : false}
+                disabled={!isAddressSelected && address !== ""}
                 sx={{
                   borderRadius: 2,
                 }}

@@ -47,10 +47,11 @@ const Notes = ({ id, trip }: NotesProp) => {
       {isNotesChanged && (
         <Button
           variant="contained"
+          className="btn-primary"
           title="Save"
           aria-label="Save notes"
           onClick={handleSaveNotes}
-          sx={{ mt: 2, alignSelf: "flex-end" }}
+          sx={{ color: "#835d23", mt: 2, alignSelf: "flex-end" }}
         >
           Save
         </Button>

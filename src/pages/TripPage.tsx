@@ -126,9 +126,13 @@ const TripPage = () => {
     setSelectedColor("");
   };
 
+  const hasItemWithAddress = trip?.lists?.some((list) =>
+    list.items?.some((item) => item.address?.trim() !== "")
+  );
   const hasItemsInLists = trip?.lists?.some(
     (list) => list.items && list.items.length > 0
   );
+  const showMap = hasItemsInLists && hasItemWithAddress;
 
   const handleAddNewList = () => {
     setAddNewTripDialog(true);
@@ -237,7 +241,7 @@ const TripPage = () => {
     setItemToMove(null);
   };
 
-  if (currentUser?.uid !== trip?.userId) {
+  if (currentUser?.uid !== trip?.userId && !getTripLoading) {
     return <AccessDenied />;
   }
 
@@ -280,7 +284,7 @@ const TripPage = () => {
               gap: 2,
             }}
           >
-            {hasItemsInLists && !isMobile && <Map />}
+            {showMap && !isMobile && <Map />}
             {!isMobile && <Notes id={id} trip={trip} />}
             <Box
               sx={{
@@ -616,7 +620,7 @@ const TripPage = () => {
           </Box>
         </Box>
         {isMobile && <Notes id={id} trip={trip} />}
-        {hasItemsInLists && isMobile && <Map />}
+        {showMap && isMobile && <Map />}
       </Container>
     </>
   );
