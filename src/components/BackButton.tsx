@@ -31,7 +31,7 @@ const BackButton = ({ to }: BackButtonProps) => {
       title="Go back to previous page"
     >
       <ArrowBackIcon fontSize="large" />
-      <span style={{ marginLeft: "0.5rem" }}>Back</span>
+      <span style={{ marginLeft: "0.5rem", fontSize: "1rem" }}>Back</span>
     </Button>
   );
 };
