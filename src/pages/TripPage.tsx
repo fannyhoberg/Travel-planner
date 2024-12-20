@@ -33,6 +33,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import ConfirmationModal from "../components/ConfirmationModal";
 import Notes from "../components/Notes";
 import PDFGenerator from "../components/ExportTrip";
+import MoveItemDialog from "../components/MoveItemDialog";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -40,22 +41,25 @@ const TripPage = () => {
   const [addingList, setAddingList] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedList, setSelectedList] = useState<null | string>(null);
-  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [newListName, setNewListName] = useState<string>("");
   const [updateListDialog, setUpdateListDialog] = useState(false);
   const [listToUpdate, setListToUpdate] = useState<string | null>(null);
 
   const [updateItemDialog, setUpdateItemDialog] = useState(false);
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState<Partial<Item>>({
     title: "",
     address: "",
     city: "",
   });
+  const [selectedItem, setSelectedItem] = useState<null | string>(null);
+  const [moveItemDialogOpen, setMoveItemDialogOpen] = useState(false);
+  const [itemToMove, setItemToMove] = useState<null | string>(null);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [listAnchorEl, setListAnchorEl] = useState<null | HTMLElement>(null);
   const [itemAnchorEl, setItemAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedItem, setSelectedItem] = useState<null | string>(null);
 
   const [showListDeleteModal, setShowListDeleteModal] = useState(false);
   const [showItemDeleteModal, setShowItemDeleteModal] = useState(false);
@@ -98,9 +102,9 @@ const TripPage = () => {
     itemId: string
   ) => {
     setAnchorEl(event.currentTarget);
-
     setItemAnchorEl(event.currentTarget);
     setSelectedItem(itemId);
+    setItemToMove(itemId);
   };
 
   const handleClosePopup = () => {
@@ -210,6 +214,29 @@ const TripPage = () => {
     setItemToDelete(null);
   };
 
+  const handleMoveItem = async (targetListName: string) => {
+    if (!itemToMove || !trip) return;
+
+    const originalList = trip?.lists?.find((list) =>
+      list?.items?.some((item) => item._id === itemToMove)
+    );
+    if (!originalList) return;
+
+    const item = originalList?.items?.find((item) => item._id === itemToMove);
+    if (!item) return;
+
+    originalList.items = originalList?.items?.filter(
+      (item) => item._id !== itemToMove
+    );
+
+    await removeItemFromList(originalList.name, itemToMove);
+    const newItem = { ...item, _id: uuidv4() };
+    await addNewItem(targetListName, newItem);
+
+    setMoveItemDialogOpen(false);
+    setItemToMove(null);
+  };
+
   if (currentUser?.uid !== trip?.userId) {
     return <AccessDenied />;
   }
@@ -228,17 +255,14 @@ const TripPage = () => {
           {handleTripError}
         </Typography>
       )}
-
       <Container
         sx={isMobile ? { mb: "10vh", mt: 6 } : { mb: "10vh" }}
         maxWidth={isMobile ? "sm" : "lg"}
       >
         <BackButton />
-
         <Typography sx={{ pt: 4 }} variant="h1">
           {trip?.title}
         </Typography>
-
         <Box
           sx={{
             display: "flex",
@@ -257,14 +281,11 @@ const TripPage = () => {
             }}
           >
             {hasItemsInLists && !isMobile && <Map />}
-
             {!isMobile && <Notes id={id} trip={trip} />}
-
             <Box
               sx={{
                 display: "flex",
                 justifyContent: isMobile ? "center" : "flex-start",
-                // marginBottom: 2,
               }}
             >
               <PDFGenerator trip={trip} />
@@ -326,13 +347,11 @@ const TripPage = () => {
             )}
             <Box sx={{ width: "100%" }}>
               {handleTripLoading && <LoadingSpinner />}
-
               {handleTripError && (
                 <Typography color="error" sx={{ mt: 2 }}>
                   {handleTripError}
                 </Typography>
               )}
-
               {trip?.lists?.map((list) => (
                 <Box key={list._id} sx={{ paddingBottom: 2 }}>
                   <Box
@@ -359,7 +378,6 @@ const TripPage = () => {
                     >
                       {list.name}
                     </Typography>
-
                     <IconButton
                       onClick={() => setAddingList(list.name)}
                       size="small"
@@ -504,6 +522,20 @@ const TripPage = () => {
                               </MenuItem>
                               <MenuItem
                                 tabIndex={1}
+                                onClick={() => {
+                                  setListName(list.name);
+                                  setItemToMove(item._id);
+                                  setMoveItemDialogOpen(true);
+                                  handleClosePopup();
+                                }}
+                                title="Move item"
+                                aria-label="Move item"
+                              >
+                                Move
+                              </MenuItem>
+
+                              <MenuItem
+                                tabIndex={1}
                                 aria-label="Remove place from list"
                                 title="Remove place from list"
                                 onClick={() => {
@@ -552,6 +584,15 @@ const TripPage = () => {
                 initialValues={initialValues}
               />
             )}
+            {moveItemDialogOpen && (
+              <MoveItemDialog
+                moveItemDialogOpen={moveItemDialogOpen}
+                setMoveItemDialogOpen={setMoveItemDialogOpen}
+                trip={trip}
+                handleMoveItem={handleMoveItem}
+                currentListName={listName}
+              />
+            )}
             {showListDeleteModal && (
               <ConfirmationModal
                 onOpen={showListDeleteModal}
@@ -574,9 +615,7 @@ const TripPage = () => {
             )}
           </Box>
         </Box>
-
         {isMobile && <Notes id={id} trip={trip} />}
-
         {hasItemsInLists && isMobile && <Map />}
       </Container>
     </>
