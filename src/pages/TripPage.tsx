@@ -296,10 +296,25 @@ const TripPage = () => {
                 Add list
               </Button>
             </Box>
-            <Typography variant="body1" sx={{ mt: 2, textAlign: "center" }}>
-              Add list to fill with places to visit! For example:{"\n"}
-              Restaurants, Museums, or Parks.
-            </Typography>
+            {(!trip?.lists || trip.lists.length === 0) && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  mt: 2,
+                  width: "100%",
+                }}
+              >
+                <Typography variant="body1">
+                  Add list to fill with places to visit! <br />
+                  For example: <i>Restaurants</i>, <i>Museums</i>, or{" "}
+                  <i>Parks</i>.
+                </Typography>
+              </Box>
+            )}
             {addNewListDialog && trip && (
               <ListFormDialog
                 onClose={closeDialog}
@@ -309,7 +324,6 @@ const TripPage = () => {
                 setSelectedColor={setSelectedColor}
               />
             )}
-
             <Box sx={{ width: "100%" }}>
               {handleTripLoading && <LoadingSpinner />}
 
@@ -510,7 +524,6 @@ const TripPage = () => {
                 </Box>
               ))}
             </Box>
-
             {addingList && (
               <ItemFormDialog
                 onSubmit={handleSubmitItem}
@@ -518,7 +531,6 @@ const TripPage = () => {
                 listName={addingList}
               />
             )}
-
             {updateListDialog && (
               <ListFormDialog
                 onClose={closeDialog}
@@ -532,7 +544,6 @@ const TripPage = () => {
                 }}
               />
             )}
-
             {updateItemDialog && (
               <ItemFormDialog
                 onSubmit={handleSubmitItem}
@@ -541,7 +552,6 @@ const TripPage = () => {
                 initialValues={initialValues}
               />
             )}
-
             {showListDeleteModal && (
               <ConfirmationModal
                 onOpen={showListDeleteModal}
@@ -551,7 +561,6 @@ const TripPage = () => {
                 Sure you want to delete this list?
               </ConfirmationModal>
             )}
-
             {showItemDeleteModal && (
               <ConfirmationModal
                 onOpen={showItemDeleteModal}
