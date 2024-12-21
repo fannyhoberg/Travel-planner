@@ -154,8 +154,6 @@ const ListFormDialog = ({
               className="btn-primary"
               aria-label={initialValues ? "Save" : "Add"}
               title={initialValues ? "Save" : "Add"}
-              // disabled={isLoading ? true : false}
-
               sx={{
                 borderRadius: 2,
               }}

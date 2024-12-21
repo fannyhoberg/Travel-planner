@@ -26,6 +26,7 @@ export type Item = {
   address: string;
   completed: boolean;
   postcode?: number;
+  place_id: string;
   city: string;
   geopoint: GeoPoint;
 };

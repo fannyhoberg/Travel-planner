@@ -28,9 +28,17 @@ export const getGeopoint = async (address: string) => {
 };
 
 export const getDirectionsURL = (
-  destinationCoords: PositionCoords | undefined
-): string => {
+  destinationCoords: PositionCoords | undefined,
+  destination_place_id?: string
+) => {
+  console.log("destinationCoords", destinationCoords);
+  console.log("destination_place_id", destinationCoords);
+
   if (!destinationCoords) return "#";
   const { lat, lng } = destinationCoords;
-  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  if (destination_place_id) {
+    return `https://www.google.com/maps/dir/?api=1&destination_place_id=${destination_place_id}&destination=there`;
+  } else {
+    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  }
 };

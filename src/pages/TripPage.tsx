@@ -47,7 +47,6 @@ const TripPage = () => {
 
   const [updateItemDialog, setUpdateItemDialog] = useState(false);
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
-  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState<Partial<Item>>({
     title: "",
     address: "",
@@ -55,7 +54,6 @@ const TripPage = () => {
   });
   const [selectedItem, setSelectedItem] = useState<null | string>(null);
   const [moveItemDialogOpen, setMoveItemDialogOpen] = useState(false);
-  const [itemToMove, setItemToMove] = useState<null | string>(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [listAnchorEl, setListAnchorEl] = useState<null | HTMLElement>(null);
@@ -104,7 +102,7 @@ const TripPage = () => {
     setAnchorEl(event.currentTarget);
     setItemAnchorEl(event.currentTarget);
     setSelectedItem(itemId);
-    setItemToMove(itemId);
+    setItemToUpdate(itemId);
   };
 
   const handleClosePopup = () => {
@@ -134,9 +132,7 @@ const TripPage = () => {
   );
   const showMap = hasItemsInLists && hasItemWithAddress;
 
-  const handleAddNewList = () => {
-    setAddNewTripDialog(true);
-  };
+  const hasMultipleLists = (trip?.lists?.length || 0) > 1;
 
   const handleSubmitNewList = async (data: ListTextData) => {
     await addNewList(data.name, data.color);
@@ -211,34 +207,34 @@ const TripPage = () => {
   };
 
   const handleRemoveItem = async () => {
-    if (!itemToDelete || !listToUpdate) return;
+    if (!itemToUpdate || !listToUpdate) return;
 
-    await removeItemFromList(listToUpdate, itemToDelete);
+    await removeItemFromList(listToUpdate, itemToUpdate);
     setShowItemDeleteModal(false);
-    setItemToDelete(null);
+    setItemToUpdate(null);
   };
 
   const handleMoveItem = async (targetListName: string) => {
-    if (!itemToMove || !trip) return;
+    if (!itemToUpdate || !trip) return;
 
     const originalList = trip?.lists?.find((list) =>
-      list?.items?.some((item) => item._id === itemToMove)
+      list?.items?.some((item) => item._id === itemToUpdate)
     );
     if (!originalList) return;
 
-    const item = originalList?.items?.find((item) => item._id === itemToMove);
+    const item = originalList?.items?.find((item) => item._id === itemToUpdate);
     if (!item) return;
 
     originalList.items = originalList?.items?.filter(
-      (item) => item._id !== itemToMove
+      (item) => item._id !== itemToUpdate
     );
 
-    await removeItemFromList(originalList.name, itemToMove);
+    await removeItemFromList(originalList.name, itemToUpdate);
     const newItem = { ...item, _id: uuidv4() };
     await addNewItem(targetListName, newItem);
 
     setMoveItemDialogOpen(false);
-    setItemToMove(null);
+    setItemToUpdate(null);
   };
 
   if (currentUser?.uid !== trip?.userId && !getTripLoading) {
@@ -312,7 +308,9 @@ const TripPage = () => {
               }}
             >
               <Button
-                onClick={handleAddNewList}
+                onClick={() => {
+                  setAddNewTripDialog(true);
+                }}
                 className="btn-primary"
                 aria-label="Add list"
                 title="Add list"
@@ -524,27 +522,28 @@ const TripPage = () => {
                               >
                                 Edit
                               </MenuItem>
-                              <MenuItem
-                                tabIndex={1}
-                                onClick={() => {
-                                  setListName(list.name);
-                                  setItemToMove(item._id);
-                                  setMoveItemDialogOpen(true);
-                                  handleClosePopup();
-                                }}
-                                title="Move item"
-                                aria-label="Move item"
-                              >
-                                Move
-                              </MenuItem>
-
+                              {hasMultipleLists && (
+                                <MenuItem
+                                  tabIndex={1}
+                                  onClick={() => {
+                                    setListName(list.name);
+                                    setItemToUpdate(item._id);
+                                    setMoveItemDialogOpen(true);
+                                    handleClosePopup();
+                                  }}
+                                  title="Move item"
+                                  aria-label="Move item"
+                                >
+                                  Move
+                                </MenuItem>
+                              )}
                               <MenuItem
                                 tabIndex={1}
                                 aria-label="Remove place from list"
                                 title="Remove place from list"
                                 onClick={() => {
                                   setListToUpdate(list.name);
-                                  setItemToDelete(item._id);
+                                  setItemToUpdate(item._id);
                                   setShowItemDeleteModal(true);
                                   handleClosePopup();
                                 }}
@@ -611,7 +610,7 @@ const TripPage = () => {
                 onOpen={showItemDeleteModal}
                 onConfirm={() => handleRemoveItem()}
                 onCancel={() => {
-                  setShowItemDeleteModal(false), setItemToDelete(null);
+                  setShowItemDeleteModal(false), setItemToUpdate(null);
                 }}
               >
                 Sure you want to remove this item?

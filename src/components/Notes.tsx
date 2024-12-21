@@ -34,7 +34,7 @@ const Notes = ({ id, trip }: NotesProp) => {
           fullWidth
           label="Notes"
           multiline
-          rows={4}
+          rows={6}
           value={isNotesChanged ? localNotes : trip?.notes || ""}
           onChange={(e) => {
             setLocalNotes(e.target.value);

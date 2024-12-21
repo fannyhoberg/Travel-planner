@@ -3,7 +3,7 @@ import { Item, PositionCoords } from "../types/trip";
 import { useCallback, useMemo, useState } from "react";
 import useGetTrip from "../hooks/useGetTrip";
 import { useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { getDirectionsURL } from "../services/geocodingAPI";
 
 const Map = () => {
@@ -12,10 +12,9 @@ const Map = () => {
   const [selectedItem, setSelectedItem] = useState<null | {
     title: string;
     adress: string;
-    city: string;
     position: PositionCoords;
+    place_id: string;
   }>(null);
-  const [itemGeopoint, setItemGeopoint] = useState<PositionCoords | null>(null);
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     console.log("Map loaded", mapInstance);
@@ -35,19 +34,16 @@ const Map = () => {
     setSelectedItem({
       title: item.title,
       adress: item.address,
-      city: item.city,
       position: markerPosition,
+      place_id: item.place_id,
     });
   };
 
   const defaultCenter: PositionCoords = { lat: 37.7749, lng: -122.4194 };
 
-  const directionsUrl = itemGeopoint
-    ? getDirectionsURL({
-        lat: itemGeopoint.lat,
-        lng: itemGeopoint.lng,
-      })
-    : "#";
+  const directionsUrl = selectedItem?.place_id
+    ? getDirectionsURL(selectedItem?.position, selectedItem?.place_id)
+    : getDirectionsURL(selectedItem?.position);
 
   const center = useMemo(() => {
     if (!trip) return defaultCenter;
@@ -116,11 +112,7 @@ const Map = () => {
                 <Marker
                   key={item._id}
                   onClick={() => {
-                    handleMarkerClick(item, position),
-                      setItemGeopoint({
-                        lat: position.lat,
-                        lng: position.lng,
-                      });
+                    handleMarkerClick(item, position);
                   }}
                   position={position}
                   title={item.title}
@@ -140,13 +132,19 @@ const Map = () => {
               pixelOffset: new google.maps.Size(-5, -40),
             }}
           >
-            <Box>
-              <Typography variant="h5">{selectedItem.title}</Typography>
-              <Typography>{selectedItem.adress}</Typography>
-              <Typography>{selectedItem.city}</Typography>
-              <a href={directionsUrl} target="_blank">
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="h5">{selectedItem.title}</Typography>
+                <Typography variant="body2">{selectedItem.adress}</Typography>
+              </Box>
+              <Button
+                LinkComponent={"a"}
+                target="_blank"
+                href={directionsUrl}
+                className="btn-primary"
+              >
                 Get directions
-              </a>
+              </Button>
             </Box>
           </InfoWindow>
         )}
