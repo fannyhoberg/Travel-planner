@@ -5,6 +5,7 @@ import useGetTrip from "../hooks/useGetTrip";
 import { useParams } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { getDirectionsURL } from "../services/geocodingAPI";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const Map = () => {
   const { id } = useParams();
@@ -141,9 +142,9 @@ const Map = () => {
                 LinkComponent={"a"}
                 target="_blank"
                 href={directionsUrl}
-                className="btn-primary"
+                sx={{ color: "#835d23" }}
               >
-                Get directions
+                Directions <ArrowForwardIcon />
               </Button>
             </Box>
           </InfoWindow>
