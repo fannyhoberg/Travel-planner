@@ -263,7 +263,7 @@ const TripPage = () => {
         sx={isMobile ? { mb: "10vh", mt: 6 } : { mb: "10vh" }}
         maxWidth={isMobile ? "sm" : "lg"}
       >
-        <BackButton />
+        {} <BackButton />
         <Typography sx={{ pt: 4 }} variant="h1">
           {trip?.title}
         </Typography>

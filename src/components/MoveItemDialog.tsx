@@ -48,6 +48,7 @@ const MoveItemDialog = ({
       open={moveItemDialogOpen}
       onClose={() => setMoveItemDialogOpen(false)}
       disableScrollLock
+      fullScreen={isMobile}
       PaperProps={{
         sx: {
           borderRadius: isMobile ? 0 : 4,
@@ -56,6 +57,7 @@ const MoveItemDialog = ({
           maxHeight: isMobile ? "100%" : "500px",
           padding: 2,
           margin: isMobile ? 0 : "auto",
+          zIndex: 2000,
         },
       }}
     >
@@ -79,42 +81,42 @@ const MoveItemDialog = ({
             {list.name}
           </Button>
         ))}
+        <DialogActions
+          sx={{
+            justifyContent: "space-between",
+            padding: 2,
+            mt: 2,
+          }}
+        >
+          <Button
+            onClick={() => {
+              setMoveItemDialogOpen(false);
+              setSelectedList(null);
+            }}
+            variant="outlined"
+            aria-label="Cancel"
+            title="Cancel"
+            className="btn-secondary"
+            sx={{
+              borderRadius: 2,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleMoveItemSubmit}
+            disabled={!selectedList}
+            className="btn-primary"
+            aria-label="Move"
+            title="Move"
+            sx={{
+              borderRadius: 2,
+            }}
+          >
+            Move
+          </Button>
+        </DialogActions>
       </DialogContent>
-      <DialogActions
-        sx={{
-          justifyContent: "space-between",
-          padding: 2,
-          mt: 2,
-        }}
-      >
-        <Button
-          onClick={() => {
-            setMoveItemDialogOpen(false);
-            setSelectedList(null);
-          }}
-          variant="outlined"
-          aria-label="Cancel"
-          title="Cancel"
-          className="btn-secondary"
-          sx={{
-            borderRadius: 2,
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={handleMoveItemSubmit}
-          disabled={!selectedList}
-          className="btn-primary"
-          aria-label="Move"
-          title="Move"
-          sx={{
-            borderRadius: 2,
-          }}
-        >
-          Move
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

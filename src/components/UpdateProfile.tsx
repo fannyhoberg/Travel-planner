@@ -118,7 +118,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 
   return (
     <>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ mt: 4 }}>
         <Typography variant="h4">Update profile</Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
           {isLoading && <LoadingSpinner />}
@@ -173,7 +173,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
             onChange={handleChange}
           />
           <Button
-            sx={{ mt: 4, mr: 4 }}
+            sx={{ mt: 4, mr: 2 }}
             type="submit"
             className="btn-secondary"
             onClick={onClose}

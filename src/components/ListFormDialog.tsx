@@ -75,6 +75,7 @@ const ListFormDialog = ({
     <Dialog
       open={true}
       onClose={onClose}
+      fullScreen={isMobile}
       disableScrollLock
       PaperProps={{
         sx: {

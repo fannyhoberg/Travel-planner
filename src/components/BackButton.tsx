@@ -21,11 +21,11 @@ const BackButton = ({ to }: BackButtonProps) => {
       onClick={handleClick}
       sx={{
         position: "absolute",
-        top: "5rem",
+        top: "4.5rem",
         left: "0.9rem",
         color: "#2A3132",
         textTransform: "none",
-        zIndex: 10000,
+        zIndex: 1000,
       }}
       aria-label="Go back to previous page"
       title="Go back to previous page"

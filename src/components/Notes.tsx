@@ -32,7 +32,6 @@ const Notes = ({ id, trip }: NotesProp) => {
       >
         <TextField
           fullWidth
-          id="outlined-multiline-static"
           label="Notes"
           multiline
           rows={4}
@@ -45,16 +44,29 @@ const Notes = ({ id, trip }: NotesProp) => {
         />
       </Box>
       {isNotesChanged && (
-        <Button
-          variant="contained"
-          className="btn-primary"
-          title="Save"
-          aria-label="Save notes"
-          onClick={handleSaveNotes}
-          sx={{ color: "#835d23", mt: 2, alignSelf: "flex-end" }}
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
         >
-          Save
-        </Button>
+          <Button
+            variant="contained"
+            title="Save"
+            aria-label="Save notes"
+            onClick={handleSaveNotes}
+            sx={{
+              backgroundColor: "#FFFFFF",
+              color: "#2a3132",
+              mt: 2,
+              alignSelf: "flex-end",
+            }}
+          >
+            Save
+          </Button>
+        </Box>
       )}
     </Box>
   );

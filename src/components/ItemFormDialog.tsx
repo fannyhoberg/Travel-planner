@@ -66,6 +66,7 @@ const ItemFormDialog = ({
         open={true}
         onClose={onClose}
         disableScrollLock
+        fullScreen={isMobile}
         PaperProps={{
           sx: {
             borderRadius: isMobile ? 0 : 4,
@@ -74,6 +75,7 @@ const ItemFormDialog = ({
             maxHeight: isMobile ? "100%" : "500px",
             padding: 2,
             margin: isMobile ? 0 : "auto",
+            zIndex: 3000,
           },
         }}
       >

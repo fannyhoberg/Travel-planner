@@ -45,6 +45,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      console.log("formData.email", formData.email);
       await resetPassword(formData.email);
       setIsSuccessSnackbar({
         open: true,

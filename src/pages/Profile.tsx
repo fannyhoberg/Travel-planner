@@ -36,7 +36,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const {
     currentUser,
@@ -131,7 +131,7 @@ const ProfilePage = () => {
 
             <Box
               sx={{
-                mt: 4,
+                mt: 5,
                 p: 3,
                 bgcolor: "background.paper",
                 borderRadius: 2,
@@ -181,7 +181,7 @@ const ProfilePage = () => {
               </Stack>
               <Button
                 type="submit"
-                sx={{ mt: 4, mr: 4 }}
+                sx={isMobile ? { mt: 2 } : { mr: 2 }}
                 className="btn-delete"
                 aria-label="Delete account"
                 title="Delete account"
@@ -191,7 +191,7 @@ const ProfilePage = () => {
               </Button>
               <Button
                 type="submit"
-                sx={{ mt: 4 }}
+                sx={isMobile ? { mt: 2 } : null}
                 className="btn-primary"
                 aria-label="Update profile"
                 title="Update profile"
