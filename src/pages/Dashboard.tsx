@@ -23,6 +23,7 @@ import { Trip } from "../types/trip";
 import { FirebaseError } from "firebase/app";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NoTrips from "../assets/images/Notrips.png";
+import BackgroundPic from "../assets/images/Trip-card.png";
 
 const Dashboard = () => {
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
@@ -144,8 +145,10 @@ const Dashboard = () => {
                   <Grid2 size={8} key={trip._id}>
                     <Box
                       sx={{
-                        backgroundColor: "#FFFFFF",
-                        border: "0.1px solid lightgrey",
+                        backgroundImage: `url(${BackgroundPic})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        border: "0.1px solid #A9885D",
                         height: 150,
                         display: "flex",
                         alignItems: "center",
