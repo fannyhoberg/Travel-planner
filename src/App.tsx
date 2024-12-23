@@ -12,6 +12,7 @@ import { LoadScriptNext } from "@react-google-maps/api";
 import ProfilePage from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFoundPage from "./pages/NotFoundPage";
+import Discover from "./pages/Discover";
 
 function App() {
   const theme = useTheme();
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/home" element={<Dashboard />} />
                 <Route path="/trip/:id" element={<TripPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/discover" element={<Discover />} />
               </Route>
             </Routes>
             {isMobile && <Navigation />}

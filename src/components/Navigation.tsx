@@ -16,6 +16,7 @@ import { useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import FaceIcon from "@mui/icons-material/Face";
 import MenuIcon from "@mui/icons-material/Menu";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import Logout from "@mui/icons-material/Logout";
 import TripFormDialog from "./TripFormDialog";
 import useAuth from "../hooks/useAuth";
@@ -102,6 +103,10 @@ const Navigation = () => {
               <HomeIcon sx={{ marginRight: 1 }} />
               Home
             </MenuItem>
+            <MenuItem component={Link} to="/discover">
+              <TravelExploreIcon sx={{ marginRight: 1 }} />
+              Discover
+            </MenuItem>
             <MenuItem component={Link} to="/profile">
               <FaceIcon sx={{ marginRight: 1 }} />
               Profile
@@ -158,6 +163,13 @@ const Navigation = () => {
                 >
                   <Button component={Link} to="/home" sx={{ color: "black" }}>
                     My trips
+                  </Button>
+                  <Button
+                    component={Link}
+                    to="/discover"
+                    sx={{ color: "black" }}
+                  >
+                    Discover
                   </Button>
                   <Button
                     component={Link}

@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import TripFormDialog from "../components/TripFormDialog";
 import { Link } from "react-router-dom";
-import useGetTrips from "../hooks/useGetTrips";
+import useGetMyTrips from "../hooks/useGetMyTrips";
 import useAuth from "../hooks/useAuth";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../services/firebase";
@@ -37,7 +37,7 @@ const Dashboard = () => {
 
   const { currentUser } = useAuth();
 
-  const { data: trips, isLoading } = useGetTrips(currentUser?.uid);
+  const { data: trips, isLoading } = useGetMyTrips(currentUser?.uid);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
