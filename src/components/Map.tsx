@@ -140,6 +140,8 @@ const Map = () => {
               </Box>
               <Button
                 LinkComponent={"a"}
+                aria-label="Directions link"
+                title="Directions"
                 target="_blank"
                 href={directionsUrl}
                 sx={{ color: "#835d23" }}

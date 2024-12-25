@@ -76,6 +76,8 @@ const MoveItemDialog = ({
               border: "0.1px solid #f9a628",
               color: "black",
             }}
+            aria-label={list.name}
+            title={list.name}
             variant={selectedList === list.name ? "contained" : "outlined"}
           >
             {list.name}

@@ -11,6 +11,7 @@ import {
   Popover,
   MenuItem,
   Divider,
+  Tooltip,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -259,7 +260,7 @@ const TripPage = () => {
         sx={isMobile ? { mb: "10vh", mt: 6 } : { mb: "10vh" }}
         maxWidth={isMobile ? "sm" : "lg"}
       >
-        {} <BackButton />
+        <BackButton />
         <Typography sx={{ pt: 4 }} variant="h1">
           {trip?.title}
         </Typography>
@@ -289,6 +290,19 @@ const TripPage = () => {
               }}
             >
               <PDFGenerator trip={trip} />
+
+              <Tooltip title="Feature coming soon" arrow>
+                <span>
+                  <Button
+                    sx={{ ml: 2 }}
+                    className="btn-secondary"
+                    disabled
+                    aria-label="Invite friend button"
+                  >
+                    Invite friend
+                  </Button>
+                </span>
+              </Tooltip>
             </Box>
           </Box>
           <Box
@@ -461,6 +475,7 @@ const TripPage = () => {
                                 markPlaceAsDone(list.name, item._id)
                               }
                               sx={{ color: "black" }}
+                              aria-label="Check box to mark as done"
                               title={
                                 item.completed
                                   ? "Mark as undone"

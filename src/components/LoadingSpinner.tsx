@@ -7,7 +7,7 @@ const LoadingSpinner = () => {
       aria-label="loading spinner"
       size={40}
       color="success"
-      sx={{ position: "fixed", top: "5rem", right: "4.5rem" }}
+      sx={{ position: "fixed", top: "4.5rem", right: "2rem" }}
     />
   );
 };

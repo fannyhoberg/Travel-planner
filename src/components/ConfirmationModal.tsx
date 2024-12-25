@@ -44,13 +44,21 @@ const ConfirmationModal = ({
         </Typography>
         <Button
           className="btn-secondary"
+          aria-label="Cancel"
+          title="Cancel"
           variant="outlined"
           sx={{ mr: 2 }}
           onClick={onCancel}
         >
           Cancel
         </Button>
-        <Button className="btn-primary" variant="contained" onClick={onConfirm}>
+        <Button
+          aria-label="Confirm"
+          title="Confirm"
+          className="btn-primary"
+          variant="contained"
+          onClick={onConfirm}
+        >
           Confirm
         </Button>
       </Box>

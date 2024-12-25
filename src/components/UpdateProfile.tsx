@@ -176,6 +176,8 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
             sx={{ mt: 4, mr: 2 }}
             type="submit"
             className="btn-secondary"
+            aria-label="Cancel"
+            title="Cancel"
             onClick={onClose}
           >
             Cancel
@@ -185,6 +187,8 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
             sx={{ mt: 4 }}
             type="submit"
             className="btn-primary"
+            aria-label="Save"
+            title="Save"
           >
             Save
           </Button>

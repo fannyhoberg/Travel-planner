@@ -83,6 +83,8 @@ const DiscoverDialog = ({
           onClick={() => setShowContent(false)}
           color="secondary"
           className="btn-secondary"
+          aria-label="Cancel"
+          title="Cancel"
           variant="outlined"
           sx={{ borderRadius: 2 }}
         >
