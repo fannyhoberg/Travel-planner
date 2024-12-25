@@ -41,7 +41,7 @@ const Dashboard = () => {
   const { data: trips, isLoading } = useGetMyTrips(currentUser?.uid);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, trip: any) => {
     setAnchorEl(event.currentTarget);
@@ -93,7 +93,7 @@ const Dashboard = () => {
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "center" : "flex-start",
           justifyContent: "space-between",
-          mt: isMobile ? 5 : 0,
+          mt: isMobile ? 5 : 3,
         }}
       >
         <Typography variant="h1" sx={{ marginBottom: isMobile ? "16px" : "0" }}>
@@ -107,7 +107,7 @@ const Dashboard = () => {
             aria-label="Add new trip"
             title="Add new trip"
           >
-            New trip +
+            New trip
           </Button>
         </Box>
 
@@ -118,7 +118,7 @@ const Dashboard = () => {
             aria-label="Add new trip"
             title="Add new trip"
           >
-            New trip +
+            New trip
           </Button>
         )}
       </Box>
@@ -135,7 +135,11 @@ const Dashboard = () => {
 
         {trips && (
           <>
-            <Box sx={!isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1 }}>
+            <Box
+              sx={
+                !isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1, padding: 4 }
+              }
+            >
               <Grid2
                 container
                 spacing={!isMobile ? 6 : 2}
