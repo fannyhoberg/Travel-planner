@@ -64,7 +64,7 @@ const TripPage = () => {
   const [showItemDeleteModal, setShowItemDeleteModal] = useState(false);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const { id } = useParams();
 
@@ -261,7 +261,7 @@ const TripPage = () => {
         maxWidth={isMobile ? "sm" : "lg"}
       >
         <BackButton />
-        <Typography sx={{ pt: 4 }} variant="h1">
+        <Typography sx={{ pt: 5 }} variant="h1">
           {trip?.title}
         </Typography>
         <Box
@@ -286,7 +286,10 @@ const TripPage = () => {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: isMobile ? "center" : "flex-start",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: "center",
+                justifyContent: { xs: "center", md: "flex-start" },
+                gap: 2,
               }}
             >
               <PDFGenerator trip={trip} />
@@ -294,7 +297,7 @@ const TripPage = () => {
               <Tooltip title="Feature coming soon" arrow>
                 <span>
                   <Button
-                    sx={{ ml: 2 }}
+                    sx={{ ml: { md: 2, xs: 0 } }}
                     className="btn-secondary"
                     disabled
                     aria-label="Invite friend button"
