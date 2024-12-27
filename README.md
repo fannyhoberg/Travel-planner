@@ -1,50 +1,39 @@
-# React + TypeScript + Vite
+# VISTA - travel planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project description
 
-Currently, two official plugins are available:
+# Vista is an easy-to-use planning tool, specifically meant to help users plan their trips or vacations. When planning a trip, # people often research restaurants, museums, or other places they want to visit. A notepad is a common tool for gathering
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# such ideas and plans.  
 
-## Expanding the ESLint configuration
+# However, when you’re on your trip, you might need to locate a place on the map or figure out how to get there, which often
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+# involves using multiple apps like Google Maps to look up the addresses. Vista combines these needs into a single app,
 
-- Configure the top-level `parserOptions` property like this:
+# allowing users to list places to visit, view locations on a map, and get directions. Additionally, the app provides
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+# inspiration from other user’s trip documents. 
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Features
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+# Create a document for your trip
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+# Inside document - create list of category of choice, 'Restaurants', 'Museums', 'Shopping' for example.
+
+# Add an item to list with name and adress (is optional but if added a map with pin will appear)
+
+# Check item as done, if place has been visited and you want to have a good overview of what's visited and not
+
+# Move item to other list. If for example a place you've added to list 'Restaurants' actually belongs in list 'Bars'
+
+# Click on map pin to get info and directions
+
+# Trip document, lists and items are all editable and removable
+
+# Add notes in document
+
+# Export trip info to PDF
+
+# Inviting friend to share trip document is a future feature
+
+# Enjoy Vista!
