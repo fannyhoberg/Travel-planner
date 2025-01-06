@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Grid2,
   IconButton,
   MenuItem,
@@ -24,6 +25,7 @@ import { FirebaseError } from "firebase/app";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NoTrips from "../assets/images/Notrips.png";
 import BackgroundPic from "../assets/images/Trip-card.png";
+import useGetSharedTrips from "../hooks/userGetSharedTrips";
 
 const Dashboard = () => {
   const [addNewTripDialog, setAddNewTripDialog] = useState(false);
@@ -39,6 +41,8 @@ const Dashboard = () => {
   const { currentUser } = useAuth();
 
   const { data: trips, isLoading } = useGetMyTrips(currentUser?.uid);
+  const { data: sharedTrips, isLoading: loadingSharedTrips } =
+    useGetSharedTrips(currentUser?.uid);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -60,9 +64,6 @@ const Dashboard = () => {
       const tripDocRef = doc(db, "trips", selectedTripId as string);
       await deleteDoc(tripDocRef);
       setShowDeleteModal(false);
-      console.log(
-        `Trip with ID: ${selectedTripId} has been deleted successfully`
-      );
     } catch (err) {
       if (err instanceof FirebaseError) {
         setIsError(err.message);
@@ -137,7 +138,9 @@ const Dashboard = () => {
           <>
             <Box
               sx={
-                !isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1, padding: 4 }
+                !isMobile
+                  ? { flexGrow: 1, mt: 4, mb: 4 }
+                  : { flexGrow: 1, padding: 4, mb: 4 }
               }
             >
               <Grid2
@@ -263,6 +266,78 @@ const Dashboard = () => {
           </Box>
         )}
       </Container>
+      {sharedTrips?.length > 0 && (
+        <>
+          <Divider />
+
+          <Box
+            sx={{
+              padding: isMobile ? "16px" : "32px",
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: isMobile ? "center" : "flex-start",
+              justifyContent: "space-between",
+              mt: 2,
+            }}
+          >
+            <Typography
+              variant="h1"
+              sx={{ marginBottom: isMobile ? "16px" : "0" }}
+            >
+              Shared trips
+            </Typography>
+          </Box>
+          <Container maxWidth="md">
+            <Box
+              sx={
+                !isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1, padding: 4 }
+              }
+            >
+              {loadingSharedTrips && <LoadingSpinner />}
+              <Grid2
+                container
+                spacing={!isMobile ? 6 : 2}
+                columns={!isMobile ? 16 : 8}
+              >
+                {sharedTrips.map((trip) => (
+                  <Grid2 size={8} key={trip._id}>
+                    <Box
+                      sx={{
+                        // backgroundImage: `url(${BackgroundPic})`,
+                        backgroundColor: "white",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        border: "0.1px solid #A9885D",
+                        height: 150,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
+                        borderRadius: 3,
+                        position: "relative",
+                      }}
+                    >
+                      <Link
+                        to={`/trip/${trip._id}`}
+                        style={{ textDecoration: "none" }}
+                        title="Go to trip page"
+                        aria-label="Go to trip page"
+                      >
+                        <Typography variant="h2" color="#2a3132">
+                          {trip.title}
+                        </Typography>
+                        <Typography variant="body2" color="#2a3132">
+                          owner: {trip.userId}
+                        </Typography>
+                      </Link>
+                    </Box>
+                  </Grid2>
+                ))}
+              </Grid2>
+            </Box>
+          </Container>
+        </>
+      )}
 
       {addNewTripDialog && (
         <TripFormDialog isMobile={isMobile} closeDialog={closeDialog} />

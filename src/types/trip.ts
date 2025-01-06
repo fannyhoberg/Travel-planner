@@ -6,7 +6,14 @@ export type Trip = {
   title: string;
   notes?: string;
   lists?: List[];
+  allowedUsers?: AllowedUserData[];
 };
+
+export type AllowedUserData = {
+  id: string;
+  email: string;
+};
+
 export type TripTextData = {
   title: string;
 };

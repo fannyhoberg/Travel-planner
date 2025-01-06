@@ -35,6 +35,7 @@ import ConfirmationModal from "../components/ConfirmationModal";
 import Notes from "../components/Notes";
 import PDFGenerator from "../components/ExportTrip";
 import MoveItemDialog from "../components/MoveItemDialog";
+import InviteFriendFormDialog from "../components/InviteFriendFormDialog";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -45,6 +46,7 @@ const TripPage = () => {
   const [newListName, setNewListName] = useState<string>("");
   const [updateListDialog, setUpdateListDialog] = useState(false);
   const [listToUpdate, setListToUpdate] = useState<string | null>(null);
+  const [inviteFriendDialog, setInviteFriendDialog] = useState<boolean>(false);
 
   const [updateItemDialog, setUpdateItemDialog] = useState(false);
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
@@ -85,6 +87,7 @@ const TripPage = () => {
     removeItemFromList,
     updateList,
     deleteList,
+    inviteFriend,
   } = useHandleTrip(id, trip);
 
   const handleOpenListPopup = (
@@ -121,6 +124,7 @@ const TripPage = () => {
     setAddingList(null);
     setUpdateItemDialog(false);
     setUpdateListDialog(false);
+    setInviteFriendDialog(false);
     setNewListName("");
     setSelectedColor("");
   };
@@ -238,7 +242,26 @@ const TripPage = () => {
     setItemToUpdate(null);
   };
 
-  if (currentUser?.uid !== trip?.userId && !getTripLoading) {
+  const handleInviteFriend = async (
+    userId: string | undefined,
+    userEmail: string | undefined
+  ) => {
+    setInviteFriendDialog(true);
+
+    try {
+      await inviteFriend(userId, userEmail);
+      console.log("User successfully invited!");
+    } catch (err) {
+      console.error("Error inviting user:", err);
+    }
+    setInviteFriendDialog(false);
+  };
+
+  if (
+    currentUser?.uid !== trip?.userId &&
+    !getTripLoading &&
+    !trip?.allowedUsers?.some((user) => user.id === currentUser?.uid)
+  ) {
     return <AccessDenied />;
   }
 
@@ -261,9 +284,17 @@ const TripPage = () => {
         maxWidth={isMobile ? "sm" : "lg"}
       >
         <BackButton />
-        <Typography sx={{ pt: 5 }} variant="h1">
+        <Typography sx={{ pt: 5, pb: 3 }} variant="h1">
           {trip?.title}
         </Typography>
+        {trip?.allowedUsers?.length != null && (
+          <>
+            <Typography variant="body2">
+              Shared with:{" "}
+              {trip.allowedUsers.map((user) => user.email).join(", ")}
+            </Typography>
+          </>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -298,8 +329,8 @@ const TripPage = () => {
                 <span>
                   <Button
                     sx={{ ml: { md: 2, xs: 0 } }}
+                    onClick={() => setInviteFriendDialog(true)}
                     className="btn-secondary"
-                    disabled
                     aria-label="Invite friend button"
                   >
                     Invite friend
@@ -633,6 +664,12 @@ const TripPage = () => {
               >
                 Sure you want to remove this item?
               </ConfirmationModal>
+            )}
+            {inviteFriendDialog && (
+              <InviteFriendFormDialog
+                onClose={closeDialog}
+                handleInviteFriend={handleInviteFriend}
+              />
             )}
           </Box>
         </Box>

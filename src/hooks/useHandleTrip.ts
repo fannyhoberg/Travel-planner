@@ -273,6 +273,29 @@ export const useHandleTrip = (
     }
   };
 
+  const inviteFriend = async (
+    userId: string | undefined,
+    email: string | undefined
+  ) => {
+    if (!tripId) return;
+
+    try {
+      const tripDocRef = doc(db, "trips", tripId);
+
+      const allowedUser = {
+        id: userId,
+        email: email,
+      };
+
+      await updateDoc(tripDocRef, {
+        allowedUsers: arrayUnion(allowedUser),
+      });
+    } catch (err) {
+      setError("Error when trying to invite friend");
+      console.error("Error when trying to invite friend");
+    }
+  };
+
   return {
     isLoading,
     error,
@@ -284,5 +307,6 @@ export const useHandleTrip = (
     markItemAsCompleted,
     removeItemFromList,
     updateTripNotes,
+    inviteFriend,
   };
 };
