@@ -289,26 +289,26 @@ const TripPage = () => {
           {trip?.title}
         </Typography>
 
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 2,
-            flexWrap: "wrap",
-          }}
-        >
+        {trip?.allowedUsers?.length != null && (
           <Box
             sx={{
               display: "inline-flex",
               alignItems: "center",
-              gap: 1,
+              gap: 2,
+              flexWrap: "wrap",
             }}
           >
-            <Typography variant="body2">Owner:</Typography>
-            <ProfileCircle name={trip?.owner} />
-          </Box>
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography variant="body2">Owner:</Typography>
+              <ProfileCircle name={trip?.owner} />
+            </Box>
 
-          {trip?.allowedUsers?.length != null && (
             <Box
               sx={{
                 display: "inline-flex",
@@ -321,8 +321,8 @@ const TripPage = () => {
                 <ProfileCircle name={user.email} index={index} />
               ))}
             </Box>
-          )}
-        </Box>
+          </Box>
+        )}
 
         <Box
           sx={{

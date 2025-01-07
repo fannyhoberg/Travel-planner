@@ -36,22 +36,26 @@ const ItemFormDialog = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isAddressSelected || address === "") {
+    // Om vi inte har en specifik platsadressering men en titel, skicka ändå.
+    if (title || address === "") {
       onSubmit({ title, address });
     } else {
-      alert("Please select a place from the autocomplete suggestions.");
+      alert(
+        "Please select a place from the autocomplete suggestions or provide an activity."
+      );
     }
   };
-
   const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
     if (place.formatted_address) {
       setAddress(place.formatted_address);
       setIsAddressSelected(true);
+      if (place.name) {
+        setTitle(place.name);
+      }
     } else {
       console.log("No address available for this place.");
     }
   };
-
   useEffect(() => {
     if (initialValues) {
       setTitle(initialValues.title || "");
@@ -88,15 +92,19 @@ const ItemFormDialog = ({
         </DialogTitle>
         <DialogContent>
           <Typography variant="body2">
-            Enter address and select from suggestions to see the place on the
-            map.
+            Enter the name of the activity or place you'd like to add. You can
+            also search for a specific place or address in the second field to
+            see it on the map.
           </Typography>
 
           <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
             <TextField
-              label="Name of place"
+              label="Name of place or activity"
+              aria-label="Enter name of the place"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value), setIsAddressSelected(false);
+              }}
               variant="standard"
               required
               sx={{
@@ -121,14 +129,14 @@ const ItemFormDialog = ({
                 }
               }}
               options={{
-                types: ["address"],
+                types: ["geocode", "establishment"],
               }}
             >
               <input
                 type="text"
-                placeholder="Enter address"
+                placeholder="Search with name or address"
                 value={address}
-                aria-label="Enter address"
+                aria-label="Enter name of place or address"
                 onChange={(e) => {
                   setAddress(e.target.value);
                   setIsAddressSelected(false);
