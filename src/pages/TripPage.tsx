@@ -36,6 +36,7 @@ import Notes from "../components/Notes";
 import PDFGenerator from "../components/ExportTrip";
 import MoveItemDialog from "../components/MoveItemDialog";
 import InviteFriendFormDialog from "../components/InviteFriendFormDialog";
+import ProfileCircle from "../components/ProfileCircle";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -287,14 +288,42 @@ const TripPage = () => {
         <Typography sx={{ pt: 5, pb: 3 }} variant="h1">
           {trip?.title}
         </Typography>
-        {trip?.allowedUsers?.length != null && (
-          <>
-            <Typography variant="body2">
-              Shared with:{" "}
-              {trip.allowedUsers.map((user) => user.email).join(", ")}
-            </Typography>
-          </>
-        )}
+
+        <Box
+          sx={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 2,
+            flexWrap: "wrap",
+          }}
+        >
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Typography variant="body2">Owner:</Typography>
+            <ProfileCircle name={trip?.owner} />
+          </Box>
+
+          {trip?.allowedUsers?.length != null && (
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography variant="body2">Shared with:</Typography>
+              {trip.allowedUsers.map((user, index) => (
+                <ProfileCircle name={user.email} index={index} />
+              ))}
+            </Box>
+          )}
+        </Box>
+
         <Box
           sx={{
             display: "flex",

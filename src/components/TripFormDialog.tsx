@@ -48,7 +48,13 @@ const TripFormDialog = ({ isMobile, closeDialog, initialValue, id }: Props) => {
     }
     if (!initialValue) {
       try {
-        await addTrip({ title: formData.title, userId: currentUser.uid });
+        await addTrip({
+          title: formData.title,
+          owner: currentUser.displayName
+            ? currentUser.displayName
+            : currentUser.email,
+          userId: currentUser.uid,
+        });
       } catch (err) {
         if (err instanceof FirebaseError) {
           setIsError(err.message);

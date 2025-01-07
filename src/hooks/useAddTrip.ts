@@ -14,6 +14,7 @@ const useAddTrip = () => {
 
     const newTripObj = {
       title: data.title,
+      owner: currentUser.displayName,
       userId: currentUser.uid,
     };
 

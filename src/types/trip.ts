@@ -2,6 +2,7 @@ import { GeoPoint } from "firebase/firestore";
 
 export type Trip = {
   _id: string;
+  owner: string | null;
   userId: string;
   title: string;
   notes?: string;

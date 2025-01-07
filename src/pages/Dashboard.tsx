@@ -190,7 +190,6 @@ const Dashboard = () => {
                             aria-label="Edit trip"
                             title="Edit trip"
                             onClick={() => {
-                              setSelectedTripId(trip._id);
                               handleCloseMenu();
                               setUpdateTripDialog(true);
                             }}
@@ -202,7 +201,6 @@ const Dashboard = () => {
                             aria-label="Delete trip"
                             title="Delete trip"
                             onClick={() => {
-                              setSelectedTripId(trip._id);
                               setShowDeleteModal(true);
                               handleCloseMenu();
                             }}
@@ -303,7 +301,6 @@ const Dashboard = () => {
                   <Grid2 size={8} key={trip._id}>
                     <Box
                       sx={{
-                        // backgroundImage: `url(${BackgroundPic})`,
                         backgroundColor: "white",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
@@ -327,7 +324,7 @@ const Dashboard = () => {
                           {trip.title}
                         </Typography>
                         <Typography variant="body2" color="#2a3132">
-                          owner: {trip.userId}
+                          owner: {trip.owner}
                         </Typography>
                       </Link>
                     </Box>
@@ -358,7 +355,7 @@ const Dashboard = () => {
           onConfirm={() => handleDeleteTrip()}
           onCancel={() => setShowDeleteModal(false)}
         >
-          Sure you want to delete this trip?
+          `Sure you want to delete this trip with id: {selectedTripId}?`
         </ConfirmationModal>
       )}
     </>
