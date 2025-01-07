@@ -11,7 +11,6 @@ import {
   Popover,
   MenuItem,
   Divider,
-  Tooltip,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -330,7 +329,7 @@ const TripPage = () => {
             flexDirection: isMobile ? "column" : "row",
             justifyContent: "space-between",
             gap: 4,
-            mt: 4,
+            mt: isMobile ? 0 : 4,
           }}
         >
           <Box
@@ -342,31 +341,31 @@ const TripPage = () => {
             }}
           >
             {showMap && !isMobile && <Map />}
-            {!isMobile && <Notes id={id} trip={trip} />}
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                alignItems: "center",
-                justifyContent: { xs: "center", md: "flex-start" },
-                gap: 2,
-              }}
-            >
-              <PDFGenerator trip={trip} />
-
-              <Tooltip title="Feature coming soon" arrow>
-                <span>
+            {!isMobile && (
+              <>
+                <Notes id={id} trip={trip} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    alignItems: "center",
+                    justifyContent: { xs: "center", md: "flex-start" },
+                    gap: 2,
+                  }}
+                >
+                  <PDFGenerator trip={trip} />
                   <Button
                     sx={{ ml: { md: 2, xs: 0 } }}
                     onClick={() => setInviteFriendDialog(true)}
                     className="btn-secondary"
                     aria-label="Invite friend button"
+                    title="Invite friend button"
                   >
                     Invite friend
                   </Button>
-                </span>
-              </Tooltip>
-            </Box>
+                </Box>
+              </>
+            )}
           </Box>
           <Box
             sx={{
@@ -703,7 +702,37 @@ const TripPage = () => {
           </Box>
         </Box>
         {isMobile && <Notes id={id} trip={trip} />}
+
         {showMap && isMobile && <Map />}
+
+        {isMobile && (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: "center",
+                justifyContent: {
+                  xs: "center",
+                  sm: "center",
+                  md: "flex-start",
+                },
+                gap: 2,
+                pt: 4,
+              }}
+            >
+              <Button
+                onClick={() => setInviteFriendDialog(true)}
+                className="btn-secondary"
+                aria-label="Invite friend button"
+                title="Invite friend button"
+              >
+                Invite friend
+              </Button>
+              <PDFGenerator trip={trip} />
+            </Box>
+          </>
+        )}
       </Container>
     </>
   );

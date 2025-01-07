@@ -27,7 +27,7 @@ const Notes = ({ id, trip }: NotesProp) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          mt: 3,
+          // mt: 3,
         }}
       >
         <TextField
