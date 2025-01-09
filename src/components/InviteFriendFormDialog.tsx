@@ -76,12 +76,15 @@ const InviteFriendFormDialog = ({
           paddingTop: 4,
         }}
       >
-        Invite friend to share trip
+        Invite friend
       </DialogTitle>
       <DialogContent>
+        <Typography variant="body2">
+          Your friend needs to have an account on Vista.
+        </Typography>
         <Box sx={{ mt: 4 }} component="form" onSubmit={handleSubmit}>
           <TextField
-            label="Friend email adress"
+            label="Enter email adress"
             onChange={(e) => setFriendEmail(e.target.value)}
             variant="standard"
             required

@@ -117,7 +117,7 @@ const Map = () => {
                   }}
                   position={position}
                   title={item.title}
-                  icon={getMarkerIcon(list.color)}
+                  icon={getMarkerIcon(item.completed ? "#8b847b" : list.color)}
                 />
               );
             }

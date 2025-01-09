@@ -23,7 +23,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Trip } from "../types/trip";
 import { FirebaseError } from "firebase/app";
 import LoadingSpinner from "../components/LoadingSpinner";
-import NoTrips from "../assets/images/Notrips.png";
+import NoTrips from "../assets/images/addtrip2.png";
 import BackgroundPic from "../assets/images/Trip-card.png";
 import useGetSharedTrips from "../hooks/userGetSharedTrips";
 
@@ -138,9 +138,7 @@ const Dashboard = () => {
           <>
             <Box
               sx={
-                !isMobile
-                  ? { flexGrow: 1, mt: 4, mb: 4 }
-                  : { flexGrow: 1, padding: 4, mb: 4 }
+                !isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1, padding: 4 }
               }
             >
               <Grid2
@@ -234,11 +232,11 @@ const Dashboard = () => {
               justifyContent: "center",
               alignItems: "center",
               textAlign: "center",
-              mt: 5,
+              mb: 5,
               overflow: "hidden",
             }}
           >
-            <Typography variant="h2">
+            <Typography variant="h4">
               Add your first trip and start planning!
             </Typography>
 
@@ -253,8 +251,8 @@ const Dashboard = () => {
                 src={NoTrips}
                 alt="404 Not Found"
                 style={{
-                  width: isMobile ? "100%" : "50%",
-                  height: isMobile ? "100%" : "50%",
+                  width: isMobile ? "100%" : "70%",
+                  height: isMobile ? "100%" : "70%",
                   maxHeight: "100vh",
                   objectFit: "cover",
                   objectPosition: "center",
@@ -285,7 +283,10 @@ const Dashboard = () => {
               Shared trips
             </Typography>
           </Box>
-          <Container maxWidth="md">
+          <Container
+            maxWidth="md"
+            sx={isMobile ? { mb: "10vh", mt: 6 } : { mb: "10vh" }}
+          >
             <Box
               sx={
                 !isMobile ? { flexGrow: 1, mt: 4 } : { flexGrow: 1, padding: 4 }
@@ -355,7 +356,7 @@ const Dashboard = () => {
           onConfirm={() => handleDeleteTrip()}
           onCancel={() => setShowDeleteModal(false)}
         >
-          `Sure you want to delete this trip with id: {selectedTripId}?`
+          Sure you want to delete this trip?
         </ConfirmationModal>
       )}
     </>

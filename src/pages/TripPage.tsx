@@ -36,6 +36,7 @@ import PDFGenerator from "../components/ExportTrip";
 import MoveItemDialog from "../components/MoveItemDialog";
 import InviteFriendFormDialog from "../components/InviteFriendFormDialog";
 import ProfileCircle from "../components/ProfileCircle";
+import NoTrips from "../assets/images/Notrips.png";
 
 const TripPage = () => {
   const [addNewListDialog, setAddNewTripDialog] = useState(false);
@@ -398,13 +399,14 @@ const TripPage = () => {
             {(!trip?.lists || trip.lists.length === 0) && (
               <Box
                 sx={{
+                  width: "100%",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
                   textAlign: "center",
-                  mt: 2,
-                  width: "100%",
+                  // mt: 5,
+                  overflow: "hidden",
                 }}
               >
                 <Typography variant="body1">
@@ -412,6 +414,25 @@ const TripPage = () => {
                   For example: <i>Restaurants</i>, <i>Museums</i>, or{" "}
                   <i>Parks</i>.
                 </Typography>
+                <Box
+                  sx={{
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <img
+                    src={NoTrips}
+                    alt="404 Not Found"
+                    style={{
+                      width: "70%",
+                      height: "70%",
+                      maxHeight: "100vh",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                    }}
+                  />
+                </Box>
               </Box>
             )}
             {addNewListDialog && trip && (
