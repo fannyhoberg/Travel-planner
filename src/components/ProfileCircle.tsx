@@ -1,11 +1,12 @@
 import { Box, Tooltip } from "@mui/material";
 
 type ProfileCircleProps = {
+  owner: boolean;
   name: string | null | undefined;
   index?: number;
 };
 
-const ProfileCircle = ({ name, index }: ProfileCircleProps) => {
+const ProfileCircle = ({ owner, name, index }: ProfileCircleProps) => {
   const displayName = name ? name : "?";
   return (
     <Tooltip key={index} title={displayName}>
@@ -15,7 +16,7 @@ const ProfileCircle = ({ name, index }: ProfileCircleProps) => {
           width: 30,
           height: 30,
           borderRadius: "50%",
-          backgroundColor: "#fff",
+          backgroundColor: owner ? "#f9ba77" : "#fbebda",
           border: "1px solid #2a3132",
           display: "flex",
           alignItems: "center",

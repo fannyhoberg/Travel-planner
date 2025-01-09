@@ -21,7 +21,7 @@ import { useHandleTrip } from "../hooks/useHandleTrip";
 import ItemFormDialog from "../components/ItemFormDialog";
 import ListFormDialog from "../components/ListFormDialog";
 import Map from "../components/Map";
-import { Item, ListTextData } from "../types/trip";
+import { AllowedUserData, Item, ListTextData } from "../types/trip";
 import BackButton from "../components/BackButton";
 import useAuth from "../hooks/useAuth";
 import AccessDenied from "../components/AccessDenied";
@@ -48,6 +48,10 @@ const TripPage = () => {
   const [updateListDialog, setUpdateListDialog] = useState(false);
   const [listToUpdate, setListToUpdate] = useState<string | null>(null);
   const [inviteFriendDialog, setInviteFriendDialog] = useState<boolean>(false);
+  const [friend, setFriend] = useState<AllowedUserData>({
+    id: "",
+    email: "",
+  });
 
   const [updateItemDialog, setUpdateItemDialog] = useState(false);
   const [itemToUpdate, setItemToUpdate] = useState<string | null>(null);
@@ -65,6 +69,7 @@ const TripPage = () => {
 
   const [showListDeleteModal, setShowListDeleteModal] = useState(false);
   const [showItemDeleteModal, setShowItemDeleteModal] = useState(false);
+  const [showFriendDeleteModal, setShowFriendDeleteModal] = useState(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -89,6 +94,7 @@ const TripPage = () => {
     updateList,
     deleteList,
     inviteFriend,
+    removeFriend,
   } = useHandleTrip(id, trip);
 
   const handleOpenListPopup = (
@@ -258,6 +264,11 @@ const TripPage = () => {
     setInviteFriendDialog(false);
   };
 
+  const handleRemoveFriend = () => {
+    removeFriend(friend.id);
+    setShowItemDeleteModal(false);
+  };
+
   if (
     currentUser?.uid !== trip?.userId &&
     !getTripLoading &&
@@ -306,19 +317,30 @@ const TripPage = () => {
               }}
             >
               <Typography variant="body2">Owner:</Typography>
-              <ProfileCircle name={trip?.owner} />
+              <ProfileCircle owner={true} name={trip?.owner} />
             </Box>
 
             <Box
               sx={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 1,
               }}
             >
               <Typography variant="body2">Shared with:</Typography>
               {trip.allowedUsers.map((user, index) => (
-                <ProfileCircle name={user.email} index={index} />
+                <Button
+                  onClick={() => {
+                    setInviteFriendDialog(true),
+                      setFriend(user),
+                      setShowFriendDeleteModal(true);
+                  }}
+                >
+                  <ProfileCircle
+                    owner={false}
+                    name={user.email}
+                    index={index}
+                  />
+                </Button>
               ))}
             </Box>
           </Box>
@@ -357,7 +379,10 @@ const TripPage = () => {
                   <PDFGenerator trip={trip} />
                   <Button
                     sx={{ ml: { md: 2, xs: 0 } }}
-                    onClick={() => setInviteFriendDialog(true)}
+                    onClick={() => {
+                      setInviteFriendDialog(true),
+                        setFriend({ id: "", email: "" });
+                    }}
                     className="btn-secondary"
                     aria-label="Invite friend button"
                     title="Invite friend button"
@@ -405,7 +430,6 @@ const TripPage = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   textAlign: "center",
-                  // mt: 5,
                   overflow: "hidden",
                 }}
               >
@@ -714,11 +738,30 @@ const TripPage = () => {
                 Sure you want to remove this item?
               </ConfirmationModal>
             )}
-            {inviteFriendDialog && (
+            {inviteFriendDialog && !friend && (
               <InviteFriendFormDialog
                 onClose={closeDialog}
                 handleInviteFriend={handleInviteFriend}
               />
+            )}
+            {inviteFriendDialog && friend && (
+              <InviteFriendFormDialog
+                user={friend}
+                onClose={closeDialog}
+                handleInviteFriend={handleInviteFriend}
+                handleRemoveFriend={() => setShowItemDeleteModal(true)}
+              />
+            )}
+            {showFriendDeleteModal && (
+              <ConfirmationModal
+                onOpen={showItemDeleteModal}
+                onConfirm={() => handleRemoveFriend()}
+                onCancel={() => {
+                  setShowItemDeleteModal(false);
+                }}
+              >
+                Sure you want to remove user?
+              </ConfirmationModal>
             )}
           </Box>
         </Box>
@@ -743,7 +786,9 @@ const TripPage = () => {
               }}
             >
               <Button
-                onClick={() => setInviteFriendDialog(true)}
+                onClick={() => {
+                  setInviteFriendDialog(true), setFriend({ id: "", email: "" });
+                }}
                 className="btn-secondary"
                 aria-label="Invite friend button"
                 title="Invite friend button"

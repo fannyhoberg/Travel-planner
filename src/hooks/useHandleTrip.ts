@@ -296,6 +296,29 @@ export const useHandleTrip = (
     }
   };
 
+  const removeFriend = async (userId: string) => {
+    if (!tripId) return;
+
+    try {
+      const tripDocRef = doc(db, "trips", tripId);
+
+      const updatedAllowedUsers = trip?.allowedUsers?.filter(
+        (user) => user.id !== userId
+      );
+
+      await updateDoc(tripDocRef, {
+        allowedUsers: updatedAllowedUsers,
+      });
+
+      console.log(`User with ID ${userId} removed successfully`);
+    } catch (err) {
+      setError("Error when trying to remove friend");
+      console.error("Error when trying to remove friend", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     error,
@@ -308,5 +331,6 @@ export const useHandleTrip = (
     removeItemFromList,
     updateTripNotes,
     inviteFriend,
+    removeFriend,
   };
 };

@@ -124,7 +124,7 @@ const Dashboard = () => {
         )}
       </Box>
 
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ mb: 4 }}>
         {isLoading && <LoadingSpinner />}
         {loading && <LoadingSpinner />}
 
