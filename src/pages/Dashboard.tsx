@@ -124,7 +124,7 @@ const Dashboard = () => {
         )}
       </Box>
 
-      <Container maxWidth="md" sx={{ mb: 4 }}>
+      <Container maxWidth="md" sx={{ mb: 4, p: 4 }}>
         {isLoading && <LoadingSpinner />}
         {loading && <LoadingSpinner />}
 
@@ -148,76 +148,85 @@ const Dashboard = () => {
               >
                 {trips.map((trip) => (
                   <Grid2 size={8} key={trip._id}>
-                    <Box
-                      sx={{
-                        backgroundImage: `url(${BackgroundPic})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        border: "0.1px solid #A9885D",
-                        height: 150,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        borderRadius: 3,
-                        position: "relative",
-                      }}
+                    <Link
+                      to={`/trip/${trip._id}`}
+                      style={{ textDecoration: "none" }}
+                      title="Go to trip page"
+                      aria-label="Go to trip page"
                     >
-                      <IconButton
-                        onClick={(e) => handleOpenMenu(e, trip)}
-                        size="small"
-                        title="More actions"
-                        aria-label="More actions"
-                        sx={{ position: "absolute", top: 8, right: 8 }}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-
-                      <Popover
-                        open={Boolean(anchorEl)}
-                        anchorEl={anchorEl}
-                        onClose={handleCloseMenu}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
+                      <Box
+                        sx={{
+                          backgroundColor: "white",
+                          height: 150,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          borderRadius: 3,
+                          position: "relative",
+                          transition:
+                            "transform 0.5s ease, background-color 0.5s ease",
+                          "&:hover": {
+                            backgroundColor: "#fceb9b",
+                            transform: "scale(1.02)",
+                          },
                         }}
-                      >
-                        <Box>
-                          <MenuItem
-                            tabIndex={1}
-                            aria-label="Edit trip"
-                            title="Edit trip"
-                            onClick={() => {
-                              handleCloseMenu();
-                              setUpdateTripDialog(true);
-                            }}
-                          >
-                            Edit
-                          </MenuItem>
-                          <MenuItem
-                            tabIndex={1}
-                            aria-label="Delete trip"
-                            title="Delete trip"
-                            onClick={() => {
-                              setShowDeleteModal(true);
-                              handleCloseMenu();
-                            }}
-                          >
-                            Delete
-                          </MenuItem>
-                        </Box>
-                      </Popover>
-                      <Link
-                        to={`/trip/${trip._id}`}
-                        style={{ textDecoration: "none" }}
-                        title="Go to trip page"
-                        aria-label="Go to trip page"
                       >
                         <Typography variant="h2" color="#2a3132">
                           {trip.title}
                         </Typography>
-                      </Link>
-                    </Box>
+
+                        <IconButton
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleOpenMenu(e, trip);
+                          }}
+                          size="small"
+                          title="More actions"
+                          aria-label="More actions"
+                          sx={{ position: "absolute", top: 8, right: 8 }}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+
+                        <Popover
+                          open={Boolean(anchorEl)}
+                          anchorEl={anchorEl}
+                          onClose={handleCloseMenu}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left",
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Box>
+                            <MenuItem
+                              tabIndex={1}
+                              aria-label="Edit trip"
+                              title="Edit trip"
+                              onClick={() => {
+                                handleCloseMenu();
+                                setUpdateTripDialog(true);
+                              }}
+                            >
+                              Edit
+                            </MenuItem>
+                            <MenuItem
+                              tabIndex={1}
+                              aria-label="Delete trip"
+                              title="Delete trip"
+                              onClick={() => {
+                                setShowDeleteModal(true);
+                                handleCloseMenu();
+                              }}
+                            >
+                              Delete
+                            </MenuItem>
+                          </Box>
+                        </Popover>
+                      </Box>
+                    </Link>
                   </Grid2>
                 ))}
               </Grid2>
@@ -300,35 +309,43 @@ const Dashboard = () => {
               >
                 {sharedTrips.map((trip) => (
                   <Grid2 size={8} key={trip._id}>
-                    <Box
-                      sx={{
-                        backgroundColor: "white",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        border: "0.1px solid #A9885D",
-                        height: 150,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        borderRadius: 3,
-                        position: "relative",
-                      }}
+                    <Link
+                      to={`/trip/${trip._id}`}
+                      style={{ textDecoration: "none" }}
+                      title="Go to trip page"
+                      aria-label="Go to trip page"
                     >
-                      <Link
-                        to={`/trip/${trip._id}`}
-                        style={{ textDecoration: "none" }}
-                        title="Go to trip page"
-                        aria-label="Go to trip page"
+                      <Box
+                        sx={{
+                          backgroundColor: "white",
+                          height: 150,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          borderRadius: 3,
+                          position: "relative",
+                          transition:
+                            "transform 0.5s ease, background-color 0.5s ease",
+                          "&:hover": {
+                            backgroundColor: "#fceb9b",
+                            transform: "scale(1.02)",
+                          },
+                        }}
                       >
-                        <Typography variant="h2" color="#2a3132">
+                        <Typography
+                          variant="h2"
+                          color="#2a3132"
+                          sx={{ marginBottom: 1 }}
+                        >
                           {trip.title}
                         </Typography>
                         <Typography variant="body2" color="#2a3132">
                           owner: {trip.owner}
                         </Typography>
-                      </Link>
-                    </Box>
+                      </Box>
+                    </Link>
                   </Grid2>
                 ))}
               </Grid2>
