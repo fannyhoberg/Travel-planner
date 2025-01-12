@@ -24,7 +24,6 @@ import { Trip } from "../types/trip";
 import { FirebaseError } from "firebase/app";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NoTrips from "../assets/images/addtrip2.png";
-import BackgroundPic from "../assets/images/Trip-card.png";
 import useGetSharedTrips from "../hooks/userGetSharedTrips";
 
 const Dashboard = () => {
